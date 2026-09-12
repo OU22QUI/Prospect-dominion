@@ -1,0 +1,6 @@
+[node]
+metadata_dir = "/meta"
+
+[[storage]]
+name = "default"
+path = "/data"

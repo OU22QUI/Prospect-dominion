@@ -1,0 +1,234 @@
+name: prospect-dominion
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+x-healthcheck-defaults: &hc
+  interval: 10s
+  timeout: 5s
+  retries: 12
+  start_period: 20s
+
+networks:
+  pd-net:
+    driver: bridge
+
+volumes:
+  pg-data:
+  neo4j-data:
+  qdrant-data:
+  garage-data:
+  garage-meta:
+  redis-data:
+  postal-data:
+  n8n-data:
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    profiles: ["data", "core"]
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_DB}
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+      - ./migrations/postgres:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d ${PG_DB}"]
+      <<: *hc
+    networks: [pd-net]
+    logging: *default-logging
+
+  neo4j:
+    image: neo4j:5-community
+    profiles: ["data", "core"]
+    environment:
+      NEO4J_AUTH: ${NEO4J_USER}/${NEO4J_PASSWORD}
+      NEO4J_PLUGINS: '["apoc"]'
+    volumes:
+      - neo4j-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:7474 || exit 1"]
+      <<: *hc
+    networks: [pd-net]
+    logging: *default-logging
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    profiles: ["data", "core"]
+    volumes:
+      - qdrant-data:/qdrant/storage
+    ports:
+      - "6333:6333"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:6333/readyz || exit 1"]
+      <<: *hc
+    networks: [pd-net]
+    logging: *default-logging
+
+  redis:
+    image: redis:7-alpine
+    profiles: ["data", "core"]
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      <<: *hc
+    networks: [pd-net]
+    logging: *default-logging
+
+  garage:
+    image: dxflrs/garage:v1.0.0
+    profiles: ["data", "core"]
+    volumes:
+      - garage-data:/data
+      - garage-meta:/meta
+      - ./infra/garage/garage.toml:/etc/garage.toml:ro
+    networks: [pd-net]
+    logging: *default-logging
+
+  mem0:
+    image: mem0/mem0:latest
+    profiles: ["data", "core"]
+    environment:
+      MEM0_VECTOR_STORE: qdrant
+      QDRANT_URL: http://qdrant:6333
+      MEM0_LLM_BASE_URL: http://litellm:4000
+    depends_on:
+      qdrant:
+        condition: service_healthy
+    networks: [pd-net]
+    logging: *default-logging
+
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    profiles: ["intel", "core"]
+    environment:
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}
+      DATABASE_URL: postgresql://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
+      LANGFUSE_HOST: http://langfuse:3000
+    volumes:
+      - ./infra/litellm/config.yaml:/app/config.yaml:ro
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:4000/health/liveliness || exit 1"]
+      <<: *hc
+    networks: [pd-net]
+    logging: *default-logging
+
+  crawl4ai:
+    image: unclecode/crawl4ai:latest
+    profiles: ["intel", "core"]
+    shm_size: "1gb"
+    networks: [pd-net]
+    logging: *default-logging
+
+  osint:
+    build:
+      context: ./services/osint
+    profiles: ["intel", "core"]
+    environment:
+      LITELLM_BASE_URL: http://litellm:4000
+      PG_DSN: postgresql://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
+      CRAWL4AI_URL: http://crawl4ai:11235
+    depends_on:
+      litellm:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]
+      <<: *hc
+    networks: [pd-net]
+    logging: *default-logging
+
+  api:
+    build:
+      context: ./services/api
+    profiles: ["core"]
+    environment:
+      PG_DSN: postgresql://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
+      NEO4J_URL: bolt://neo4j:7687
+      QDRANT_URL: http://qdrant:6333
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+      LITELLM_BASE_URL: http://litellm:4000
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      neo4j:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8000/health || exit 1"]
+      <<: *hc
+    networks: [pd-net]
+    logging: *default-logging
+
+  n8n:
+    image: n8nio/n8n:latest
+    profiles: ["core"]
+    environment:
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_DATABASE: ${PG_DB}
+      DB_POSTGRESDB_USER: ${PG_USER}
+      DB_POSTGRESDB_PASSWORD: ${PG_PASSWORD}
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
+      WEBHOOK_URL: ${PUBLIC_BASE_URL}
+      GENERIC_TIMEZONE: UTC
+    volumes:
+      - n8n-data:/home/node/.n8n
+      - ./workflows:/workflows:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+    networks: [pd-net]
+    logging: *default-logging
+
+  workers:
+    build:
+      context: ./services/workers
+    profiles: ["core"]
+    environment:
+      PG_DSN: postgresql://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+      LITELLM_BASE_URL: http://litellm:4000
+    depends_on:
+      api:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks: [pd-net]
+    logging: *default-logging
+
+  caddy:
+    image: caddy:2-alpine
+    profiles: ["core"]
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      api:
+        condition: service_healthy
+    networks: [pd-net]
+    logging: *default-logging

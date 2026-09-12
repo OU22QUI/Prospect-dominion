@@ -1,0 +1,44 @@
+services:
+  postal:
+    image: ghcr.io/postalserver/postal:latest
+    profiles: ["comms"]
+    environment:
+      POSTAL_SIGNING_KEY_PATH: /config/signing.key
+      MAIN_DB_HOST: postgres
+      MESSAGE_DB_HOST: postgres
+    volumes:
+      - postal-data:/opt/postal/config
+      - ./infra/postal:/config:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - pd-net
+
+  warmup-mesh:
+    build:
+      context: ./services/warmup-mesh
+    profiles: ["comms"]
+    environment:
+      POSTAL_API_URL: http://postal:5000
+      PG_DSN: postgresql://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
+    depends_on:
+      postal:
+        condition: service_started
+    networks:
+      - pd-net
+
+  fonoster:
+    image: fonoster/fonoster:latest
+    profiles: ["comms"]
+    networks:
+      - pd-net
+
+  livekit:
+    image: livekit/livekit-server:latest
+    profiles: ["comms"]
+    command: ["--config", "/etc/livekit.yaml"]
+    volumes:
+      - ./infra/livekit/livekit.yaml:/etc/livekit.yaml:ro
+    networks:
+      - pd-net
