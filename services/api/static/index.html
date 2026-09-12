@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prospect Dominion</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background: #0b1020;
+        color: #edf3ff;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 32px;
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .card {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 12px;
+        padding: 20px;
+      }
+      .label {
+        color: #9bb1d4;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .value {
+        font-size: 28px;
+        margin-top: 8px;
+        font-weight: bold;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: rgba(255,255,255,0.03);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      th, td {
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        padding: 12px;
+        text-align: left;
+      }
+      th {
+        background: rgba(255,255,255,0.04);
+      }
+      button {
+        background: #4f8ef7;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 16px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #3a7ae0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div>
+          <h1>Prospect Dominion</h1>
+          <p>Operational control surface</p>
+        </div>
+        <button id="refreshBtn">Refresh dashboard</button>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <div class="label">Threads</div>
+          <div class="value" id="threadCount">0</div>
+        </div>
+        <div class="card">
+          <div class="label">Events</div>
+          <div class="value" id="eventCount">0</div>
+        </div>
+        <div class="card">
+          <div class="label">Outcomes</div>
+          <div class="value" id="outcomeCount">0</div>
+        </div>
+      </div>
+
+      <h2>Recent outcomes</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Outcome ID</th>
+            <th>Thread</th>
+            <th>Stage</th>
+            <th>Reason</th>
+          </tr>
+        </thead>
+        <tbody id="outcomesTableBody"></tbody>
+      </table>
+    </div>
+
+    <script>
+      async function loadDashboard() {
+        const response = await fetch('/dashboard');
+        const data = await response.json();
+
+        document.getElementById('threadCount').textContent = data.thread_count;
+        document.getElementById('eventCount').textContent = data.event_count;
+        document.getElementById('outcomeCount').textContent = data.outcome_count;
+
+        const tbody = document.getElementById('outcomesTableBody');
+        tbody.innerHTML = '';
+
+        data.recent_outcomes.forEach((outcome) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${outcome.outcome_id}</td>
+            <td>${outcome.thread_id}</td>
+            <td>${outcome.stage_to}</td>
+            <td>${outcome.reason || '—'}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
+
+      document.getElementById('refreshBtn').addEventListener('click', loadDashboard);
+      loadDashboard();
+    </script>
+  </body>
+</html>

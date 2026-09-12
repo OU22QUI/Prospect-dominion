@@ -1,0 +1,40 @@
+services:
+  langfuse:
+    image: langfuse/langfuse:latest
+    profiles: ["observability"]
+    environment:
+      DATABASE_URL: postgresql://${PG_USER}:${PG_PASSWORD}@postgres:5432/langfuse
+      NEXTAUTH_SECRET: ${LANGFUSE_NEXTAUTH_SECRET}
+      SALT: ${LANGFUSE_SALT}
+      NEXTAUTH_URL: ${PUBLIC_BASE_URL}/langfuse
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - pd-net
+
+  prometheus:
+    image: prom/prometheus:latest
+    profiles: ["observability"]
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - pd-net
+
+  loki:
+    image: grafana/loki:latest
+    profiles: ["observability"]
+    volumes:
+      - ./infra/loki/config.yaml:/etc/loki/local-config.yaml:ro
+    networks:
+      - pd-net
+
+  grafana:
+    image: grafana/grafana:latest
+    profiles: ["observability"]
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+    volumes:
+      - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
+    networks:
+      - pd-net

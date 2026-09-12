@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS health_check (
+  id SERIAL PRIMARY KEY,
+  status TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+INSERT INTO health_check(status) VALUES ('ready')
+ON CONFLICT DO NOTHING;
