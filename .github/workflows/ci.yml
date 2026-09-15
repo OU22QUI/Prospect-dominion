@@ -23,6 +23,22 @@ jobs:
           cd services/api
           python -m pip install -r requirements.txt
 
+      - name: Start integration dependencies
+        run: |
+          cp deploy/customer.env.example .env
+          docker compose -f docker-compose.yml -f docker-compose.override.yml --profile core up -d --build --wait
+
       - name: Run tests
         run: |
           pytest services/api/tests/test_api.py services/api/tests/test_dashboard.py services/api/tests/test_root_page.py services/api/tests/test_orchestration.py
+
+      - name: Verify deployment
+        env:
+          API_PORT: 8010
+          PD_BASE_URL: http://127.0.0.1:8010
+          PD_API_KEY: dev-local-key
+        run: python scripts/verify_deployment.py
+
+      - name: Tear down integration dependencies
+        if: always()
+        run: docker compose -f docker-compose.yml -f docker-compose.override.yml --profile core down --remove-orphans
