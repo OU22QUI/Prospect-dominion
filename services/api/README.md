@@ -5,6 +5,8 @@ This API provides the core operational surface for the Prospect Dominion platfor
 ## Endpoints
 
 - `GET /health`
+- `GET /ready`
+- `GET /branding`
 - `GET /`
 - `GET /dashboard`
 - `GET /orchestration/{thread_id}`
@@ -25,4 +27,10 @@ This API provides the core operational surface for the Prospect Dominion platfor
 cd services/api
 python -m pip install -r requirements.txt
 uvicorn app.main:app --reload
+```
+
+For a Compose deployment, run the repository-level verifier from the project root:
+
+```bash
+python scripts/verify_deployment.py
 ```

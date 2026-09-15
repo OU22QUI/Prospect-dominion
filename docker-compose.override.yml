@@ -1,19 +1,19 @@
 services:
   api:
     ports:
-      - "8000:8000"
+      - "127.0.0.1:${API_PORT:-8010}:8000"
 
   osint:
     ports:
-      - "8080:8080"
+      - "127.0.0.1:${OSINT_PORT:-8081}:8080"
 
   qdrant:
     ports:
-      - "6333:6333"
+      - "127.0.0.1:6335:6333"
 
   redis:
     ports:
-      - "6379:6379"
+      - "127.0.0.1:${REDIS_PORT:-6380}:6379"
 
   caddy:
     ports:
