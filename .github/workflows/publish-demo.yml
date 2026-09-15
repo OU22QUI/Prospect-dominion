@@ -23,6 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -35,6 +37,9 @@ jobs:
           test -s demo/styles.css
           test -s demo/script.js
           test -s demo/README.md
+          grep -Fq "One system from signal to action" demo/index.html
+          grep -Fq "Book a live product walkthrough" demo/index.html
+          grep -Fq "scenarioChips" demo/script.js
 
   deploy:
     needs: validate
@@ -44,9 +49,11 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: demo
+          path: ./demo
       - id: deployment
         uses: actions/deploy-pages@v4
