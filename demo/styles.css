@@ -231,6 +231,22 @@ button {
   letter-spacing: 0.04em;
 }
 
+.proof-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.proof-strip span {
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.02);
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
 .hero-card {
   background: linear-gradient(180deg, rgba(30, 30, 30, 0.96), rgba(18, 18, 18, 0.96));
   border: 1px solid var(--panel-border);
@@ -429,6 +445,47 @@ button {
   color: var(--muted-2);
 }
 
+.pipeline-section {
+  margin-top: 30px;
+}
+
+.compact-header {
+  margin-top: 0;
+}
+
+.pipeline-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.pipeline-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 18px;
+}
+
+.pipeline-step {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: var(--accent);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.pipeline-card h3 {
+  margin: 0 0 12px;
+  font-size: 1.2rem;
+}
+
+.pipeline-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
 .demo-panel {
   margin-top: 24px;
   padding: 22px;
@@ -438,6 +495,27 @@ button {
   margin: 8px 0 18px;
   font-size: 1.9rem;
   letter-spacing: -0.04em;
+}
+
+.scenario-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.scenario-chip {
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.02);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 8px 14px;
+}
+
+.scenario-chip.active {
+  background: rgba(232, 204, 132, 0.12);
+  color: var(--text);
+  border-color: rgba(232, 204, 132, 0.34);
 }
 
 .demo-shell {
@@ -665,6 +743,38 @@ button {
   border-radius: 50%;
   background: var(--accent);
   margin-top: 8px;
+}
+
+.final-cta {
+  margin-top: 30px;
+  padding-bottom: 10px;
+}
+
+.cta-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  background: linear-gradient(135deg, rgba(232, 204, 132, 0.1), rgba(154, 118, 47, 0.1));
+  border: 1px solid rgba(232, 204, 132, 0.2);
+  border-radius: 24px;
+  padding: 24px 22px;
+}
+
+.cta-panel h3 {
+  margin: 10px 0 0;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  letter-spacing: -0.04em;
+}
+
+.cta-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.footer-link {
+  text-decoration: none;
 }
 
 .footer {

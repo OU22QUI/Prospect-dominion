@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const timelineStatusEl = document.getElementById('timelineStatus');
   const runActionBtn = document.getElementById('runAction');
   const refreshQueueBtn = document.getElementById('refreshQueue');
+  const finalBookDemoBtn = document.getElementById('finalBookDemo');
+  const scenarioChips = document.querySelectorAll('.scenario-chip');
 
   const accounts = [
     {
@@ -129,6 +131,10 @@ document.addEventListener('DOMContentLoaded', () => {
     detailPathEl.textContent = account.path;
     timelineStatusEl.textContent = account.health;
 
+    scenarioChips.forEach((chip) => {
+      chip.classList.toggle('active', Number(chip.dataset.scenario) === selectedIndex);
+    });
+
     relationshipMapEl.innerHTML = account.relationships
       .map((person, idx) => `
         <div class="relationship-node">
@@ -216,6 +222,21 @@ document.addEventListener('DOMContentLoaded', () => {
       account.score = Math.max(80, Math.min(99, account.score + 1));
     });
     renderAccountDetail();
+  });
+
+  scenarioChips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      selectedIndex = Number(chip.dataset.scenario);
+      renderAccountDetail();
+    });
+  });
+
+  finalBookDemoBtn?.addEventListener('click', () => {
+    if (dialog?.showModal) {
+      dialog.showModal();
+    } else {
+      scrollToWorkflow();
+    }
   });
 
   dialog?.addEventListener('click', (event) => {
