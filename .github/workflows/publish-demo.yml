@@ -1,0 +1,52 @@
+name: Publish Prospect Dominion Demo
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "demo/**"
+      - "scripts/validate_customer_config.py"
+      - ".github/workflows/publish-demo.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate public demo
+        run: python scripts/validate_customer_config.py --env-file deploy/customer.env.example --check-public-demo
+      - name: Validate required demo assets
+        run: |
+          test -s demo/index.html
+          test -s demo/tester.html
+          test -s demo/styles.css
+          test -s demo/script.js
+          test -s demo/README.md
+
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: demo
+      - id: deployment
+        uses: actions/deploy-pages@v4

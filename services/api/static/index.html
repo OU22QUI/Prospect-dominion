@@ -3,8 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Prospect Dominion</title>
+    <title>{{BRAND_NAME}}</title>
     <style>
+      :root {
+        --brand-primary: {{BRAND_PRIMARY_COLOR}};
+      }
       body {
         font-family: Arial, sans-serif;
         margin: 0;
@@ -61,7 +64,7 @@
         background: rgba(255,255,255,0.04);
       }
       button {
-        background: #4f8ef7;
+        background: var(--brand-primary);
         color: white;
         border: none;
         border-radius: 8px;
@@ -69,7 +72,7 @@
         cursor: pointer;
       }
       button:hover {
-        background: #3a7ae0;
+        filter: brightness(0.92);
       }
     </style>
   </head>
@@ -77,8 +80,8 @@
     <div class="container">
       <div class="header">
         <div>
-          <h1>Prospect Dominion</h1>
-          <p>Operational control surface</p>
+          <h1>{{BRAND_NAME}}</h1>
+          <p>{{BRAND_TAGLINE}}</p>
         </div>
         <button id="refreshBtn">Refresh dashboard</button>
       </div>

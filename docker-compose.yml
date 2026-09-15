@@ -63,10 +63,10 @@ services:
     volumes:
       - qdrant-data:/qdrant/storage
     ports:
-      - "6333:6333"
+      - "127.0.0.1:6335:6333"
+    # The upstream image has no HTTP client. Deployment validation probes /readyz from the host.
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:6333/readyz || exit 1"]
-      <<: *hc
+      disable: true
     networks: [pd-net]
     logging: *default-logging
 
@@ -77,7 +77,7 @@ services:
     volumes:
       - redis-data:/data
     ports:
-      - "6379:6379"
+      - "127.0.0.1:${REDIS_PORT:-6380}:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       <<: *hc
@@ -87,6 +87,7 @@ services:
   garage:
     image: dxflrs/garage:v1.0.0
     profiles: ["data", "core"]
+    command: ["/garage", "--config", "/etc/garage.toml", "server"]
     volumes:
       - garage-data:/data
       - garage-meta:/meta
@@ -95,7 +96,8 @@ services:
     logging: *default-logging
 
   mem0:
-    image: mem0/mem0:latest
+    build:
+      context: ./services/mem0
     profiles: ["data", "core"]
     environment:
       MEM0_VECTOR_STORE: qdrant
@@ -103,7 +105,7 @@ services:
       MEM0_LLM_BASE_URL: http://litellm:4000
     depends_on:
       qdrant:
-        condition: service_healthy
+        condition: service_started
     networks: [pd-net]
     logging: *default-logging
 
@@ -123,7 +125,7 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:4000/health/liveliness || exit 1"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:4000/health/liveliness', timeout=3)"]
       <<: *hc
     networks: [pd-net]
     logging: *default-logging
@@ -139,17 +141,19 @@ services:
     build:
       context: ./services/osint
     profiles: ["intel", "core"]
+    ports:
+      - "127.0.0.1:${OSINT_PORT:-8081}:8080"
     environment:
       LITELLM_BASE_URL: http://litellm:4000
       PG_DSN: postgresql://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
       CRAWL4AI_URL: http://crawl4ai:11235
     depends_on:
       litellm:
-        condition: service_healthy
+        condition: service_started
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health', timeout=3)"]
       <<: *hc
     networks: [pd-net]
     logging: *default-logging
@@ -158,24 +162,33 @@ services:
     build:
       context: ./services/api
     profiles: ["core"]
+    ports:
+      - "127.0.0.1:${API_PORT:-8010}:8000"
     environment:
+      APP_ENV: ${APP_ENV:-local}
+      PD_PORT: ${PD_PORT:-8010}
+      PD_API_KEY: ${PD_API_KEY:-dev-local-key}
+      PD_BRAND_NAME: ${PD_BRAND_NAME:-Prospect Dominion}
+      PD_BRAND_TAGLINE: ${PD_BRAND_TAGLINE:-Operational control surface}
+      PD_PRIMARY_COLOR: ${PD_PRIMARY_COLOR:-#4f8ef7}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost}
       PG_DSN: postgresql://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
       NEO4J_URL: bolt://neo4j:7687
       QDRANT_URL: http://qdrant:6333
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
       LITELLM_BASE_URL: http://litellm:4000
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_SECRET: ${JWT_SECRET:-change-me}
     depends_on:
       postgres:
         condition: service_healthy
       neo4j:
         condition: service_healthy
       qdrant:
-        condition: service_healthy
+        condition: service_started
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:8000/health || exit 1"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)"]
       <<: *hc
     networks: [pd-net]
     logging: *default-logging
@@ -199,7 +212,7 @@ services:
       postgres:
         condition: service_healthy
       api:
-        condition: service_healthy
+        condition: service_started
     networks: [pd-net]
     logging: *default-logging
 
@@ -213,7 +226,7 @@ services:
       LITELLM_BASE_URL: http://litellm:4000
     depends_on:
       api:
-        condition: service_healthy
+        condition: service_started
       redis:
         condition: service_healthy
     networks: [pd-net]
@@ -229,6 +242,6 @@ services:
       - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
     depends_on:
       api:
-        condition: service_healthy
+        condition: service_started
     networks: [pd-net]
     logging: *default-logging

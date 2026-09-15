@@ -1,5 +1,20 @@
-[node]
-metadata_dir = "/meta"
+﻿metadata_dir = "/meta"
+data_dir = "/data"
+rpc_bind_addr = "0.0.0.0:3901"
+rpc_public_addr = "127.0.0.1:3901"
+rpc_secret = "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff"
+bootstrap = true
+replication_factor = 1
+consistency_mode = "consistent"
+
+[s3_api]
+api_bind_addr = "0.0.0.0:3900"
+root_domain = "localhost"
+s3_region = "us-east-1"
+
+[admin]
+api_bind_addr = "0.0.0.0:3902"
+admin_token = "admin"
 
 [[storage]]
 name = "default"

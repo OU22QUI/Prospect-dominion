@@ -14,6 +14,12 @@ venv/
 # Docker
 *.log
 
+# Local runtime data
+data/*.db
+!data/.gitkeep
+services/api/data/*.db
+_tmp_garage/
+
 # OS
 .DS_Store
 Thumbs.db
