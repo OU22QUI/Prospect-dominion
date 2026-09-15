@@ -40,8 +40,8 @@
             <p class="eyebrow">Revenue intelligence platform</p>
             <h1>Turn signal into revenue with a governed AI operating layer.</h1>
             <p class="lede">
-              Prospect Dominion gives GTM teams a single system for signal discovery, account prioritization,
-              warm-intro intelligence, and bot-verified execution across the entire revenue motion.
+              Prospect Dominion gives GTM teams one live operating surface for signal discovery,
+              account prioritization, relationship intelligence, and controlled execution across the entire outbound motion.
             </p>
 
             <div class="cta-row">
@@ -58,7 +58,6 @@
 
           <aside class="hero-card" aria-label="Live operating state overview">
             <div class="card-topline">Live operating state</div>
-
             <div class="status-grid">
               <div class="mini-stat">
                 <span class="dot ready"></span>
@@ -67,7 +66,6 @@
                   <strong>1,284</strong>
                 </div>
               </div>
-
               <div class="mini-stat">
                 <span class="dot ready"></span>
                 <div>
@@ -75,7 +73,6 @@
                   <strong>148</strong>
                 </div>
               </div>
-
               <div class="mini-stat">
                 <span class="dot ready"></span>
                 <div>
@@ -83,7 +80,6 @@
                   <strong>96.4%</strong>
                 </div>
               </div>
-
               <div class="mini-stat">
                 <span class="dot warn"></span>
                 <div>
@@ -118,19 +114,17 @@
             <article class="feature-card">
               <p class="feature-label">Signal intelligence</p>
               <h3>Convert raw intent into account-level momentum.</h3>
-              <p>Surface the buying signals that matter, attach them to the right companies, and prioritize the motion that is most likely to convert.</p>
+              <p>Surface the buying signals that matter, attach them to the right companies, and prioritize the motion most likely to convert.</p>
             </article>
-
             <article class="feature-card">
               <p class="feature-label">Relationship graph</p>
               <h3>Reveal warm paths and hidden champions.</h3>
-              <p>Identify the people, paths, and context that make outreach feel informed, credible, and timed for the right moment.</p>
+              <p>Identify the people, paths, and context that make outreach feel informed, credible, and timely.</p>
             </article>
-
             <article class="feature-card">
               <p class="feature-label">Workflow orchestration</p>
               <h3>Make outreach repeatable, measurable, and controlled.</h3>
-              <p>Coordinate the next best action across research, enrichment, messaging, and approval queues without losing operational oversight.</p>
+              <p>Coordinate research, enrichment, outreach, and approvals without losing governance or oversight.</p>
             </article>
           </div>
 
@@ -138,7 +132,6 @@
             <div class="panel">
               <p class="feature-label">Operational health</p>
               <h3>Built for trust, not just speed.</h3>
-
               <div class="list-stack">
                 <div class="list-item"><span class="dot ready"></span> Health checks and live readiness validation</div>
                 <div class="list-item"><span class="dot ready"></span> Protected routes and secure authentication patterns</div>
@@ -150,7 +143,6 @@
             <div class="panel panel-alt">
               <p class="feature-label">Customer value</p>
               <h3>Why it matters to revenue teams.</h3>
-
               <ul>
                 <li>Shorter time from signal to action</li>
                 <li>Cleaner account prioritization</li>
@@ -178,78 +170,77 @@
 
           <section class="demo-panel" id="demo">
             <div class="demo-copy">
-              <p class="feature-label">Demo</p>
-              <h3>Qualified accounts and workflow momentum</h3>
+              <p class="feature-label">Live demo</p>
+              <h3>Account command center</h3>
             </div>
 
-            <div class="demo-grid">
-              <div class="mini-table-panel">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Account</th>
-                      <th>Intent</th>
-                      <th>Stage</th>
-                      <th>Score</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Nexa Labs</td>
-                      <td>Expansion</td>
-                      <td>Proposal</td>
-                      <td>94</td>
-                    </tr>
-                    <tr>
-                      <td>Harbor Works</td>
-                      <td>Renewal</td>
-                      <td>Qualification</td>
-                      <td>89</td>
-                    </tr>
-                    <tr>
-                      <td>Northstar One</td>
-                      <td>New logo</td>
-                      <td>Discovery</td>
-                      <td>86</td>
-                    </tr>
-                    <tr>
-                      <td>Lattice Grid</td>
-                      <td>Cross-sell</td>
-                      <td>Engaged</td>
-                      <td>91</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+            <div class="demo-shell">
+              <aside class="account-sidebar">
+                <div class="sidebar-header">
+                  <span class="eyebrow">Queue</span>
+                  <button class="sidebar-button" id="refreshQueue" type="button">Refresh</button>
+                </div>
+                <div id="accountList" class="account-list"></div>
+              </aside>
 
-              <div class="workflow-box">
-                <div class="workflow-row">
-                  <span class="dot ready"></span>
+              <div class="account-detail">
+                <div class="detail-header">
                   <div>
-                    <strong>Signal intake</strong>
-                    <small>Healthy</small>
+                    <p class="eyebrow">Selected account</p>
+                    <h4 id="detailCompany">Nexa Labs</h4>
+                  </div>
+                  <span id="detailScore" class="score-pill">94</span>
+                </div>
+
+                <div class="detail-grid">
+                  <div class="detail-card">
+                    <p class="mini-label">Account summary</p>
+                    <div class="summary-row">
+                      <span>Intent</span>
+                      <strong id="detailIntent">Expansion</strong>
+                    </div>
+                    <div class="summary-row">
+                      <span>Stage</span>
+                      <strong id="detailStage">Proposal</strong>
+                    </div>
+                    <div class="summary-row">
+                      <span>Buying signal</span>
+                      <strong id="detailSignal">AI platform expansion</strong>
+                    </div>
+                    <div class="summary-row">
+                      <span>Decision path</span>
+                      <strong id="detailPath">VP Revenue + CTO</strong>
+                    </div>
+                  </div>
+
+                  <div class="detail-card">
+                    <p class="mini-label">Relationship map</p>
+                    <div id="relationshipMap" class="relationship-map"></div>
                   </div>
                 </div>
-                <div class="workflow-row">
-                  <span class="dot ready"></span>
-                  <div>
-                    <strong>Account scoring</strong>
-                    <small>Ready</small>
+
+                <div class="detail-card action-card">
+                  <div class="action-row">
+                    <div>
+                      <p class="mini-label">Workflow engine</p>
+                      <h5>Recommended next action</h5>
+                    </div>
+                    <button class="primary-btn short-btn" id="runAction" type="button">Run action</button>
+                  </div>
+
+                  <div class="action-grid">
+                    <button class="action-button" data-action="scan" type="button">Run signal scan</button>
+                    <button class="action-button" data-action="intro" type="button">Queue warm intro</button>
+                    <button class="action-button" data-action="approve" type="button">Approve outreach</button>
                   </div>
                 </div>
-                <div class="workflow-row">
-                  <span class="dot warn"></span>
-                  <div>
-                    <strong>Warm intro routing</strong>
-                    <small>Queued</small>
+
+                <div class="detail-card timeline-card">
+                  <div class="timeline-header">
+                    <p class="mini-label">Activity stream</p>
+                    <span id="timelineStatus" class="status-badge">Healthy</span>
                   </div>
-                </div>
-                <div class="workflow-row">
-                  <span class="dot ready"></span>
-                  <div>
-                    <strong>Compliance check</strong>
-                    <small>Protected</small>
-                  </div>
+                  <div id="activityFeed" class="activity-feed"></div>
                 </div>
               </div>
             </div>
@@ -261,7 +252,7 @@
         <button class="dialog-close" id="closeDialog" type="button" aria-label="Close technical walkthrough panel">&times;</button>
         <p class="feature-label">Technical demo</p>
         <h2 id="dialogTitle">See the working product path</h2>
-        <p>Prospect Dominion has a separate technical demo for authenticated API behavior, deployment readiness, branding, seeded workflows, and operator verification.</p>
+        <p>Prospect Dominion includes a live product simulation, workflow verification, and a technical deployment path for authenticated review.</p>
         <div class="dialog-actions">
           <a class="primary-btn dialog-link" href="tester.html">Open tester path</a>
           <button class="secondary-btn" id="dialogWorkflow" type="button">View workflow states</button>
