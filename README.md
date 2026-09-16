@@ -1,34 +1,45 @@
 # Prospect Dominion
 
-Prospect Dominion is the governed AI operating layer for revenue execution.
+### A governed revenue operating layer for teams that need to know where to move next.
 
-It helps GTM teams move from fragmented commercial intelligence to coordinated action: surfacing buying signals, prioritizing accounts, revealing warm paths, and routing controlled outreach with clear human oversight.
+Prospect Dominion turns scattered buying signals into a ranked account queue, a credible relationship path, and a controlled next action.
 
-## What the product does
+**[Open the live demo](https://ou22qui.github.io/Prospect-dominion/)** · **[Explore the product path](https://ou22qui.github.io/Prospect-dominion/tester.html)**
 
-- account prioritization and signal review
-- relationship-aware opportunity tracking
-- workflow orchestration with governance controls
-- deployment-ready customer operating patterns
-- partner-friendly white-label design and rollout support
+## What you can see
 
-## Product posture
+- **Signal intelligence**: identify which accounts deserve attention now.
+- **Account prioritization**: compare intent, stage, score, and buying context.
+- **Relationship paths**: see the people and routes that can make an introduction credible.
+- **Governed execution**: run a signal scan, queue a warm introduction, or approve outreach.
+- **Operational trust**: keep human review in the loop as work moves from signal to action.
 
-Prospect Dominion is not a CRM replacement or a generic AI assistant. It is a trust-first operating layer for revenue teams that need better signal-to-action control without losing governance, oversight, or customer clarity.
+## Try it
 
-## Public-facing materials
+Open the [live demo](https://ou22qui.github.io/Prospect-dominion/) and scroll to **Account command center**.
 
-- [Prospect-Dominion-Product-Brief.md](Prospect-Dominion-Product-Brief.md)
-- [Prospect-Dominion-Customer-One-Pager.md](Prospect-Dominion-Customer-One-Pager.md)
-- [Prospect-Dominion-Commercial-Playbook.md](Prospect-Dominion-Commercial-Playbook.md)
-- [Prospect-Dominion-Pricing-Overview.md](Prospect-Dominion-Pricing-Overview.md)
-- [Prospect-Dominion-Pilot-Overview.md](Prospect-Dominion-Pilot-Overview.md)
-- [Prospect-Dominion-Deployment-Offer.md](Prospect-Dominion-Deployment-Offer.md)
-- [Prospect-Dominion-White-Label-Offer.md](Prospect-Dominion-White-Label-Offer.md)
-- [Prospect-Dominion-Sales-Assets.md](Prospect-Dominion-Sales-Assets.md)
+1. Select an account from the queue.
+2. Switch between expansion, renewal, new-logo, and cross-sell scenarios.
+3. Review the signal, relationship path, and activity stream.
+4. Run a recommended action and watch the account state update.
 
-These materials define the approved customer-facing narrative, pricing posture, pilot path, deployment model, and white-label positioning for Prospect Dominion.
+The demo is a standalone public experience. It uses a curated dataset so it can be opened without credentials or setup.
 
-## Internal note
+## Run locally
 
-Implementation details, local environment configuration, and deployment runtime specifics remain in the repo for internal use and validation. The public-facing materials intentionally emphasize customer value rather than internal architecture.
+```bash
+cd demo
+python -m http.server 8000
+```
+
+Then open `http://127.0.0.1:8000`.
+
+## Public boundary
+
+This repository publishes the customer-facing demo only. Internal product notes, commercial planning, deployment material, and implementation documentation remain outside the public repository.
+
+The public demo is intentionally separate from the full product stack. It demonstrates the operating model and interaction quality without requiring access to private services or customer data.
+
+## License
+
+This repository is a private product demonstration for Prospect Dominion. It is not licensed for reuse, redistribution, or production deployment.
