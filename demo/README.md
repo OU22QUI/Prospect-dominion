@@ -12,16 +12,12 @@ cd demo
 python -m http.server 8000
 ```
 
-Then open:
+Then open the local address shown in the terminal.
 
-```text
-the local server address shown in the terminal
-```
-
-The published tester path is available at `/tester.html` and explains the difference between the credential-free public showcase and the authenticated technical deployment.
+The available public path is `/tester.html`, which presents the product story without exposing backend implementation details.
 
 ## Purpose
-This demo presents the product concept and its value proposition in a polished, operational UI:
+This demo presents the product concept and its value proposition in a polished, customer-safe UI:
 - signal flow,
 - workflow health,
 - account prioritization,
@@ -29,4 +25,4 @@ This demo presents the product concept and its value proposition in a polished, 
 - governance and trust posture.
 
 ## Notes
-This is a product showcase layer, not the actual backend implementation. It is meant to give clients and testers a tangible preview of the operating model without exposing the full codebase or relying on the live internal service stack.
+This is a product showcase layer, not the actual backend implementation. It is designed to give prospects and testers a tangible preview of the operating model while keeping internal architecture and implementation details out of the public-facing experience.
