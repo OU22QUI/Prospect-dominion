@@ -93,6 +93,21 @@ Fresh validation on 2026-09-14:
 
 This confirms the app-layer runtime and Compose deployment are operational for local demos and workflow validation. Use `python scripts/verify_deployment.py` as the current source of truth for a complete deployment check.
 
+## Commercial source of truth
+
+The publicly sellable product layer is documented in the commercial package and sales assets below:
+
+- [Prospect-Dominion-Commercial-Playbook.md](Prospect-Dominion-Commercial-Playbook.md)
+- [Prospect-Dominion-Pricing-Overview.md](Prospect-Dominion-Pricing-Overview.md)
+- [Prospect-Dominion-Pilot-Overview.md](Prospect-Dominion-Pilot-Overview.md)
+- [Prospect-Dominion-Deployment-Offer.md](Prospect-Dominion-Deployment-Offer.md)
+- [Prospect-Dominion-White-Label-Offer.md](Prospect-Dominion-White-Label-Offer.md)
+- [Prospect-Dominion-Sales-Assets.md](Prospect-Dominion-Sales-Assets.md)
+- [Prospect-Dominion-Product-Brief.md](Prospect-Dominion-Product-Brief.md)
+- [Prospect-Dominion-Customer-One-Pager.md](Prospect-Dominion-Customer-One-Pager.md)
+
+These documents define the approved commercial positioning, pricing posture, pilot structure, deployment framing, white-label architecture, and sales-ready product narrative for Prospect Dominion.
+
 ## Notes
 
 This project is now a working local starter for the Prospect Dominion product layer rather than a static doc-only scaffold. It includes a stable local API, SQLite persistence, workflow progression, and dockerized backing services. The default host port for Qdrant is set to 6335 because 6333 is already occupied in many local development environments.
