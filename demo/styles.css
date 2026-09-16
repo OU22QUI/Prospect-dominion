@@ -1,18 +1,19 @@
 :root {
-  --bg: #0f0f0f;
-  --bg-soft: #171717;
-  --panel: rgba(24, 24, 24, 0.9);
-  --panel-strong: #1f1f1f;
-  --panel-border: rgba(184, 184, 184, 0.14);
-  --text: #f1f1f1;
-  --muted: #b8b8b8;
-  --muted-2: #707070;
-  --accent: #e8cc84;
-  --accent-2: #f4e4ba;
-  --primary: #9a762f;
-  --warning: #e8cc84;
-  --danger: #b8b8b8;
-  --shadow: 0 28px 60px rgba(0, 0, 0, 0.42);
+  --bg: #081114;
+  --bg-soft: #0d1a1d;
+  --panel: rgba(13, 28, 31, 0.88);
+  --panel-strong: #14282b;
+  --panel-border: rgba(159, 215, 204, 0.16);
+  --text: #eff7f4;
+  --muted: #a9bbb7;
+  --muted-2: #6f8985;
+  --accent: #e8b86d;
+  --accent-2: #ffe0a5;
+  --primary: #b66d4f;
+  --warning: #e8b86d;
+  --danger: #e68170;
+  --teal: #80d5c2;
+  --shadow: 0 28px 70px rgba(0, 0, 0, 0.32);
 }
 
 * {
@@ -25,11 +26,12 @@ html {
 
 body {
   margin: 0;
-  font-family: "Inter", sans-serif;
+  font-family: "DM Sans", sans-serif;
   background:
-    radial-gradient(circle at top left, rgba(232, 204, 132, 0.16), transparent 18%),
-    radial-gradient(circle at 85% 10%, rgba(154, 118, 47, 0.2), transparent 20%),
-    linear-gradient(180deg, #101010 0%, #181818 100%);
+    linear-gradient(rgba(128, 213, 194, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(128, 213, 194, 0.035) 1px, transparent 1px),
+    linear-gradient(180deg, #081114 0%, #0d1a1d 100%);
+  background-size: 48px 48px, 48px 48px, auto;
   color: var(--text);
 }
 
@@ -55,30 +57,6 @@ button {
   overflow: hidden;
 }
 
-.hero-glow {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.hero-glow-one {
-  width: 560px;
-  height: 560px;
-  top: -120px;
-  right: -80px;
-  background: rgba(232, 204, 132, 0.12);
-}
-
-.hero-glow-two {
-  width: 420px;
-  height: 420px;
-  bottom: 160px;
-  left: -80px;
-  background: rgba(154, 118, 47, 0.14);
-}
-
 .topbar {
   position: relative;
   z-index: 1;
@@ -100,7 +78,8 @@ button {
   place-items: center;
   width: 42px;
   height: 42px;
-  border-radius: 12px;
+  border-radius: 10px;
+  font-family: "Space Grotesk", sans-serif;
   font-weight: 800;
   color: #181818;
   background: linear-gradient(135deg, var(--accent), var(--primary));
@@ -108,6 +87,7 @@ button {
 }
 
 .brand-name {
+  font-family: "Space Grotesk", sans-serif;
   font-weight: 700;
   letter-spacing: -0.03em;
 }
@@ -159,7 +139,8 @@ button {
   margin: 14px 0 18px;
   font-size: clamp(3rem, 5vw, 5.2rem);
   line-height: 0.96;
-  letter-spacing: -0.06em;
+  font-family: "Space Grotesk", sans-serif;
+  letter-spacing: 0;
   max-width: 680px;
 }
 
@@ -357,7 +338,8 @@ button {
 .section-title {
   margin: 12px 0 0;
   font-size: clamp(2rem, 3vw, 3rem);
-  letter-spacing: -0.05em;
+  font-family: "Space Grotesk", sans-serif;
+  letter-spacing: 0;
 }
 
 .feature-grid {
@@ -376,7 +358,7 @@ button {
 .account-detail {
   background: var(--panel);
   border: 1px solid var(--panel-border);
-  border-radius: 24px;
+  border-radius: 10px;
   box-shadow: var(--shadow);
 }
 
@@ -388,7 +370,7 @@ button {
   margin: 12px 0 10px;
   font-size: 1.5rem;
   line-height: 1.25;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
 }
 
 .feature-card p {
@@ -411,7 +393,8 @@ button {
 .panel h3 {
   margin: 10px 0 18px;
   font-size: 1.8rem;
-  letter-spacing: -0.04em;
+  font-family: "Space Grotesk", sans-serif;
+  letter-spacing: 0;
 }
 
 .list-stack {
@@ -508,13 +491,15 @@ button {
 
 .demo-panel {
   margin-top: 24px;
-  padding: 22px;
+  padding: 26px;
+  border-color: rgba(128, 213, 194, 0.24);
 }
 
 .demo-copy h3 {
   margin: 8px 0 18px;
   font-size: 1.9rem;
-  letter-spacing: -0.04em;
+  font-family: "Space Grotesk", sans-serif;
+  letter-spacing: 0;
 }
 
 .scenario-chips {
@@ -549,7 +534,7 @@ button {
 .account-detail {
   background: rgba(15, 15, 15, 0.9);
   border: 1px solid rgba(255,255,255,0.06);
-  padding: 18px;
+  padding: 20px;
 }
 
 .sidebar-header,
@@ -586,7 +571,8 @@ button {
 }
 
 .account-card.active {
-  border-color: rgba(232, 204, 132, 0.7);
+  border-color: var(--teal);
+  box-shadow: inset 3px 0 0 var(--teal);
   transform: translateY(-1px);
 }
 
@@ -644,7 +630,8 @@ button {
 .detail-header h4 {
   margin: 8px 0 0;
   font-size: clamp(1.7rem, 2vw, 2.4rem);
-  letter-spacing: -0.05em;
+  font-family: "Space Grotesk", sans-serif;
+  letter-spacing: 0;
 }
 
 .detail-grid {
@@ -708,6 +695,15 @@ button {
   margin-top: 16px;
 }
 
+.action-feedback {
+  margin-top: 16px;
+  padding: 11px 13px;
+  border-left: 2px solid var(--teal);
+  background: rgba(128, 213, 194, 0.06);
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
 .action-row h5 {
   margin: 8px 0 0;
   font-size: 1.2rem;
@@ -761,7 +757,7 @@ button {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--teal);
   margin-top: 8px;
 }
 
@@ -842,6 +838,7 @@ button {
 
 .demo-dialog h2 {
   margin: 10px 0;
+  font-family: "Space Grotesk", sans-serif;
 }
 
 .demo-dialog p:not(.feature-label) {

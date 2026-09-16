@@ -19,13 +19,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const refreshQueueBtn = document.getElementById('refreshQueue');
   const finalBookDemoBtn = document.getElementById('finalBookDemo');
   const scenarioChips = document.querySelectorAll('.scenario-chip');
+  const actionFeedbackEl = document.getElementById('actionFeedback');
   const summaryEls = {
     trustScore: document.getElementById('trustScore'),
     qualifiedAccounts: document.getElementById('qualifiedAccounts'),
     workflowRuns: document.getElementById('workflowRuns'),
     operatingLeverage: document.getElementById('operatingLeverage'),
     qualificationSpeed: document.getElementById('qualificationSpeed'),
-    warmPaths: document.getElementById('warmPaths')
+    warmPaths: document.getElementById('warmPaths'),
+    heroTrustScore: document.getElementById('heroTrustScore'),
+    heroQualifiedAccounts: document.getElementById('heroQualifiedAccounts'),
+    heroWarmPaths: document.getElementById('heroWarmPaths')
   };
 
   const fallbackAccounts = [
@@ -122,6 +126,9 @@ document.addEventListener('DOMContentLoaded', () => {
     summaryEls.operatingLeverage.textContent = operatingLeverage;
     summaryEls.qualificationSpeed.textContent = `${qualificationSpeed.toFixed(1)}x`;
     summaryEls.warmPaths.textContent = `${warmPaths} active`;
+    summaryEls.heroTrustScore.textContent = trustScore;
+    summaryEls.heroQualifiedAccounts.textContent = qualifiedAccounts;
+    summaryEls.heroWarmPaths.textContent = `${warmPaths} ready`;
   };
 
   const applyDemoState = (payload) => {
@@ -274,6 +281,11 @@ document.addEventListener('DOMContentLoaded', () => {
     account.score = Math.min(99, action.score);
     account.signal = action.signal;
     account.health = 'Healthy';
+    summary.workflowRuns = Number(summary.workflowRuns ?? 237) + 1;
+    hydrateSummary();
+    if (actionFeedbackEl) {
+      actionFeedbackEl.textContent = `${action.label}. ${account.company} is now marked ${account.stage.toLowerCase()}.`;
+    }
 
     renderAccountDetail();
   };
