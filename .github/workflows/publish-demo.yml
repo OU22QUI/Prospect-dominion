@@ -36,10 +36,12 @@ jobs:
           test -s demo/tester.html
           test -s demo/styles.css
           test -s demo/script.js
+          test -s demo/demo-data.json
           test -s demo/README.md
           grep -Fq "One system from signal to action" demo/index.html
           grep -Fq "Book a live product walkthrough" demo/index.html
           grep -Fq "scenarioChips" demo/script.js
+          python -c "import json; json.load(open('demo/demo-data.json', encoding='utf-8'))"
 
   deploy:
     needs: validate

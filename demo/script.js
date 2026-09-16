@@ -19,8 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const refreshQueueBtn = document.getElementById('refreshQueue');
   const finalBookDemoBtn = document.getElementById('finalBookDemo');
   const scenarioChips = document.querySelectorAll('.scenario-chip');
+  const summaryEls = {
+    trustScore: document.getElementById('trustScore'),
+    qualifiedAccounts: document.getElementById('qualifiedAccounts'),
+    workflowRuns: document.getElementById('workflowRuns'),
+    operatingLeverage: document.getElementById('operatingLeverage'),
+    qualificationSpeed: document.getElementById('qualificationSpeed'),
+    warmPaths: document.getElementById('warmPaths')
+  };
 
-  const accounts = [
+  const fallbackAccounts = [
     {
       company: 'Nexa Labs',
       intent: 'Expansion',
@@ -83,7 +91,80 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   ];
 
+  const fallbackSummary = {
+    brand: 'Prospect Dominion',
+    signalCoverage: 31,
+    qualificationSpeed: 2.4,
+    activePaths: 8,
+    healthScore: 96.4,
+    qualifiedAccounts: 148,
+    workflowRuns: 237,
+    operatingLeverage: '3.2x',
+  };
+
+  let accounts = [...fallbackAccounts];
+  let summary = { ...fallbackSummary };
   let selectedIndex = 0;
+
+  const hydrateSummary = () => {
+    if (!summaryEls.trustScore) return;
+
+    const trustScore = Number(summary.healthScore ?? summary.trustScore ?? 96.4).toFixed(1);
+    const qualifiedAccounts = Number(summary.qualifiedAccounts ?? 148);
+    const workflowRuns = Number(summary.workflowRuns ?? 237);
+    const operatingLeverage = summary.operatingLeverage ?? '3.2x';
+    const qualificationSpeed = summary.qualificationSpeed ?? 2.4;
+    const warmPaths = Number(summary.activePaths ?? 8);
+
+    summaryEls.trustScore.textContent = trustScore;
+    summaryEls.qualifiedAccounts.textContent = qualifiedAccounts;
+    summaryEls.workflowRuns.textContent = workflowRuns;
+    summaryEls.operatingLeverage.textContent = operatingLeverage;
+    summaryEls.qualificationSpeed.textContent = `${qualificationSpeed.toFixed(1)}x`;
+    summaryEls.warmPaths.textContent = `${warmPaths} active`;
+  };
+
+  const applyDemoState = (payload) => {
+    const nextSummary = payload?.summary ?? {};
+    const nextAccounts = Array.isArray(payload?.accounts) && payload.accounts.length ? payload.accounts : fallbackAccounts;
+
+    summary = { ...fallbackSummary, ...nextSummary };
+    accounts = nextAccounts.map((account) => ({
+      ...account,
+      activities: Array.isArray(account.activities) ? account.activities : [[ '09:00', `${account.company || 'Account'} is ready for review` ]],
+      relationships: Array.isArray(account.relationships) ? account.relationships : [],
+      health: account.health || 'Healthy',
+    }));
+
+    if (!accounts.length) {
+      accounts = [...fallbackAccounts];
+    }
+
+    hydrateSummary();
+    renderAccountDetail();
+  };
+
+  async function loadDemoState() {
+    const candidates = ['./demo-data.json', './demo/demo-data.json'];
+
+    for (const path of candidates) {
+      try {
+        const response = await fetch(path, { cache: 'no-store' });
+        if (!response.ok) continue;
+
+        const payload = await response.json();
+        if (payload && (Array.isArray(payload.accounts) || payload.summary)) {
+          applyDemoState(payload);
+          return;
+        }
+      } catch (error) {
+        // Fall back to the curated static demo state.
+      }
+    }
+
+    hydrateSummary();
+    renderAccountDetail();
+  }
 
   const scrollToWorkflow = () => {
     if (demoSection) {
@@ -122,7 +203,11 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const renderAccountDetail = () => {
-    const account = accounts[selectedIndex];
+    if (!accounts.length) return;
+
+    const account = accounts[selectedIndex] ?? accounts[0];
+    if (!account) return;
+
     detailCompanyEl.textContent = account.company;
     detailScoreEl.textContent = account.score;
     detailIntentEl.textContent = account.intent;
@@ -135,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
       chip.classList.toggle('active', Number(chip.dataset.scenario) === selectedIndex);
     });
 
-    relationshipMapEl.innerHTML = account.relationships
+    relationshipMapEl.innerHTML = (account.relationships || [])
       .map((person, idx) => `
         <div class="relationship-node">
           <span>${idx + 1}. ${person}</span>
@@ -144,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `)
       .join('');
 
-    activityFeedEl.innerHTML = account.activities
+    activityFeedEl.innerHTML = (account.activities || [])
       .map(([time, text]) => `
         <div class="activity-item">
           <span class="time">${time}</span>
@@ -158,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const performAction = (type) => {
-    const account = accounts[selectedIndex];
+    const account = accounts[selectedIndex] ?? accounts[0];
     const actions = {
       scan: {
         label: 'Signal scan refreshed',
@@ -221,6 +306,9 @@ document.addEventListener('DOMContentLoaded', () => {
     accounts.forEach((account) => {
       account.score = Math.max(80, Math.min(99, account.score + 1));
     });
+    summary.qualifiedAccounts = Math.max(120, Number(summary.qualifiedAccounts ?? 148) + 1);
+    summary.workflowRuns = Number(summary.workflowRuns ?? 237) + 1;
+    hydrateSummary();
     renderAccountDetail();
   });
 
@@ -245,5 +333,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  renderAccountDetail();
+  loadDemoState();
 });
