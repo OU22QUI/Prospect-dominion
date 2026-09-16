@@ -247,6 +247,26 @@ button {
   font-size: 0.76rem;
 }
 
+.buyer-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.buyer-badges span {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid rgba(232, 204, 132, 0.2);
+  background: rgba(232, 204, 132, 0.08);
+  padding: 8px 12px;
+  color: var(--accent-2);
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .hero-card {
   background: linear-gradient(180deg, rgba(30, 30, 30, 0.96), rgba(18, 18, 18, 0.96));
   border: 1px solid var(--panel-border);
