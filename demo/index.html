@@ -65,7 +65,7 @@
           </div>
 
           <aside class="hero-card" aria-label="Live operating state overview">
-            <div class="card-topline"><span class="live-indicator"></span> Live operating state</div>
+            <div class="card-topline"><span class="live-indicator"></span> Operating state preview</div>
             <div class="status-grid">
               <div class="mini-stat">
                 <span class="dot ready"></span>
@@ -208,8 +208,9 @@
 
           <section class="demo-panel" id="demo">
             <div class="demo-copy">
-              <p class="feature-label">Live demo</p>
+              <p class="feature-label">Interactive demo</p>
               <h3>Account command center</h3>
+              <p class="demo-caption">Demo workspace · curated sample data · actions update in this session</p>
             </div>
 
             <div class="scenario-chips" aria-label="Demo scenarios">
@@ -297,11 +298,21 @@
 
       <dialog class="demo-dialog" id="demoDialog" aria-labelledby="dialogTitle">
         <button class="dialog-close" id="closeDialog" type="button" aria-label="Close product walkthrough panel">&times;</button>
-        <p class="feature-label">Product demo</p>
+        <p class="feature-label">Product walkthrough</p>
         <h2 id="dialogTitle">See the operating model in action</h2>
-        <p>Prospect Dominion combines sales intelligence, relationship context, and controlled execution into one governed revenue operating layer.</p>
+        <p>Tell us where your team loses signal today. We’ll use that context to shape a relevant walkthrough.</p>
+        <form class="walkthrough-form" id="walkthroughForm">
+          <label for="requestName">Name</label>
+          <input id="requestName" name="name" autocomplete="name" required />
+          <label for="requestEmail">Work email</label>
+          <input id="requestEmail" name="email" type="email" autocomplete="email" required />
+          <label for="requestRole">Team or role</label>
+          <input id="requestRole" name="role" autocomplete="organization-title" required />
+          <button class="primary-btn" type="submit">Prepare my walkthrough</button>
+          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+        </form>
         <div class="dialog-actions">
-          <a class="primary-btn dialog-link" href="tester.html">Open the product path</a>
+          <a class="secondary-btn dialog-link" href="tester.html">Open the product path</a>
           <button class="secondary-btn" id="dialogWorkflow" type="button">View workflow</button>
         </div>
       </dialog>

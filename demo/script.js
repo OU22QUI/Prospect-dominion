@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const finalBookDemoBtn = document.getElementById('finalBookDemo');
   const scenarioChips = document.querySelectorAll('.scenario-chip');
   const actionFeedbackEl = document.getElementById('actionFeedback');
+  const walkthroughForm = document.getElementById('walkthroughForm');
+  const formStatusEl = document.getElementById('formStatus');
   const summaryEls = {
     trustScore: document.getElementById('trustScore'),
     qualifiedAccounts: document.getElementById('qualifiedAccounts'),
@@ -224,7 +226,9 @@ document.addEventListener('DOMContentLoaded', () => {
     timelineStatusEl.textContent = account.health;
 
     scenarioChips.forEach((chip) => {
-      chip.classList.toggle('active', Number(chip.dataset.scenario) === selectedIndex);
+      const isSelected = Number(chip.dataset.scenario) === selectedIndex;
+      chip.classList.toggle('active', isSelected);
+      chip.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
     });
 
     relationshipMapEl.innerHTML = (account.relationships || [])
@@ -321,6 +325,9 @@ document.addEventListener('DOMContentLoaded', () => {
     summary.qualifiedAccounts = Math.max(120, Number(summary.qualifiedAccounts ?? 148) + 1);
     summary.workflowRuns = Number(summary.workflowRuns ?? 237) + 1;
     hydrateSummary();
+    if (actionFeedbackEl) {
+      actionFeedbackEl.textContent = 'Queue refreshed. Account scores have been re-ranked for this session.';
+    }
     renderAccountDetail();
   });
 
@@ -329,6 +336,23 @@ document.addEventListener('DOMContentLoaded', () => {
       selectedIndex = Number(chip.dataset.scenario);
       renderAccountDetail();
     });
+  });
+
+  walkthroughForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const formData = new FormData(walkthroughForm);
+    const name = String(formData.get('name') || '').trim();
+    const email = String(formData.get('email') || '').trim();
+
+    if (!name || !email) {
+      if (formStatusEl) formStatusEl.textContent = 'Add your name and work email to continue.';
+      return;
+    }
+
+    if (formStatusEl) {
+      formStatusEl.textContent = `Thanks, ${name}. Your request is captured in this demo session for ${email}.`;
+    }
+    walkthroughForm.reset();
   });
 
   finalBookDemoBtn?.addEventListener('click', () => {

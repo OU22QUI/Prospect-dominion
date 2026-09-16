@@ -221,7 +221,10 @@ def health() -> dict[str, str]:
 def ready() -> dict[str, Any]:
     checks = _readiness_checks()
     config = validate_runtime_config()
+    app_env = config["environment"]
     degraded = any(item.get("status") not in {"ok", "unknown"} for item in checks.values())
+    if app_env != "production":
+        degraded = any(checks[name].get("status") not in {"ok", "unknown"} for name in ("api", "database"))
     if config["status"] == "invalid":
         return {
             "status": "degraded",

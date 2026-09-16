@@ -97,7 +97,7 @@ def public_demo_issues(repo_root: Path) -> list[str]:
     forbidden = ("PD_API_KEY", "JWT_SECRET", "LITELLM_MASTER_KEY", "change-me-strong")
     issues: list[str] = []
     demo_root = repo_root / "demo"
-    for required_file in ("index.html", "tester.html", "styles.css", "script.js", "README.md", ".nojekyll"):
+    for required_file in ("index.html", "tester.html", "styles.css", "script.js", "demo-data.json", "README.md", ".nojekyll"):
         if not (demo_root / required_file).is_file():
             issues.append(f"public demo missing required asset:{required_file}")
     for path in demo_root.rglob("*"):

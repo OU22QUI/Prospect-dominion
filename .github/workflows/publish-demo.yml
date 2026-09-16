@@ -6,6 +6,7 @@ on:
     paths:
       - "demo/**"
       - "scripts/validate_customer_config.py"
+      - "scripts/audit_public_demo.py"
       - ".github/workflows/publish-demo.yml"
   workflow_dispatch:
 
@@ -30,6 +31,8 @@ jobs:
           python-version: "3.11"
       - name: Validate public demo
         run: python scripts/validate_customer_config.py --env-file deploy/customer.env.example --check-public-demo
+      - name: Audit public demo
+        run: python scripts/audit_public_demo.py
       - name: Validate required demo assets
         run: |
           test -s demo/index.html

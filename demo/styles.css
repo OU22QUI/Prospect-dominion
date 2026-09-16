@@ -24,6 +24,16 @@ html {
   scroll-behavior: smooth;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
 body {
   margin: 0;
   font-family: "DM Sans", sans-serif;
@@ -45,6 +55,11 @@ button, input, textarea, select {
 
 button {
   cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 3px;
 }
 
 .container {
@@ -249,7 +264,7 @@ button {
 }
 
 .hero-card {
-  background: linear-gradient(180deg, rgba(30, 30, 30, 0.96), rgba(18, 18, 18, 0.96));
+  background: linear-gradient(180deg, rgba(20, 40, 43, 0.96), rgba(10, 25, 28, 0.96));
   border: 1px solid var(--panel-border);
   border-radius: 28px;
   padding: 22px;
@@ -261,6 +276,16 @@ button {
   font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.live-indicator {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: var(--teal);
+  box-shadow: 0 0 0 4px rgba(128, 213, 194, 0.12);
 }
 
 .status-grid {
@@ -500,6 +525,12 @@ button {
   font-size: 1.9rem;
   font-family: "Space Grotesk", sans-serif;
   letter-spacing: 0;
+}
+
+.demo-caption {
+  margin: -10px 0 18px;
+  color: var(--muted-2);
+  font-size: 0.82rem;
 }
 
 .scenario-chips {
@@ -846,6 +877,38 @@ button {
   line-height: 1.7;
 }
 
+.walkthrough-form {
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.walkthrough-form label {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.walkthrough-form input {
+  width: 100%;
+  border: 1px solid rgba(159, 215, 204, 0.2);
+  border-radius: 8px;
+  padding: 11px 12px;
+  color: var(--text);
+  background: rgba(5, 17, 19, 0.72);
+}
+
+.walkthrough-form input:focus {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+
+.form-status {
+  min-height: 24px;
+  margin: 4px 0 0;
+  color: var(--teal) !important;
+  font-size: 0.86rem;
+}
+
 .dialog-close {
   float: right;
   border: 0;
@@ -895,6 +958,12 @@ button {
 
 .tester-grid h2 {
   margin: 12px 0;
+}
+
+.tester-notes h2 {
+  margin: 10px 0 16px;
+  font-family: "Space Grotesk", sans-serif;
+  letter-spacing: 0;
 }
 
 @media (max-width: 900px) {
