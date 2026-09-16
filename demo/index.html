@@ -7,16 +7,13 @@
     <meta name="description" content="Prospect Dominion is a trust-aware AI operating layer for signal-to-action revenue execution." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <a class="skip-link" href="#overview">Skip to product overview</a>
 
     <div class="page-shell">
-      <div class="hero-glow hero-glow-one"></div>
-      <div class="hero-glow hero-glow-two"></div>
-
       <header class="topbar container">
         <div class="brand-wrap" aria-label="Prospect Dominion home">
           <div class="brand-mark">PD</div>
@@ -37,11 +34,10 @@
       <main>
         <section class="container hero-content" id="overview">
           <div class="hero-copy">
-            <p class="eyebrow">Revenue intelligence platform</p>
-            <h1>Turn signal into revenue with a governed AI operating layer.</h1>
+            <p class="eyebrow">Revenue operating system</p>
+            <h1>Know where to move next.</h1>
             <p class="lede">
-              Prospect Dominion gives GTM teams one live operating surface for signal discovery,
-              account prioritization, relationship intelligence, and controlled execution across the entire outbound motion.
+              Prospect Dominion turns scattered buying signals into a ranked account queue, a credible relationship path, and a governed next action.
             </p>
 
             <div class="cta-row">
@@ -56,9 +52,9 @@
             </div>
 
             <div class="proof-strip" aria-label="Customer proof points">
-              <span>31% more signal coverage</span>
-              <span>2.4x faster qualification</span>
-              <span>8 warm paths active</span>
+              <span><b>31%</b> more signal coverage</span>
+              <span><b>2.4x</b> faster qualification</span>
+              <span><b>8</b> warm paths active</span>
             </div>
 
             <div class="buyer-badges" aria-label="Audience fit">
@@ -69,34 +65,34 @@
           </div>
 
           <aside class="hero-card" aria-label="Live operating state overview">
-            <div class="card-topline">Live operating state</div>
+            <div class="card-topline"><span class="live-indicator"></span> Live operating state</div>
             <div class="status-grid">
               <div class="mini-stat">
                 <span class="dot ready"></span>
                 <div>
-                  <label>Signals</label>
-                  <strong>1,284</strong>
+                  <label>Signal coverage</label>
+                  <strong>31%</strong>
                 </div>
               </div>
               <div class="mini-stat">
                 <span class="dot ready"></span>
                 <div>
-                  <label>Accounts</label>
-                  <strong>148</strong>
+                  <label>Qualified accounts</label>
+                  <strong id="heroQualifiedAccounts">148</strong>
                 </div>
               </div>
               <div class="mini-stat">
                 <span class="dot ready"></span>
                 <div>
-                  <label>Recommended actions</label>
-                  <strong>96.4%</strong>
+                  <label>Trust score</label>
+                  <strong id="heroTrustScore">96.4</strong>
                 </div>
               </div>
               <div class="mini-stat">
                 <span class="dot warn"></span>
                 <div>
                   <label>Warm paths</label>
-                  <strong>8 ready</strong>
+                  <strong id="heroWarmPaths">8 ready</strong>
                 </div>
               </div>
             </div>
@@ -276,6 +272,8 @@
                     </div>
                     <button class="primary-btn short-btn" id="runAction" type="button">Run action</button>
                   </div>
+
+                    <div class="action-feedback" id="actionFeedback" role="status" aria-live="polite">Ready for operator input.</div>
 
                   <div class="action-grid">
                     <button class="action-button" data-action="scan" type="button">Run signal scan</button>
