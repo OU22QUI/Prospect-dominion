@@ -23,3 +23,16 @@ _tmp_garage/
 # OS
 .DS_Store
 Thumbs.db
+
+# Public repo boundary: keep internal planning docs local-only
+*.md
+!README.md
+!demo/README.md
+!Prospect-Dominion-Commercial-Playbook.md
+!Prospect-Dominion-Pricing-Overview.md
+!Prospect-Dominion-Pilot-Overview.md
+!Prospect-Dominion-Deployment-Offer.md
+!Prospect-Dominion-White-Label-Offer.md
+!Prospect-Dominion-Sales-Assets.md
+!Prospect-Dominion-Product-Brief.md
+!Prospect-Dominion-Customer-One-Pager.md
