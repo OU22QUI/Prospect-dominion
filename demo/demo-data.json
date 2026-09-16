@@ -1,0 +1,73 @@
+{
+  "summary": {
+    "brand": "Prospect Dominion",
+    "signalCoverage": 31,
+    "qualificationSpeed": 2.4,
+    "activePaths": 8,
+    "healthScore": 96.4,
+    "qualifiedAccounts": 148,
+    "workflowRuns": 237
+  },
+  "accounts": [
+    {
+      "company": "Nexa Labs",
+      "intent": "Expansion",
+      "stage": "Proposal",
+      "score": 94,
+      "signal": "AI platform expansion",
+      "path": "VP Revenue + CTO",
+      "relationships": ["Sarah Lin", "David Wu", "Maya Patel"],
+      "activities": [
+        ["09:18", "Intent signal detected from expansion brief"],
+        ["09:33", "AI ranked account as high-priority opportunity"],
+        ["09:51", "Warm intro path identified to VP Revenue"]
+      ],
+      "health": "Healthy"
+    },
+    {
+      "company": "Harbor Works",
+      "intent": "Renewal",
+      "stage": "Qualification",
+      "score": 89,
+      "signal": "Renewal risk + budget review",
+      "path": "Head of Ops + CFO",
+      "relationships": ["Lena Ortiz", "Omar Bell", "Ari Cole"],
+      "activities": [
+        ["08:42", "Renewal risk model triggered on procurement activity"],
+        ["09:12", "Related org update surfaced in expansion review"],
+        ["09:44", "Follow-up sequence queued for finance stakeholders"]
+      ],
+      "health": "Review"
+    },
+    {
+      "company": "Northstar One",
+      "intent": "New logo",
+      "stage": "Discovery",
+      "score": 86,
+      "signal": "Multi-region rollout requirement",
+      "path": "VP Sales + RevOps",
+      "relationships": ["Jules Price", "Nina Shah", "Leo Grant"],
+      "activities": [
+        ["08:18", "Recent buying signals mapped to rollout initiative"],
+        ["08:55", "Account prioritized for outbound orchestration"],
+        ["09:28", "Partner contact added to outreach board"]
+      ],
+      "health": "Healthy"
+    },
+    {
+      "company": "Lattice Grid",
+      "intent": "Cross-sell",
+      "stage": "Engaged",
+      "score": 91,
+      "signal": "Cross-sell expansion in AI ops",
+      "path": "VP of Growth + Product",
+      "relationships": ["Chris Wade", "Priya Menon", "Maddie Ross"],
+      "activities": [
+        ["07:52", "Cross-sell opportunity validated by product team"],
+        ["08:37", "Sequence generated for multi-threaded engagement"],
+        ["09:10", "Warm intro list updated by relationship graph"]
+      ],
+      "health": "Healthy"
+    }
+  ]
+}
