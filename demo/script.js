@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const activityFeedEl = document.getElementById('activityFeed');
   const timelineStatusEl = document.getElementById('timelineStatus');
   const runActionBtn = document.getElementById('runAction');
+  const undoActionBtn = document.getElementById('undoAction');
   const refreshQueueBtn = document.getElementById('refreshQueue');
   const resetDemoBtn = document.getElementById('resetDemo');
   const shareDemoBtn = document.getElementById('shareDemo');
@@ -125,6 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let selectedIndex = 0;
   let compareIndex = null;
   let guideStep = 0;
+  const actionHistory = [];
   const storageKey = 'prospect-dominion-demo-state-v1';
   const baseConfig = window.PD_DEMO_CONFIG || {};
 
@@ -161,6 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
     selectedIndex = 0;
     compareIndex = null;
     guideStep = 0;
+    actionHistory.length = 0;
     localStorage.removeItem(storageKey);
     track('demo_reset');
     hydrateSummary();
@@ -168,7 +171,17 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSharedScenario();
     renderAccountDetail();
     updateGuide();
+    updateUndoControl();
   };
+
+  const updateUndoControl = () => {
+    if (undoActionBtn) undoActionBtn.disabled = actionHistory.length === 0;
+  };
+
+  const snapshotState = () => ({
+    accounts: JSON.parse(JSON.stringify(accounts)),
+    summary: { ...summary },
+  });
 
   const loadSharedScenario = () => {
     const scenario = Number(new URLSearchParams(window.location.search).get('scenario'));
@@ -266,6 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
     populateFilters();
     renderAccountDetail();
     updateGuide();
+    updateUndoControl();
   };
 
   async function loadDemoState() {
@@ -400,6 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const performAction = (type) => {
     const account = accounts[selectedIndex] ?? accounts[0];
+    actionHistory.push(snapshotState());
     const actions = {
       scan: {
         label: 'Signal scan refreshed',
@@ -438,6 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     saveState();
     track('workflow_action', { action: type, company: account.company, stage: account.stage });
+    updateUndoControl();
     renderAccountDetail();
   };
 
@@ -470,6 +486,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const actionTypes = ['scan', 'intro', 'approve'];
     const next = actionTypes[Math.floor(Math.random() * actionTypes.length)];
     performAction(next);
+  });
+
+  undoActionBtn?.addEventListener('click', () => {
+    const previous = actionHistory.pop();
+    if (!previous) return;
+    accounts = previous.accounts;
+    summary = previous.summary;
+    saveState();
+    track('workflow_undo');
+    if (actionFeedbackEl) actionFeedbackEl.textContent = 'Last workflow change was undone for this session.';
+    updateUndoControl();
+    renderAccountDetail();
   });
 
   refreshQueueBtn?.addEventListener('click', () => {
