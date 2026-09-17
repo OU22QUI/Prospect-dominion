@@ -212,6 +212,18 @@
             </div>
           </section>
 
+          <section class="outcome-section" aria-labelledby="outcomeTitle">
+            <div class="section-header compact-header">
+              <p class="eyebrow">The commercial outcome</p>
+              <h2 class="section-title" id="outcomeTitle">From scattered signals to a confident next move.</h2>
+            </div>
+            <div class="outcome-grid">
+              <article class="outcome-card"><span>01</span><h3>See the account</h3><p>Bring intent, context, stage, and relationship paths into one view.</p></article>
+              <article class="outcome-card"><span>02</span><h3>Choose the motion</h3><p>Make the recommended action legible before a rep or operator commits.</p></article>
+              <article class="outcome-card"><span>03</span><h3>Keep control</h3><p>Move faster without turning sensitive outreach into an opaque automation.</p></article>
+            </div>
+          </section>
+
           <section class="demo-panel" id="demo">
             <div class="demo-copy">
               <p class="feature-label">Interactive demo</p>
@@ -302,7 +314,10 @@
                       <p class="mini-label">Workflow engine</p>
                       <h5>Recommended next action</h5>
                     </div>
-                    <button class="primary-btn short-btn" id="runAction" type="button">Run action</button>
+                    <div class="action-controls">
+                      <button class="secondary-btn short-btn" id="undoAction" type="button" disabled>Undo</button>
+                      <button class="primary-btn short-btn" id="runAction" type="button">Run action</button>
+                    </div>
                   </div>
 
                     <div class="action-feedback" id="actionFeedback" role="status" aria-live="polite">Ready for operator input.</div>
