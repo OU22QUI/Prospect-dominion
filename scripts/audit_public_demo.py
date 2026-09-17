@@ -12,7 +12,7 @@ DEMO_ROOT = REPO_ROOT / "demo"
 REQUIRED_FILES = ("index.html", "tester.html", "styles.css", "config.js", "script.js", "demo-data.json", "favicon.svg", "og-preview.svg", "README.md", ".nojekyll")
 FORBIDDEN_MARKERS = ("PD_API_KEY", "JWT_SECRET", "LITELLM_MASTER_KEY", "change-me-strong", "localhost:", "127.0.0.1")
 REQUIRED_IDS = ("accountList", "detailCompany", "runAction", "undoAction", "scoreFactors", "recommendedAction", "walkthroughForm", "formStatus", "guideStrip", "resetDemo", "accountSearch", "stageFilter", "intentFilter")
-REQUIRED_ROUTES = ("demo/index.html", "pricing/index.html", "partners/index.html", "tester.html")
+REQUIRED_ROUTES = ("demo/index.html", "pricing/index.html", "partners/index.html", "faq/index.html", "tester.html")
 FORBIDDEN_PUBLIC_CLAIMS = ("AI operating layer", "AI-assisted", "AI ranked", "real-time intelligence", "Book a live product walkthrough")
 
 

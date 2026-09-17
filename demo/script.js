@@ -131,6 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const actionHistory = [];
   const storageKey = 'prospect-dominion-demo-state-v1';
   const baseConfig = window.PD_DEMO_CONFIG || {};
+  const leadStorageKey = 'prospect-dominion-demo-leads-v1';
 
   const track = (eventName, details = {}) => {
     const event = { eventName, details, timestamp: new Date().toISOString() };
@@ -585,6 +586,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (formStatusEl) {
       formStatusEl.textContent = `Thanks, ${name}. Your request is captured in this demo session for ${email}.`;
     }
+    try {
+      const leads = JSON.parse(localStorage.getItem(leadStorageKey) || '[]');
+      leads.push({ ...Object.fromEntries(formData.entries()), capturedAt: new Date().toISOString() });
+      localStorage.setItem(leadStorageKey, JSON.stringify(leads.slice(-10)));
+    } catch (error) {
+      // Local capture is optional in restricted browser contexts.
+    }
     track('walkthrough_request', { role: formData.get('role') || 'unknown' });
     if (baseConfig.requestEndpoint) {
       fetch(baseConfig.requestEndpoint, {
@@ -594,6 +602,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }).catch(() => {
         if (formStatusEl) formStatusEl.textContent = 'Your request is saved locally. We could not reach the configured follow-up service.';
       });
+    }
+    if (baseConfig.bookingUrl && formStatusEl) {
+      const bookingLink = document.createElement('a');
+      bookingLink.href = baseConfig.bookingUrl;
+      bookingLink.target = '_blank';
+      bookingLink.rel = 'noreferrer';
+      bookingLink.className = 'form-booking-link';
+      bookingLink.textContent = 'Choose a walkthrough time';
+      formStatusEl.append(' ', bookingLink);
     }
     walkthroughForm.reset();
   });

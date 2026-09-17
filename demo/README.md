@@ -29,7 +29,8 @@ Public paths:
 ```js
 window.PD_DEMO_CONFIG = {
 	requestEndpoint: "https://example.com/demo-request",
-	analyticsEndpoint: "https://example.com/demo-events"
+	analyticsEndpoint: "https://example.com/demo-events",
+	bookingUrl: "https://example.com/book"
 };
 ```
 
