@@ -547,6 +547,48 @@ button {
   line-height: 1.7;
 }
 
+.deployment-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: end;
+  margin-top: 34px;
+  padding: 26px 22px;
+  border: 1px solid rgba(232, 184, 109, 0.22);
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(232, 184, 109, 0.08), rgba(128, 213, 194, 0.04));
+}
+
+.deployment-copy {
+  max-width: 580px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.deployment-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.deployment-options div {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 14px 12px;
+  border-left: 2px solid var(--accent);
+  background: rgba(5, 17, 19, 0.4);
+}
+
+.deployment-options strong {
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.deployment-options span {
+  color: var(--muted-2);
+  font-size: 0.76rem;
+}
+
 .demo-panel {
   margin-top: 24px;
   padding: 26px;
@@ -1056,6 +1098,13 @@ button {
   font-size: 0.86rem;
 }
 
+.form-note {
+  margin: 4px 0 0;
+  color: var(--muted-2) !important;
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
 .dialog-close {
   float: right;
   border: 0;
@@ -1129,6 +1178,10 @@ button {
   }
 
   .outcome-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .deployment-panel {
     grid-template-columns: 1fr;
   }
 
