@@ -44,8 +44,12 @@ jobs:
           test -s demo/og-preview.svg
           test -s demo/demo-data.json
           test -s demo/README.md
-          grep -Fq "One system from signal to action" demo/index.html
-          grep -Fq "Book a live product walkthrough" demo/index.html
+          test -s demo/demo/index.html
+          test -s demo/pricing/index.html
+          test -s demo/partners/index.html
+          grep -Fq "Owned signal-to-action layer" demo/index.html
+          grep -Fq "Book a walkthrough" demo/index.html
+          grep -Fq "Simulation" demo/demo/index.html
           grep -Fq "scenarioChips" demo/script.js
           python -c "import json; json.load(open('demo/demo-data.json', encoding='utf-8'))"
 

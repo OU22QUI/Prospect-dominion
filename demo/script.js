@@ -55,12 +55,12 @@ document.addEventListener('DOMContentLoaded', () => {
       intent: 'Expansion',
       stage: 'Proposal',
       score: 94,
-      signal: 'AI platform expansion',
+      signal: 'Platform expansion initiative',
       path: 'VP Revenue + CTO',
       relationships: ['Sarah Lin', 'David Wu', 'Maya Patel'],
       activities: [
         ['09:18', 'Intent signal detected from expansion brief'],
-        ['09:33', 'AI ranked account as high-priority opportunity'],
+        ['09:33', 'Rule-based prioritisation marked account high priority'],
         ['09:51', 'Warm intro path identified to VP Revenue'],
       ],
       health: 'Healthy'
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
       intent: 'Cross-sell',
       stage: 'Engaged',
       score: 91,
-      signal: 'Cross-sell expansion in AI ops',
+      signal: 'Cross-sell expansion in operations',
       path: 'VP of Growth + Product',
       relationships: ['Chris Wade', 'Priya Menon', 'Maddie Ross'],
       activities: [
