@@ -166,7 +166,11 @@ document.addEventListener('DOMContentLoaded', () => {
     compareIndex = null;
     guideStep = 0;
     actionHistory.length = 0;
-    localStorage.removeItem(storageKey);
+    try {
+      localStorage.removeItem(storageKey);
+    } catch (error) {
+      // Persistence is optional in restricted browser contexts.
+    }
     track('demo_reset');
     hydrateSummary();
     populateFilters();
@@ -281,6 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSharedScenario();
     hydrateSummary();
     populateFilters();
+    loadSharedScenario();
     renderAccountDetail();
     updateGuide();
     updateUndoControl();
@@ -428,19 +433,22 @@ document.addEventListener('DOMContentLoaded', () => {
         label: 'Signal scan refreshed',
         stage: 'Signals updated',
         score: account.score + 2,
-        signal: 'new buying signal surfaced'
+        signal: 'new buying signal surfaced',
+        nextRecommendation: 'Queue warm intro'
       },
       intro: {
         label: 'Warm intro queued',
         stage: 'Intro sequence queued',
         score: account.score + 3,
-        signal: 'warm-intro opportunity activated'
+        signal: 'warm-intro opportunity activated',
+        nextRecommendation: 'Approve outreach'
       },
       approve: {
         label: 'Outreach approved',
         stage: 'Approved for outreach',
         score: account.score + 4,
-        signal: 'outreach approved by governance layer'
+        signal: 'outreach approved by governance layer',
+        nextRecommendation: 'Review outcome'
       }
     };
 
@@ -452,6 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
     account.stage = action.stage;
     account.score = Math.min(99, action.score);
     account.signal = action.signal;
+    account.recommendedAction = action.nextRecommendation;
     account.health = 'Healthy';
     summary.workflowRuns = Number(summary.workflowRuns ?? 237) + 1;
     hydrateSummary();
@@ -497,6 +506,11 @@ document.addEventListener('DOMContentLoaded', () => {
       'Approve outreach': 'approve',
     };
     const account = accounts[selectedIndex] ?? accounts[0];
+    if (account?.recommendedAction === 'Review outcome') {
+      if (actionFeedbackEl) actionFeedbackEl.textContent = `Outcome review is ready for ${account.company}.`;
+      track('outcome_review', { company: account.company });
+      return;
+    }
     const next = actionMap[account?.recommendedAction] || 'scan';
     performAction(next);
   });
