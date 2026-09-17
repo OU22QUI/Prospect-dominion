@@ -4,7 +4,7 @@
 
 Prospect Dominion helps revenue teams turn scattered buying signals into a ranked account queue, a credible relationship path, and a controlled next action.
 
-**[Open the live demo](https://ou22qui.github.io/Prospect-dominion/)** · **[Explore the product path](https://ou22qui.github.io/Prospect-dominion/tester.html)**
+**[Open the live demo](https://ou22qui.github.io/Prospect-dominion/)** · **[Explore the simulation](https://ou22qui.github.io/Prospect-dominion/demo/)** · **[See pricing](https://ou22qui.github.io/Prospect-dominion/pricing/)** · **[Technical evaluation](https://ou22qui.github.io/Prospect-dominion/tester.html)**
 
 ## Start here
 
@@ -35,7 +35,7 @@ Your changes are stored in your browser for the current demo workspace. No custo
 
 ## Walkthrough request
 
-Select **Book a live product walkthrough** in the demo to open the request form. Add your name, work email, role, company, and primary use case.
+Select **Book a walkthrough** in the demo to open the request form. Add your name, work email, role, company, and primary use case.
 
 The public demo confirms the request locally. To connect the form to your own follow-up service, configure `demo/config.js` with a public HTTPS endpoint:
 
@@ -77,6 +77,8 @@ python -m pytest -q
 - **Demo**: share the hosted GitHub Pages experience.
 - **Pilot**: use the interactive path to align a focused workflow with a revenue team.
 - **Private deployment**: connect the operating model to a controlled customer environment.
+
+See the [full pricing page](https://ou22qui.github.io/Prospect-dominion/pricing/) for the $4,500 fixed pilot, deployment pricing, and the partner model.
 
 ## Support
 
