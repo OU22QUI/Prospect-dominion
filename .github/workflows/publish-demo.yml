@@ -42,6 +42,8 @@ jobs:
           test -s demo/config.js
           test -s demo/favicon.svg
           test -s demo/og-preview.svg
+          test -s demo/robots.txt
+          test -s demo/sitemap.xml
           test -s demo/demo-data.json
           test -s demo/README.md
           test -s demo/demo/index.html
