@@ -39,6 +39,9 @@ jobs:
           test -s demo/tester.html
           test -s demo/styles.css
           test -s demo/script.js
+          test -s demo/config.js
+          test -s demo/favicon.svg
+          test -s demo/og-preview.svg
           test -s demo/demo-data.json
           test -s demo/README.md
           grep -Fq "One system from signal to action" demo/index.html

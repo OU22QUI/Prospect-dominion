@@ -9,9 +9,9 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEMO_ROOT = REPO_ROOT / "demo"
-REQUIRED_FILES = ("index.html", "tester.html", "styles.css", "script.js", "demo-data.json", "README.md", ".nojekyll")
+REQUIRED_FILES = ("index.html", "tester.html", "styles.css", "config.js", "script.js", "demo-data.json", "favicon.svg", "og-preview.svg", "README.md", ".nojekyll")
 FORBIDDEN_MARKERS = ("PD_API_KEY", "JWT_SECRET", "LITELLM_MASTER_KEY", "change-me-strong", "localhost:", "127.0.0.1")
-REQUIRED_IDS = ("accountList", "detailCompany", "runAction", "walkthroughForm", "formStatus")
+REQUIRED_IDS = ("accountList", "detailCompany", "runAction", "walkthroughForm", "formStatus", "guideStrip", "resetDemo", "accountSearch", "stageFilter", "intentFilter")
 
 
 class AssetParser(HTMLParser):

@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Prospect Dominion</title>
     <meta name="description" content="Prospect Dominion is a trust-aware AI operating layer for signal-to-action revenue execution." />
+    <meta property="og:title" content="Prospect Dominion | Know where to move next" />
+    <meta property="og:description" content="See how buying signals become ranked accounts, credible relationship paths, and governed next actions." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ou22qui.github.io/Prospect-dominion/" />
+    <meta property="og:image" content="https://ou22qui.github.io/Prospect-dominion/og-preview.svg" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
@@ -52,9 +58,9 @@
             </div>
 
             <div class="proof-strip" aria-label="Customer proof points">
-              <span><b>31%</b> more signal coverage</span>
-              <span><b>2.4x</b> faster qualification</span>
-              <span><b>8</b> warm paths active</span>
+              <span><b>31%</b> demo benchmark: signal coverage</span>
+              <span><b>2.4x</b> demo benchmark: qualification speed</span>
+              <span><b>8</b> sample warm paths active</span>
             </div>
 
             <div class="buyer-badges" aria-label="Audience fit">
@@ -213,6 +219,11 @@
               <p class="demo-caption">Demo workspace · curated sample data · actions update in this session</p>
             </div>
 
+            <div class="guide-strip" id="guideStrip" aria-live="polite">
+              <div><span class="guide-step" id="guideStep">01</span><strong id="guideTitle">Choose an account</strong><span id="guideCopy">Start with the highest-priority account in the queue.</span></div>
+              <button class="secondary-btn guide-button" id="guideNext" type="button">Next step</button>
+            </div>
+
             <div class="scenario-chips" aria-label="Demo scenarios">
               <button class="scenario-chip active" data-scenario="0" type="button">Expansion</button>
               <button class="scenario-chip" data-scenario="1" type="button">Renewal</button>
@@ -224,7 +235,21 @@
               <aside class="account-sidebar">
                 <div class="sidebar-header">
                   <span class="eyebrow">Queue</span>
-                  <button class="sidebar-button" id="refreshQueue" type="button">Refresh</button>
+                  <div class="sidebar-actions">
+                      <button class="sidebar-button" id="shareDemo" type="button">Share</button>
+                      <button class="sidebar-button" id="resetDemo" type="button">Reset</button>
+                    <button class="sidebar-button" id="refreshQueue" type="button">Refresh</button>
+                  </div>
+                </div>
+                <label class="sr-only" for="accountSearch">Search accounts</label>
+                <input class="queue-search" id="accountSearch" type="search" placeholder="Search accounts" />
+                <div class="queue-filters" aria-label="Account filters">
+                  <select id="stageFilter" aria-label="Filter by stage">
+                    <option value="all">All stages</option>
+                  </select>
+                  <select id="intentFilter" aria-label="Filter by intent">
+                    <option value="all">All intents</option>
+                  </select>
                 </div>
                 <div id="accountList" class="account-list"></div>
               </aside>
@@ -257,12 +282,18 @@
                       <span>Decision path</span>
                       <strong id="detailPath">VP Revenue + CTO</strong>
                     </div>
+                    <div class="score-explanation" id="scoreExplanation" aria-live="polite"></div>
                   </div>
 
                   <div class="detail-card">
                     <p class="mini-label">Relationship map</p>
                     <div id="relationshipMap" class="relationship-map"></div>
                   </div>
+                </div>
+
+                <div class="compare-bar" id="compareBar">
+                  <span id="compareLabel">Select another account to compare.</span>
+                  <button class="secondary-btn" id="clearCompare" type="button">Clear comparison</button>
                 </div>
 
                 <div class="detail-card action-card">
@@ -308,6 +339,16 @@
           <input id="requestEmail" name="email" type="email" autocomplete="email" required />
           <label for="requestRole">Team or role</label>
           <input id="requestRole" name="role" autocomplete="organization-title" required />
+          <label for="requestCompany">Company</label>
+          <input id="requestCompany" name="company" autocomplete="organization" required />
+          <label for="requestUseCase">Primary use case</label>
+          <select id="requestUseCase" name="useCase" required>
+            <option value="">Choose one</option>
+            <option>Account prioritization</option>
+            <option>Relationship intelligence</option>
+            <option>Governed outbound execution</option>
+            <option>Partner or white-label deployment</option>
+          </select>
           <button class="primary-btn" type="submit">Prepare my walkthrough</button>
           <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
         </form>
@@ -336,6 +377,7 @@
       </footer>
     </div>
 
+    <script src="config.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

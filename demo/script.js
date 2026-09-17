@@ -17,6 +17,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const timelineStatusEl = document.getElementById('timelineStatus');
   const runActionBtn = document.getElementById('runAction');
   const refreshQueueBtn = document.getElementById('refreshQueue');
+  const resetDemoBtn = document.getElementById('resetDemo');
+  const shareDemoBtn = document.getElementById('shareDemo');
+  const accountSearchEl = document.getElementById('accountSearch');
+  const stageFilterEl = document.getElementById('stageFilter');
+  const intentFilterEl = document.getElementById('intentFilter');
+  const compareLabelEl = document.getElementById('compareLabel');
+  const clearCompareBtn = document.getElementById('clearCompare');
+  const scoreExplanationEl = document.getElementById('scoreExplanation');
+  const guideStepEl = document.getElementById('guideStep');
+  const guideTitleEl = document.getElementById('guideTitle');
+  const guideCopyEl = document.getElementById('guideCopy');
+  const guideNextBtn = document.getElementById('guideNext');
   const finalBookDemoBtn = document.getElementById('finalBookDemo');
   const scenarioChips = document.querySelectorAll('.scenario-chip');
   const actionFeedbackEl = document.getElementById('actionFeedback');
@@ -111,6 +123,105 @@ document.addEventListener('DOMContentLoaded', () => {
   let accounts = [...fallbackAccounts];
   let summary = { ...fallbackSummary };
   let selectedIndex = 0;
+  let compareIndex = null;
+  let guideStep = 0;
+  const storageKey = 'prospect-dominion-demo-state-v1';
+  const baseConfig = window.PD_DEMO_CONFIG || {};
+
+  const track = (eventName, details = {}) => {
+    const event = { eventName, details, timestamp: new Date().toISOString() };
+    try {
+      const events = JSON.parse(sessionStorage.getItem('pd-demo-events') || '[]');
+      events.push(event);
+      sessionStorage.setItem('pd-demo-events', JSON.stringify(events.slice(-50)));
+    } catch (error) {
+      // Analytics must never block the demo.
+    }
+    if (baseConfig.analyticsEndpoint) {
+      fetch(baseConfig.analyticsEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(event),
+        keepalive: true,
+      }).catch(() => {});
+    }
+  };
+
+  const saveState = () => {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify({ accounts, summary }));
+    } catch (error) {
+      // Persistence is optional in restricted browser contexts.
+    }
+  };
+
+  const resetState = () => {
+    accounts = fallbackAccounts.map((account) => ({ ...account, relationships: [...account.relationships], activities: account.activities.map((activity) => [...activity]) }));
+    summary = { ...fallbackSummary };
+    selectedIndex = 0;
+    compareIndex = null;
+    guideStep = 0;
+    localStorage.removeItem(storageKey);
+    track('demo_reset');
+    hydrateSummary();
+    populateFilters();
+    loadSharedScenario();
+    renderAccountDetail();
+    updateGuide();
+  };
+
+  const loadSharedScenario = () => {
+    const scenario = Number(new URLSearchParams(window.location.search).get('scenario'));
+    if (Number.isInteger(scenario) && scenario >= 0 && scenario < accounts.length) {
+      selectedIndex = scenario;
+      track('shared_scenario_open', { scenario });
+    }
+  };
+
+  const restoreState = () => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
+      if (saved?.accounts?.length) {
+        accounts = saved.accounts;
+        summary = { ...fallbackSummary, ...(saved.summary || {}) };
+      }
+    } catch (error) {
+      localStorage.removeItem(storageKey);
+    }
+  };
+
+  const filteredAccounts = () => {
+    const query = (accountSearchEl?.value || '').trim().toLowerCase();
+    const stage = stageFilterEl?.value || 'all';
+    const intent = intentFilterEl?.value || 'all';
+    return accounts
+      .map((account, index) => ({ account, index }))
+      .filter(({ account }) => {
+        const haystack = `${account.company} ${account.signal} ${account.intent}`.toLowerCase();
+        return (!query || haystack.includes(query)) && (stage === 'all' || account.stage === stage) && (intent === 'all' || account.intent === intent);
+      });
+  };
+
+  const populateFilters = () => {
+    if (!stageFilterEl || !intentFilterEl) return;
+    const stages = [...new Set(accounts.map((account) => account.stage))].sort();
+    const intents = [...new Set(accounts.map((account) => account.intent))].sort();
+    stageFilterEl.innerHTML = '<option value="all">All stages</option>' + stages.map((value) => `<option value="${value}">${value}</option>`).join('');
+    intentFilterEl.innerHTML = '<option value="all">All intents</option>' + intents.map((value) => `<option value="${value}">${value}</option>`).join('');
+  };
+
+  const updateGuide = () => {
+    const steps = [
+      ['01', 'Choose an account', 'Start with the highest-priority account in the queue.'],
+      ['02', 'Understand the signal', 'Review the buying context and explainable score.'],
+      ['03', 'Take a governed action', 'Run a signal scan, queue an intro, or approve outreach.'],
+    ];
+    const [number, title, copy] = steps[guideStep];
+    guideStepEl.textContent = number;
+    guideTitleEl.textContent = title;
+    guideCopyEl.textContent = copy;
+    guideNextBtn.textContent = guideStep === steps.length - 1 ? 'Restart guide' : 'Next step';
+  };
 
   const hydrateSummary = () => {
     if (!summaryEls.trustScore) return;
@@ -149,8 +260,12 @@ document.addEventListener('DOMContentLoaded', () => {
       accounts = [...fallbackAccounts];
     }
 
+    restoreState();
+    loadSharedScenario();
     hydrateSummary();
+    populateFilters();
     renderAccountDetail();
+    updateGuide();
   };
 
   async function loadDemoState() {
@@ -172,7 +287,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     hydrateSummary();
+    populateFilters();
     renderAccountDetail();
+    updateGuide();
   }
 
   const scrollToWorkflow = () => {
@@ -184,11 +301,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const renderAccounts = () => {
     if (!accountListEl) return;
 
-    accountListEl.innerHTML = accounts
-      .map((account, index) => {
+    const visibleAccounts = filteredAccounts();
+    accountListEl.innerHTML = visibleAccounts
+      .map(({ account, index }) => {
         const isActive = index === selectedIndex;
         return `
-          <button class="account-card ${isActive ? 'active' : ''}" type="button" data-index="${index}">
+          <div class="account-card ${isActive ? 'active' : ''}" role="button" tabindex="0" data-index="${index}">
             <div class="account-card-header">
               <h5>${account.company}</h5>
               <span class="score-pill">${account.score}</span>
@@ -196,16 +314,31 @@ document.addEventListener('DOMContentLoaded', () => {
             <p>${account.intent} · ${account.stage}</p>
             <div class="card-meta">
               <span>${account.signal}</span>
-              <span>${account.health}</span>
+              <span>${account.health} · <button class="compare-button" type="button" data-compare="${index}">${compareIndex === index ? 'Comparing' : 'Compare'}</button></span>
             </div>
-          </button>
+          </div>
         `;
       })
       .join('');
 
-    accountListEl.querySelectorAll('.account-card').forEach((button) => {
-      button.addEventListener('click', () => {
-        selectedIndex = Number(button.dataset.index);
+    accountListEl.querySelectorAll('.account-card').forEach((card) => {
+      card.addEventListener('click', () => {
+        selectedIndex = Number(card.dataset.index);
+        track('account_select', { company: accounts[selectedIndex]?.company });
+        renderAccountDetail();
+      });
+      card.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          card.click();
+        }
+      });
+    });
+    accountListEl.querySelectorAll('.compare-button').forEach((button) => {
+      button.addEventListener('click', (event) => {
+        event.stopPropagation();
+        compareIndex = Number(button.dataset.compare);
+        track('account_compare', { selected: accounts[selectedIndex]?.company, compared: accounts[compareIndex]?.company });
         renderAccountDetail();
       });
     });
@@ -224,6 +357,18 @@ document.addEventListener('DOMContentLoaded', () => {
     detailSignalEl.textContent = account.signal;
     detailPathEl.textContent = account.path;
     timelineStatusEl.textContent = account.health;
+
+    const signalWeight = account.intent === 'Expansion' || account.intent === 'Cross-sell' ? 'High commercial urgency' : 'Active buying motion';
+    const relationshipWeight = account.relationships?.length >= 3 ? 'Three relevant paths identified' : 'Relationship path developing';
+    const scoreReason = `Score ${account.score} · ${signalWeight} · ${relationshipWeight}.`;
+    scoreExplanationEl.textContent = scoreReason;
+
+    if (compareIndex !== null && accounts[compareIndex] && compareIndex !== selectedIndex) {
+      const compared = accounts[compareIndex];
+      compareLabelEl.textContent = `${account.company} (${account.score}) vs ${compared.company} (${compared.score}) · ${account.score >= compared.score ? account.company : compared.company} is currently prioritized.`;
+    } else {
+      compareLabelEl.textContent = 'Select another account to compare.';
+    }
 
     scenarioChips.forEach((chip) => {
       const isSelected = Number(chip.dataset.scenario) === selectedIndex;
@@ -291,10 +436,19 @@ document.addEventListener('DOMContentLoaded', () => {
       actionFeedbackEl.textContent = `${action.label}. ${account.company} is now marked ${account.stage.toLowerCase()}.`;
     }
 
+    saveState();
+    track('workflow_action', { action: type, company: account.company, stage: account.stage });
     renderAccountDetail();
   };
 
   viewWorkflow?.addEventListener('click', scrollToWorkflow);
+  guideNextBtn?.addEventListener('click', () => {
+    guideStep = (guideStep + 1) % 3;
+    updateGuide();
+    track('guide_step', { step: guideStep + 1 });
+    if (guideStep === 1) renderAccountDetail();
+    if (guideStep === 2) document.getElementById('runAction')?.focus();
+  });
   dialogWorkflow?.addEventListener('click', () => {
     dialog?.close();
     scrollToWorkflow();
@@ -328,8 +482,32 @@ document.addEventListener('DOMContentLoaded', () => {
     if (actionFeedbackEl) {
       actionFeedbackEl.textContent = 'Queue refreshed. Account scores have been re-ranked for this session.';
     }
+    saveState();
+    track('queue_refresh');
     renderAccountDetail();
   });
+
+  resetDemoBtn?.addEventListener('click', resetState);
+  shareDemoBtn?.addEventListener('click', async () => {
+    const shareUrl = `${window.location.origin}${window.location.pathname}?scenario=${selectedIndex}`;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      if (actionFeedbackEl) actionFeedbackEl.textContent = 'Scenario link copied. Share this account command-center view.';
+    } catch (error) {
+      if (actionFeedbackEl) actionFeedbackEl.textContent = shareUrl;
+    }
+    track('scenario_share', { scenario: selectedIndex });
+  });
+  clearCompareBtn?.addEventListener('click', () => {
+    compareIndex = null;
+    renderAccountDetail();
+  });
+  accountSearchEl?.addEventListener('input', () => {
+    track('account_search', { query: accountSearchEl.value });
+    renderAccounts();
+  });
+  stageFilterEl?.addEventListener('change', renderAccounts);
+  intentFilterEl?.addEventListener('change', renderAccounts);
 
   scenarioChips.forEach((chip) => {
     chip.addEventListener('click', () => {
@@ -351,6 +529,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (formStatusEl) {
       formStatusEl.textContent = `Thanks, ${name}. Your request is captured in this demo session for ${email}.`;
+    }
+    track('walkthrough_request', { role: formData.get('role') || 'unknown' });
+    if (baseConfig.requestEndpoint) {
+      fetch(baseConfig.requestEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(formData.entries())),
+      }).catch(() => {
+        if (formStatusEl) formStatusEl.textContent = 'Your request is saved locally. We could not reach the configured follow-up service.';
+      });
     }
     walkthroughForm.reset();
   });
