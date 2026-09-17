@@ -578,6 +578,34 @@ button {
   gap: 10px;
 }
 
+.sidebar-actions,
+.queue-filters {
+  display: flex;
+  gap: 8px;
+}
+
+.queue-search,
+.queue-filters select {
+  width: 100%;
+  border: 1px solid rgba(159, 215, 204, 0.16);
+  border-radius: 8px;
+  padding: 9px 10px;
+  color: var(--text);
+  background: rgba(5, 17, 19, 0.72);
+}
+
+.queue-search {
+  margin-top: 16px;
+}
+
+.queue-filters {
+  margin-top: 8px;
+}
+
+.queue-filters select {
+  min-width: 0;
+}
+
 .sidebar-button {
   border-radius: 10px;
   border: 1px solid rgba(255,255,255,0.08);
@@ -599,6 +627,19 @@ button {
   border-radius: 18px;
   padding: 14px 12px;
   transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.account-card:hover {
+  border-color: rgba(128, 213, 194, 0.45);
+}
+
+.compare-button {
+  border: 0;
+  padding: 0;
+  color: var(--teal);
+  background: transparent;
+  font-size: inherit;
+  text-decoration: underline;
 }
 
 .account-card.active {
@@ -701,6 +742,16 @@ button {
   text-align: right;
 }
 
+.score-explanation {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-left: 2px solid var(--accent);
+  color: var(--muted);
+  background: rgba(232, 184, 109, 0.06);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
 .relationship-map {
   display: flex;
   flex-direction: column;
@@ -724,6 +775,50 @@ button {
 
 .action-card {
   margin-top: 16px;
+}
+
+.compare-bar,
+.guide-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid rgba(128, 213, 194, 0.16);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--muted);
+  background: rgba(128, 213, 194, 0.045);
+}
+
+.compare-bar {
+  margin-top: 16px;
+  font-size: 0.84rem;
+}
+
+.guide-strip {
+  margin: 18px 0;
+}
+
+.guide-strip > div {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.guide-step {
+  color: var(--accent);
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+}
+
+.guide-strip strong {
+  color: var(--text);
+}
+
+.guide-button {
+  flex: 0 0 auto;
+  padding: 9px 12px;
 }
 
 .action-feedback {
@@ -889,6 +984,15 @@ button {
 }
 
 .walkthrough-form input {
+  width: 100%;
+  border: 1px solid rgba(159, 215, 204, 0.2);
+  border-radius: 8px;
+  padding: 11px 12px;
+  color: var(--text);
+  background: rgba(5, 17, 19, 0.72);
+}
+
+.walkthrough-form select {
   width: 100%;
   border: 1px solid rgba(159, 215, 204, 0.2);
   border-radius: 8px;
