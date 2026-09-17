@@ -827,6 +827,16 @@ button {
   line-height: 1.5;
 }
 
+.score-factors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 12px 0 0;
+  padding: 0 0 0 16px;
+  color: var(--muted-2);
+  font-size: 0.78rem;
+}
+
 .relationship-map {
   display: flex;
   flex-direction: column;
