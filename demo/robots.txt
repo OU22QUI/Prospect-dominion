@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ou22qui.github.io/Prospect-dominion/sitemap.xml
