@@ -47,6 +47,7 @@ jobs:
           test -s demo/demo/index.html
           test -s demo/pricing/index.html
           test -s demo/partners/index.html
+          test -s demo/faq/index.html
           grep -Fq "Owned signal-to-action layer" demo/index.html
           grep -Fq "Book a walkthrough" demo/index.html
           grep -Fq "Simulation" demo/demo/index.html
