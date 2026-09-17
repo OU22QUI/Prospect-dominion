@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const compareLabelEl = document.getElementById('compareLabel');
   const clearCompareBtn = document.getElementById('clearCompare');
   const scoreExplanationEl = document.getElementById('scoreExplanation');
+  const scoreFactorsEl = document.getElementById('scoreFactors');
+  const recommendedActionEl = document.getElementById('recommendedAction');
   const guideStepEl = document.getElementById('guideStep');
   const guideTitleEl = document.getElementById('guideTitle');
   const guideCopyEl = document.getElementById('guideCopy');
@@ -266,6 +268,8 @@ document.addEventListener('DOMContentLoaded', () => {
       ...account,
       activities: Array.isArray(account.activities) ? account.activities : [[ '09:00', `${account.company || 'Account'} is ready for review` ]],
       relationships: Array.isArray(account.relationships) ? account.relationships : [],
+      scoreFactors: Array.isArray(account.scoreFactors) ? account.scoreFactors : ['Buying signal is active', 'Account context is available'],
+      recommendedAction: account.recommendedAction || 'Run signal scan',
       health: account.health || 'Healthy',
     }));
 
@@ -376,6 +380,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const relationshipWeight = account.relationships?.length >= 3 ? 'Three relevant paths identified' : 'Relationship path developing';
     const scoreReason = `Score ${account.score} · ${signalWeight} · ${relationshipWeight}.`;
     scoreExplanationEl.textContent = scoreReason;
+    scoreFactorsEl.innerHTML = (account.scoreFactors || [])
+      .map((factor) => `<li>${factor}</li>`)
+      .join('');
+    recommendedActionEl.textContent = account.recommendedAction || 'Recommended next action';
 
     if (compareIndex !== null && accounts[compareIndex] && compareIndex !== selectedIndex) {
       const compared = accounts[compareIndex];
@@ -483,8 +491,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   runActionBtn?.addEventListener('click', () => {
-    const actionTypes = ['scan', 'intro', 'approve'];
-    const next = actionTypes[Math.floor(Math.random() * actionTypes.length)];
+    const actionMap = {
+      'Queue warm intro': 'intro',
+      'Run signal scan': 'scan',
+      'Approve outreach': 'approve',
+    };
+    const account = accounts[selectedIndex] ?? accounts[0];
+    const next = actionMap[account?.recommendedAction] || 'scan';
     performAction(next);
   });
 

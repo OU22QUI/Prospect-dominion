@@ -11,7 +11,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DEMO_ROOT = REPO_ROOT / "demo"
 REQUIRED_FILES = ("index.html", "tester.html", "styles.css", "config.js", "script.js", "demo-data.json", "favicon.svg", "og-preview.svg", "README.md", ".nojekyll")
 FORBIDDEN_MARKERS = ("PD_API_KEY", "JWT_SECRET", "LITELLM_MASTER_KEY", "change-me-strong", "localhost:", "127.0.0.1")
-REQUIRED_IDS = ("accountList", "detailCompany", "runAction", "undoAction", "walkthroughForm", "formStatus", "guideStrip", "resetDemo", "accountSearch", "stageFilter", "intentFilter")
+REQUIRED_IDS = ("accountList", "detailCompany", "runAction", "undoAction", "scoreFactors", "recommendedAction", "walkthroughForm", "formStatus", "guideStrip", "resetDemo", "accountSearch", "stageFilter", "intentFilter")
 
 
 class AssetParser(HTMLParser):
@@ -59,7 +59,7 @@ def main() -> int:
         if not isinstance(accounts, list) or not accounts:
             issues.append("demo-data.json must contain a non-empty accounts list")
         for index, account in enumerate(accounts or []):
-            for field in ("company", "intent", "stage", "score", "signal", "path"):
+            for field in ("company", "intent", "stage", "score", "signal", "path", "scoreFactors", "recommendedAction"):
                 if not account.get(field):
                     issues.append(f"account {index} missing field: {field}")
     except (OSError, json.JSONDecodeError, AttributeError) as exc:
