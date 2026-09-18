@@ -253,15 +253,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const qualificationSpeed = summary.qualificationSpeed ?? 2.4;
     const warmPaths = Number(summary.activePaths ?? 8);
 
-    summaryEls.trustScore.textContent = trustScore;
-    summaryEls.qualifiedAccounts.textContent = qualifiedAccounts;
-    summaryEls.workflowRuns.textContent = workflowRuns;
-    summaryEls.operatingLeverage.textContent = operatingLeverage;
-    summaryEls.qualificationSpeed.textContent = `${qualificationSpeed.toFixed(1)}x`;
-    summaryEls.warmPaths.textContent = `${warmPaths} active`;
-    summaryEls.heroTrustScore.textContent = trustScore;
-    summaryEls.heroQualifiedAccounts.textContent = qualifiedAccounts;
-    summaryEls.heroWarmPaths.textContent = `${warmPaths} ready`;
+    if (summaryEls.trustScore) summaryEls.trustScore.textContent = trustScore;
+    if (summaryEls.qualifiedAccounts) summaryEls.qualifiedAccounts.textContent = qualifiedAccounts;
+    if (summaryEls.workflowRuns) summaryEls.workflowRuns.textContent = workflowRuns;
+    if (summaryEls.operatingLeverage) summaryEls.operatingLeverage.textContent = operatingLeverage;
+    if (summaryEls.qualificationSpeed) summaryEls.qualificationSpeed.textContent = `${qualificationSpeed.toFixed(1)}x`;
+    if (summaryEls.warmPaths) summaryEls.warmPaths.textContent = `${warmPaths} active`;
+    if (summaryEls.heroTrustScore) summaryEls.heroTrustScore.textContent = trustScore;
+    if (summaryEls.heroQualifiedAccounts) summaryEls.heroQualifiedAccounts.textContent = qualifiedAccounts;
+    if (summaryEls.heroWarmPaths) summaryEls.heroWarmPaths.textContent = `${warmPaths} ready`;
   };
 
   const applyDemoState = (payload) => {
@@ -374,28 +374,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const account = accounts[selectedIndex] ?? accounts[0];
     if (!account) return;
 
-    detailCompanyEl.textContent = account.company;
-    detailScoreEl.textContent = account.score;
-    detailIntentEl.textContent = account.intent;
-    detailStageEl.textContent = account.stage;
-    detailSignalEl.textContent = account.signal;
-    detailPathEl.textContent = account.path;
-    timelineStatusEl.textContent = account.health;
+    if (detailCompanyEl) detailCompanyEl.textContent = account.company;
+    if (detailScoreEl) detailScoreEl.textContent = account.score;
+    if (detailIntentEl) detailIntentEl.textContent = account.intent;
+    if (detailStageEl) detailStageEl.textContent = account.stage;
+    if (detailSignalEl) detailSignalEl.textContent = account.signal;
+    if (detailPathEl) detailPathEl.textContent = account.path;
+    if (timelineStatusEl) timelineStatusEl.textContent = account.health;
 
     const signalWeight = account.intent === 'Expansion' || account.intent === 'Cross-sell' ? 'High commercial urgency' : 'Active buying motion';
     const relationshipWeight = account.relationships?.length >= 3 ? 'Three relevant paths identified' : 'Relationship path developing';
     const scoreReason = `Score ${account.score} · ${signalWeight} · ${relationshipWeight}.`;
-    scoreExplanationEl.textContent = scoreReason;
-    scoreFactorsEl.innerHTML = (account.scoreFactors || [])
-      .map((factor) => `<li>${factor}</li>`)
-      .join('');
-    recommendedActionEl.textContent = account.recommendedAction || 'Recommended next action';
+    if (scoreExplanationEl) scoreExplanationEl.textContent = scoreReason;
+    if (scoreFactorsEl) {
+      scoreFactorsEl.innerHTML = (account.scoreFactors || [])
+        .map((factor) => `<li>${factor}</li>`)
+        .join('');
+    }
+    if (recommendedActionEl) recommendedActionEl.textContent = account.recommendedAction || 'Recommended next action';
 
-    if (compareIndex !== null && accounts[compareIndex] && compareIndex !== selectedIndex) {
-      const compared = accounts[compareIndex];
-      compareLabelEl.textContent = `${account.company} (${account.score}) vs ${compared.company} (${compared.score}) · ${account.score >= compared.score ? account.company : compared.company} is currently prioritized.`;
-    } else {
-      compareLabelEl.textContent = 'Select another account to compare.';
+    if (compareLabelEl) {
+      if (compareIndex !== null && accounts[compareIndex] && compareIndex !== selectedIndex) {
+        const compared = accounts[compareIndex];
+        compareLabelEl.textContent = `${account.company} (${account.score}) vs ${compared.company} (${compared.score}) · ${account.score >= compared.score ? account.company : compared.company} is currently prioritized.`;
+      } else {
+        compareLabelEl.textContent = 'Select another account to compare.';
+      }
     }
 
     scenarioChips.forEach((chip) => {
@@ -404,24 +408,28 @@ document.addEventListener('DOMContentLoaded', () => {
       chip.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
     });
 
-    relationshipMapEl.innerHTML = (account.relationships || [])
-      .map((person, idx) => `
-        <div class="relationship-node">
-          <span>${idx + 1}. ${person}</span>
-          <strong>${['Strong', 'Warm', 'Ready'][idx % 3]}</strong>
-        </div>
-      `)
-      .join('');
+    if (relationshipMapEl) {
+      relationshipMapEl.innerHTML = (account.relationships || [])
+        .map((person, idx) => `
+          <div class="relationship-node">
+            <span>${idx + 1}. ${person}</span>
+            <strong>${['Strong', 'Warm', 'Ready'][idx % 3]}</strong>
+          </div>
+        `)
+        .join('');
+    }
 
-    activityFeedEl.innerHTML = (account.activities || [])
-      .map(([time, text]) => `
-        <div class="activity-item">
-          <span class="time">${time}</span>
-          <span class="bullet"></span>
-          <span>${text}</span>
-        </div>
-      `)
-      .join('');
+    if (activityFeedEl) {
+      activityFeedEl.innerHTML = (account.activities || [])
+        .map(([time, text]) => `
+          <div class="activity-item">
+            <span class="time">${time}</span>
+            <span class="bullet"></span>
+            <span>${text}</span>
+          </div>
+        `)
+        .join('');
+    }
 
     renderAccounts();
   };
