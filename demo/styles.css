@@ -1,19 +1,19 @@
 :root {
-  --bg: #081114;
-  --bg-soft: #0d1a1d;
-  --panel: rgba(13, 28, 31, 0.88);
-  --panel-strong: #14282b;
-  --panel-border: rgba(159, 215, 204, 0.16);
-  --text: #eff7f4;
-  --muted: #a9bbb7;
-  --muted-2: #6f8985;
-  --accent: #e8b86d;
-  --accent-2: #ffe0a5;
-  --primary: #b66d4f;
-  --warning: #e8b86d;
+  --bg: #050505;
+  --bg-soft: #131313;
+  --panel: rgba(19, 19, 19, 0.92);
+  --panel-strong: #1a1a17;
+  --panel-border: rgba(198, 168, 107, 0.22);
+  --text: #e5e2e1;
+  --muted: #d0c5b5;
+  --muted-2: #998f81;
+  --accent: #c6a86b;
+  --accent-2: #e2c383;
+  --primary: #c6a86b;
+  --warning: #c6a86b;
   --danger: #e68170;
-  --teal: #80d5c2;
-  --shadow: 0 28px 70px rgba(0, 0, 0, 0.32);
+  --teal: #c6a86b;
+  --shadow: 0 28px 70px rgba(0, 0, 0, 0.5);
 }
 
 * {
@@ -38,9 +38,9 @@ body {
   margin: 0;
   font-family: "DM Sans", sans-serif;
   background:
-    linear-gradient(rgba(128, 213, 194, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(128, 213, 194, 0.035) 1px, transparent 1px),
-    linear-gradient(180deg, #081114 0%, #0d1a1d 100%);
+    linear-gradient(rgba(198, 168, 107, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198, 168, 107, 0.035) 1px, transparent 1px),
+    linear-gradient(180deg, #050505 0%, #131313 100%);
   background-size: 48px 48px, 48px 48px, auto;
   color: var(--text);
 }
@@ -85,7 +85,19 @@ button {
 .brand-wrap {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
+}
+
+.brand-logo-img {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+}
+
+.brand-divider {
+  width: 1px;
+  height: 26px;
+  background: rgba(198, 168, 107, 0.35);
 }
 
 .brand-mark {
@@ -96,21 +108,23 @@ button {
   border-radius: 10px;
   font-family: "Space Grotesk", sans-serif;
   font-weight: 800;
-  color: #181818;
-  background: linear-gradient(135deg, var(--accent), var(--primary));
-  box-shadow: 0 12px 30px rgba(232, 204, 132, 0.28);
+  color: #050505;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 12px 30px rgba(198, 168, 107, 0.28);
 }
 
 .brand-name {
   font-family: "Space Grotesk", sans-serif;
   font-weight: 700;
   letter-spacing: -0.03em;
+  font-size: 1.1rem;
 }
 
 .brand-subtitle {
-  color: var(--muted);
-  font-size: 0.76rem;
+  color: var(--accent);
+  font-size: 0.74rem;
   margin-top: 2px;
+  font-family: "Space Grotesk", sans-serif;
 }
 
 .nav {
@@ -1431,3 +1445,170 @@ pre {
     padding-top: 56px;
   }
 }
+
+/* ==========================================================================
+   Prospect Dominion by Aethonex — Additional Component Styles
+   ========================================================================== */
+
+/* Parent Brand Badge */
+.parent-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(232, 184, 109, 0.12);
+  border: 1px solid rgba(232, 184, 109, 0.28);
+  color: var(--accent);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+/* Simulation Badge & Callout */
+.simulation-badge-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 18px;
+  background: rgba(230, 129, 112, 0.08);
+  border: 1px solid rgba(236, 129, 112, 0.3);
+  border-radius: 12px;
+  color: var(--text);
+  font-size: 0.88rem;
+  margin-bottom: 24px;
+}
+
+.simulation-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--danger);
+  color: #000;
+  font-weight: 800;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Timeline Cards for /pilot */
+.timeline-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.timeline-step-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 3px solid var(--teal);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.timeline-step-card .week-num {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.timeline-step-card h4 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+
+.timeline-step-card p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* 5 Questions Section for /pilot */
+.qa-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.qa-card {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 18px;
+  padding: 24px;
+}
+
+.qa-card .qa-number {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 800;
+  font-size: 0.82rem;
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+
+.qa-card h3 {
+  margin: 0 0 10px;
+  font-size: 1.25rem;
+}
+
+.qa-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* Founder / Company Credibility Section */
+.built-by-aethonex {
+  margin-top: 48px;
+  padding: 32px 28px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(13, 26, 29, 0.95), rgba(20, 40, 43, 0.95));
+  border: 1px solid rgba(232, 184, 109, 0.25);
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 28px;
+  align-items: center;
+}
+
+.built-by-aethonex h3 {
+  margin: 8px 0 12px;
+  font-size: 1.6rem;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.built-by-aethonex p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+@media (max-width: 900px) {
+  .timeline-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .built-by-aethonex {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .timeline-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

@@ -3,17 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Prospect Dominion | Owned signal-to-action layer</title>
-    <meta name="description" content="Prospect Dominion is the owned, governed signal-to-action layer you deploy in your own environment, one workflow at a time." />
-    <meta property="og:title" content="Prospect Dominion | Owned signal-to-action layer" />
-    <meta property="og:description" content="Connect the signals you already collect to prioritised accounts, context, and approved next actions." />
+    <title>Prospect Dominion by Aethonex | Owned signal-to-action layer</title>
+    <meta name="description" content="Prospect Dominion by Aethonex is the owned, governed signal-to-action layer deployed in your environment. One workflow first. Yours to keep." />
+    <meta property="og:title" content="Prospect Dominion by Aethonex | Owned signal-to-action layer" />
+    <meta property="og:description" content="Turn the signals you already have into approved, tracked actions. Deployed in your environment. One workflow first. Yours to keep." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://ou22qui.github.io/Prospect-dominion/" />
-    <meta property="og:image" content="https://ou22qui.github.io/Prospect-dominion/og-preview.svg" />
+    <meta property="og:url" content="https://dominion.aethonex.com/" />
+    <meta property="og:image" content="https://dominion.aethonex.com/og-preview.svg" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -22,10 +22,11 @@
     <div class="page-shell">
       <header class="topbar container">
         <div class="brand-wrap" aria-label="Prospect Dominion home">
-          <div class="brand-mark">PD</div>
+          <img src="logo-new.png" alt="Aethonex" class="brand-logo-img" />
+          <div class="brand-divider"></div>
           <div>
             <div class="brand-name">Prospect Dominion</div>
-            <div class="brand-subtitle">Owned signal-to-action layer</div>
+            <div class="brand-subtitle">by Aethonex · Owned signal-to-action layer</div>
           </div>
         </div>
 
@@ -33,28 +34,36 @@
           <a href="#overview">Overview</a>
           <a href="demo/">Simulation</a>
           <a href="pricing/">Pricing</a>
+          <a href="pilot/">Pilot</a>
           <a href="partners/">Partners</a>
           <a href="faq/">FAQ</a>
           <a href="tester.html">Technical path</a>
-          <a href="#trust">Trust</a>
         </nav>
       </header>
 
       <main>
+        <!-- HERO SECTION -->
         <section class="container hero-content" id="overview">
           <div class="hero-copy">
+            <div class="parent-tag">Prospect Dominion by Aethonex</div>
             <p class="eyebrow">Owned signal-to-action layer</p>
             <h1>Turn the signals you already have into approved, tracked actions.</h1>
             <p class="lede">
-              Prospect Dominion connects the signals you already collect to prioritised accounts, relationship context, and a recommended next action, with a human approval gate before anything is sent. Deployed in your environment. One workflow first. Yours to keep.
+              Prospect Dominion is the owned, governed signal-to-action layer deployed in your environment. One workflow first. Yours to keep.
             </p>
 
             <div class="cta-row">
-              <button class="primary-btn" id="requestDemo" type="button">Book a walkthrough</button>
-              <a class="secondary-btn footer-link" href="demo/">Explore the product simulation</a>
+              <button class="primary-btn book-walkthrough-btn" id="requestDemo" type="button">Book a walkthrough</button>
+              <a class="secondary-btn footer-link" href="demo/">Explore the simulation</a>
             </div>
 
-            <p class="simulation-note"><strong>Public simulation:</strong> sample accounts and illustrative values. The pilot builds the real workflow on your data, in your environment.</p>
+            <!-- SIMULATION DISCLAIMER -->
+            <div class="simulation-badge-bar" style="margin-top: 20px;">
+              <div style="display: flex; items-center; gap: 8px;">
+                <span class="simulation-pill">Product Simulation</span>
+                <span>Sample accounts &amp; illustrative data demonstrate the operating model. The pilot is built on your actual workflow and data.</span>
+              </div>
+            </div>
 
             <div class="trust-strip" aria-label="Key product metrics">
               <div><strong id="trustScore">96.4</strong><span>Illustrative trust score</span></div>
@@ -62,16 +71,10 @@
               <div><strong id="workflowRuns">237</strong><span>Illustrative workflow runs</span></div>
             </div>
 
-            <div class="proof-strip" aria-label="Customer proof points">
-              <span><b>31%</b> illustrative coverage</span>
-              <span><b>2.4x</b> illustrative speed</span>
-              <span><b>8</b> sample warm paths</span>
-            </div>
-
-            <div class="buyer-badges" aria-label="Audience fit">
-              <span>Revenue teams</span>
-              <span>RevOps</span>
-              <span>Partnerships</span>
+            <div class="buyer-badges" aria-label="Audience fit" style="margin-top: 18px;">
+              <span style="background: rgba(232, 184, 109, 0.15); border: 1px solid rgba(232, 184, 109, 0.4); color: var(--accent); font-weight: 700;">Primary: Outbound &amp; lead-generation agencies</span>
+              <span>RevOps / GTM teams</span>
+              <span>SaaS revenue teams</span>
             </div>
           </div>
 
@@ -124,74 +127,18 @@
         </section>
 
         <section class="container main-stack" id="workflow">
+          <!-- THE PROBLEM SECTION -->
           <div class="section-header">
             <p class="eyebrow">The problem</p>
-            <h2 class="section-title">The signal is real. What happens next is not.</h2>
-            <p class="section-lede">Teams already have a CRM, enrichment, a sequencer, and alerts. The gap is the handoff: who notices the signal, checks context, chooses the action, and gets it approved.</p>
+            <h2 class="section-title">Signals live in one tool. Accounts in another. Relationships in people&apos;s heads. Actions in a sequencer. Outcomes nowhere.</h2>
+            <p class="section-lede">Teams already have CRM, enrichment, sequencers, and alerts. The gap is the handoff: who notices the signal, checks context, chooses the action, and gets it approved before committing.</p>
           </div>
 
-          <div class="feature-grid">
-            <article class="feature-card">
-              <p class="feature-label">Signal to action</p>
-              <h3>Connect the tools you already keep.</h3>
-              <p>The pilot connects selected sources to a prioritised account queue and the next action your team actually runs.</p>
-            </article>
-            <article class="feature-card">
-              <p class="feature-label">Governed</p>
-              <h3>Put a person before execution.</h3>
-              <p>Recommended actions stay visible and reviewable. A pilot defines the approval rule for the workflow that matters to you.</p>
-            </article>
-            <article class="feature-card">
-              <p class="feature-label">Owned</p>
-              <h3>Deploy the layer in your environment.</h3>
-              <p>One single-tenant deployment, documented and handed over. Dominion sits between the tools you keep.</p>
-            </article>
-          </div>
-
-          <div class="split-panel" id="trust">
-            <div class="panel">
-              <p class="feature-label">Operational health</p>
-              <h3>Built for trust, not just speed.</h3>
-              <div class="list-stack">
-                <div class="list-item"><span class="dot ready"></span> Health checks and live readiness validation</div>
-                <div class="list-item"><span class="dot ready"></span> Protected routes and secure authentication patterns</div>
-                <div class="list-item"><span class="dot ready"></span> Fail-closed logic for production assurance</div>
-                <div class="list-item"><span class="dot ready"></span> Human-in-the-loop governance over sensitive actions</div>
-              </div>
-            </div>
-
-            <div class="panel panel-alt">
-              <p class="feature-label">Customer value</p>
-              <h3>Why it matters to revenue teams.</h3>
-              <ul>
-                <li>Shorter time from signal to action</li>
-                <li>Cleaner account prioritization</li>
-                <li>Clearer relationship context</li>
-                <li>Stronger trust in assisted outreach</li>
-                <li>More repeatable GTM execution</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="results-banner">
-            <div>
-              <span class="eyebrow dark">Illustrative leverage</span>
-              <strong id="operatingLeverage">3.2x</strong>
-            </div>
-            <div>
-              <span class="eyebrow dark">Illustrative qualification speed</span>
-              <strong id="qualificationSpeed">2.4x</strong>
-            </div>
-            <div>
-              <span class="eyebrow dark">Sample warm paths</span>
-              <strong id="warmPaths">8 active</strong>
-            </div>
-          </div>
-
+          <!-- HOW DOMINION WORKS: CAPTURE -> PRIORITISE -> ROUTE -> GOVERN -->
           <section class="pipeline-section">
             <div class="section-header compact-header">
-              <p class="eyebrow">Execution flow</p>
-              <h2 class="section-title">One system from signal to action.</h2>
+              <p class="eyebrow">How Dominion works</p>
+              <h2 class="section-title">Capture → Prioritise → Route → Govern</h2>
             </div>
 
             <div class="pipeline-grid">
@@ -202,7 +149,7 @@
               </article>
               <article class="pipeline-card">
                 <span class="pipeline-step">02</span>
-                <h3>Prioritize</h3>
+                <h3>Prioritise</h3>
                 <p>Apply prioritisation rules for fit, urgency, and available context.</p>
               </article>
               <article class="pipeline-card">
@@ -213,40 +160,56 @@
               <article class="pipeline-card">
                 <span class="pipeline-step">04</span>
                 <h3>Govern</h3>
-                <p>Keep the workflow aligned with approval rules and operator oversight.</p>
+                <p>Keep the workflow aligned with human approval rules and operator oversight before anything is sent.</p>
               </article>
             </div>
           </section>
 
-          <section class="outcome-section" aria-labelledby="outcomeTitle">
-            <div class="section-header compact-header">
-              <p class="eyebrow">The commercial outcome</p>
-              <h2 class="section-title" id="outcomeTitle">From scattered signals to a confident next move.</h2>
-            </div>
-            <div class="outcome-grid">
-              <article class="outcome-card"><span>01</span><h3>See the account</h3><p>Bring intent, context, stage, and relationship paths into one view.</p></article>
-              <article class="outcome-card"><span>02</span><h3>Choose the motion</h3><p>Make the recommended action legible before a rep or operator commits.</p></article>
-              <article class="outcome-card"><span>03</span><h3>Keep control</h3><p>Move faster without turning sensitive outreach into an opaque automation.</p></article>
-            </div>
-          </section>
+          <!-- WHAT YOU GET: THE 30-DAY PILOT -->
+          <div class="feature-grid" style="margin-top: 36px;">
+            <article class="feature-card">
+              <p class="feature-label">What you get</p>
+              <h3>The 30-day guided pilot</h3>
+              <p>We deploy one real signal-to-action workflow in your environment, connected to 1–2 of your actual data sources, with an operator approval gate.</p>
+            </article>
+            <article class="feature-card">
+              <p class="feature-label">Ownership</p>
+              <h3>Deploy in your environment</h3>
+              <p>Your environment. Your instance. Your credentials. Your documentation. Your system after the engagement. No platform lock-in.</p>
+            </article>
+            <article class="feature-card">
+              <p class="feature-label">Governed</p>
+              <h3>Human-in-the-loop gate</h3>
+              <p>Recommended actions stay visible and reviewable. Nothing is executed without explicit human approval.</p>
+            </article>
+          </div>
 
+          <!-- 30-DAY PILOT PROMOTION PANEL -->
           <section class="deployment-panel" aria-labelledby="deploymentTitle">
             <div>
-              <p class="eyebrow">Designed for a real rollout</p>
-              <h2 class="section-title" id="deploymentTitle">Start with the surface that fits your team.</h2>
-              <p class="deployment-copy">Use the public demo to align stakeholders, then move into a guided pilot or a private deployment when the operating model is proven.</p>
+              <p class="eyebrow">The Salesperson's Weapon</p>
+              <h2 class="section-title" id="deploymentTitle">Dominion Pilot — $4,500 fixed</h2>
+              <p class="deployment-copy">30 days · one workflow · your environment. Full baseline deployment, 1–2 data sources, custom prioritisation, human approval gate, outcome logging, and documented handover.</p>
             </div>
             <div class="deployment-options">
-              <div><strong>Demo</strong><span>Shared product story</span></div>
-              <div><strong>Pilot · $4,500</strong><span>30 days · one workflow</span></div>
-              <div><strong>Deployment</strong><span>From $15,000 + operate</span></div>
+              <div><strong>30 Days</strong><span>Bounded scope</span></div>
+              <div><strong>1 Workflow</strong><span>First high-impact loop</span></div>
+              <div><strong>$4,500 Fixed</strong><span>No hidden fees</span></div>
             </div>
-            <a class="inline-button primary-btn" href="pricing/">See pilot and deployment pricing</a>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+              <button class="primary-btn book-walkthrough-btn" type="button">Request a pilot</button>
+              <a class="secondary-btn" href="pilot/" style="text-decoration: none;">View pilot details &amp; timeline →</a>
+            </div>
           </section>
 
+          <!-- INTERACTIVE SIMULATION SECTION -->
           <section class="demo-panel" id="demo">
             <div class="demo-copy">
-              <p class="feature-label">Interactive demo</p>
+              <div class="simulation-badge-bar">
+                <span class="simulation-pill">PRODUCT SIMULATION</span>
+                <span>Sample accounts · illustrative data · no external actions. Want to see the real deployment path? Request a technical walkthrough.</span>
+              </div>
+              <p class="feature-label">Interactive simulation</p>
               <h3>Account command center</h3>
               <p class="demo-caption">Demo workspace · curated sample data · actions update in this session</p>
             </div>
@@ -341,7 +304,7 @@
                     </div>
                   </div>
 
-                    <div class="action-feedback" id="actionFeedback" role="status" aria-live="polite">Ready for operator input.</div>
+                  <div class="action-feedback" id="actionFeedback" role="status" aria-live="polite">Ready for operator input.</div>
 
                   <div class="action-grid">
                     <button class="action-button" data-action="scan" type="button">Run signal scan</button>
@@ -360,38 +323,55 @@
               </div>
             </div>
           </section>
+
+          <!-- BUILT BY AETHONEX (FOUNDER / COMPANY CREDIBILITY SECTION) -->
+          <section class="built-by-aethonex">
+            <div>
+              <p class="eyebrow" style="color: var(--accent);">Parent Company Credibility</p>
+              <h3>Built by Aethonex</h3>
+              <p>Prospect Dominion is engineered by Aethonex, a UK-based private infrastructure architecture firm. We help digital and performance agencies replace SaaS dependency with owned, self-hosted automation stacks deployed in their own environment. Direct accountable ownership, transparent code, zero black boxes.</p>
+            </div>
+            <div style="text-align: right; display: flex; flex-direction: column; gap: 12px; align-items: flex-end;">
+              <a href="https://aethonex.com" target="_blank" rel="noopener noreferrer" class="secondary-btn" style="text-decoration: none;">Visit Aethonex.com →</a>
+              <button class="primary-btn book-walkthrough-btn" type="button">Book a walkthrough</button>
+            </div>
+          </section>
         </section>
       </main>
 
+      <!-- LEAD CAPTURE DIALOG -->
       <dialog class="demo-dialog" id="demoDialog" aria-labelledby="dialogTitle">
         <button class="dialog-close" id="closeDialog" type="button" aria-label="Close product walkthrough panel">&times;</button>
-        <p class="feature-label">Product walkthrough</p>
+        <p class="feature-label">Book a walkthrough / pilot request</p>
         <h2 id="dialogTitle">See the operating model in action</h2>
-        <p>Tell us where your team loses signal today. We’ll use that context to shape a relevant walkthrough.</p>
+        <p>Tell us about your team and where your signal-to-action handoff breaks today. We&apos;ll prepare a focused technical walkthrough.</p>
         <form class="walkthrough-form" id="walkthroughForm">
           <label for="requestName">Name</label>
           <input id="requestName" name="name" autocomplete="name" required />
           <label for="requestEmail">Work email</label>
           <input id="requestEmail" name="email" type="email" autocomplete="email" required />
-          <label for="requestRole">Team or role</label>
-          <input id="requestRole" name="role" autocomplete="organization-title" required />
           <label for="requestCompany">Company</label>
           <input id="requestCompany" name="company" autocomplete="organization" required />
-          <label for="requestUseCase">Primary use case</label>
+          <label for="requestRole">Team or role</label>
+          <input id="requestRole" name="role" autocomplete="organization-title" required />
+          <label for="requestUseCase">What workflow are you interested in?</label>
           <select id="requestUseCase" name="useCase" required>
-            <option value="">Choose one</option>
-            <option>Account prioritization</option>
-            <option>Relationship intelligence</option>
-            <option>Governed outbound execution</option>
-            <option>Partner or white-label deployment</option>
+            <option value="">Choose primary workflow</option>
+            <option>Intent signals to warm outbound outreach</option>
+            <option>Account prioritisation &amp; routing</option>
+            <option>Churn risk detection to account review</option>
+            <option>Partner overlap co-sell orchestration</option>
+            <option>White-label agency deployment</option>
           </select>
-          <p class="form-note">What happens next: your context is used to shape a focused walkthrough. No customer data is required for this demo.</p>
-          <button class="primary-btn" type="submit">Prepare my walkthrough</button>
+          <label for="requestStack">Current stack / tools (Optional)</label>
+          <input id="requestStack" name="stack" placeholder="e.g. HubSpot, Apollo, Clay, N8N, Salesforce" />
+          <p class="form-note">Your context is used to shape a focused walkthrough. No customer data is required for this demo.</p>
+          <button class="primary-btn" type="submit">Submit request</button>
           <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
         </form>
         <div class="dialog-actions">
-          <a class="secondary-btn dialog-link" href="tester.html">Open the product path</a>
-          <button class="secondary-btn" id="dialogWorkflow" type="button">View workflow</button>
+          <a class="secondary-btn dialog-link" href="tester.html">Open technical evaluation</a>
+          <a class="secondary-btn dialog-link" href="pilot/">View 30-day pilot scope</a>
         </div>
       </dialog>
 
@@ -402,15 +382,15 @@
             <h3>Turn this into a real working sales motion.</h3>
           </div>
           <div class="cta-panel-actions">
-            <button class="primary-btn" id="finalBookDemo" type="button">Book a walkthrough</button>
-            <a class="secondary-btn footer-link" href="pricing/">Request a pilot</a>
+            <button class="primary-btn book-walkthrough-btn" id="finalBookDemo" type="button">Book a walkthrough</button>
+            <a class="secondary-btn footer-link" href="pilot/">Request a pilot ($4,500)</a>
             <a class="secondary-btn footer-link" href="tester.html">Technical evaluation</a>
           </div>
         </div>
       </section>
 
       <footer class="container footer">
-        <div>Prospect Dominion</div>
+        <div>Prospect Dominion by Aethonex</div>
         <div class="footer-note">Owned, governed signal-to-action infrastructure</div>
       </footer>
     </div>
