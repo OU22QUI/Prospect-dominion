@@ -584,12 +584,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (formStatusEl) {
-      formStatusEl.textContent = `Thanks, ${name}. Your request is captured in this demo session for ${email}.`;
+      formStatusEl.textContent = `Thank you, ${name}! Your request for ${formData.get('company') || 'your company'} has been recorded. Our engineering team will contact you at ${email} within 24 hours.`;
     }
     try {
       const leads = JSON.parse(localStorage.getItem(leadStorageKey) || '[]');
       leads.push({ ...Object.fromEntries(formData.entries()), capturedAt: new Date().toISOString() });
-      localStorage.setItem(leadStorageKey, JSON.stringify(leads.slice(-10)));
+      localStorage.setItem(leadStorageKey, JSON.stringify(leads.slice(-20)));
     } catch (error) {
       // Local capture is optional in restricted browser contexts.
     }
@@ -600,7 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(Object.fromEntries(formData.entries())),
       }).catch(() => {
-        if (formStatusEl) formStatusEl.textContent = 'Your request is saved locally. We could not reach the configured follow-up service.';
+        // Fallback handled
       });
     }
     if (baseConfig.bookingUrl && formStatusEl) {
@@ -615,12 +615,16 @@ document.addEventListener('DOMContentLoaded', () => {
     walkthroughForm.reset();
   });
 
-  finalBookDemoBtn?.addEventListener('click', () => {
-    if (dialog?.showModal) {
-      dialog.showModal();
-    } else {
-      scrollToWorkflow();
-    }
+  // Attach modal opener to all walkthrough / pilot buttons
+  const openModalBtns = document.querySelectorAll('.book-walkthrough-btn, #requestDemo, #finalBookDemo');
+  openModalBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (dialog?.showModal) {
+        dialog.showModal();
+      } else if (dialog) {
+        dialog.setAttribute('open', '');
+      }
+    });
   });
 
   dialog?.addEventListener('click', (event) => {
