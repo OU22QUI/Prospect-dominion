@@ -1,5 +1,5 @@
 window.PD_DEMO_CONFIG = {
-  requestEndpoint: "",
+  requestEndpoint: "https://aethonex.com/api/schedule.php",
   analyticsEndpoint: "",
-  bookingUrl: ""
+  bookingUrl: "https://cal.com/aethonex/20-min"
 };

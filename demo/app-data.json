@@ -1,0 +1,186 @@
+{
+  "workspace": {
+    "name": "Prospect Dominion",
+    "environment": "Demo",
+    "user": {
+      "name": "Demo User",
+      "initials": "DU",
+      "role": "Revenue Operations"
+    }
+  },
+  "kpis": {
+    "signalsDetected": { "value": 24, "change": "+3", "trend": "up", "label": "Signals Detected" },
+    "prioritised": { "value": 12, "change": "+2", "trend": "up", "label": "Prioritised" },
+    "awaitingApproval": { "value": 5, "change": "0", "trend": "neutral", "label": "Awaiting Approval" },
+    "actionsInProgress": { "value": 7, "change": "+1", "trend": "up", "label": "Actions in Progress" }
+  },
+  "signalSources": [
+    { "name": "Website Activity", "count": 8, "color": "#C6A86B" },
+    { "name": "Company Changes", "count": 5, "color": "#D4B87E" },
+    { "name": "Campaign Signals", "count": 4, "color": "#9A7F42" },
+    { "name": "CRM Events", "count": 3, "color": "#7A9E87" },
+    { "name": "Research / News", "count": 2, "color": "#B89255" },
+    { "name": "Conversations", "count": 2, "color": "#9E7B88" }
+  ],
+  "accounts": [
+    {
+      "id": "acc-001",
+      "company": "Acme Technologies",
+      "avatar": "AT",
+      "signal": "Platform expansion initiative detected",
+      "signalType": "Company Changes",
+      "priority": "High",
+      "status": "Awaiting Approval",
+      "owner": { "name": "Sarah Chen", "initials": "SC" },
+      "score": 87,
+      "stage": "Proposal",
+      "intent": "Expansion",
+      "path": "VP Revenue + CTO",
+      "contacts": ["Sarah Chen", "David Kim", "Maya Patel"],
+      "recommendedAction": "Queue warm intro to VP Revenue",
+      "context": "Acme Technologies announced a platform expansion initiative in their latest quarterly update. Multiple buying signals detected from procurement and engineering teams.",
+      "activities": [
+        { "type": "signal", "text": "Expansion signal detected from quarterly brief", "time": "2h ago", "account": "Acme Technologies" },
+        { "type": "prioritised", "text": "Account prioritised — high commercial urgency", "time": "1h ago", "account": "Acme Technologies" },
+        { "type": "action", "text": "Warm intro path identified to VP Revenue", "time": "45m ago", "account": "Acme Technologies" }
+      ]
+    },
+    {
+      "id": "acc-002",
+      "company": "Nova Systems",
+      "avatar": "NS",
+      "signal": "Renewal risk — budget review flagged",
+      "signalType": "CRM Events",
+      "priority": "High",
+      "status": "Ready",
+      "owner": { "name": "James Torres", "initials": "JT" },
+      "score": 82,
+      "stage": "Qualification",
+      "intent": "Renewal",
+      "path": "Head of Ops + CFO",
+      "contacts": ["Lena Ortiz", "Omar Bell", "Ari Cole"],
+      "recommendedAction": "Run signal scan on procurement activity",
+      "context": "Nova Systems has a renewal coming up in Q4. Recent procurement activity and budget review signals suggest possible churn risk. Finance stakeholder engagement recommended.",
+      "activities": [
+        { "type": "signal", "text": "Renewal risk detected from procurement activity", "time": "3h ago", "account": "Nova Systems" },
+        { "type": "status", "text": "Related org update surfaced during review", "time": "2h ago", "account": "Nova Systems" },
+        { "type": "action", "text": "Follow-up sequence queued for finance contacts", "time": "1h ago", "account": "Nova Systems" }
+      ]
+    },
+    {
+      "id": "acc-003",
+      "company": "Orion Labs",
+      "avatar": "OL",
+      "signal": "Multi-region rollout requirement",
+      "signalType": "Research / News",
+      "priority": "Medium",
+      "status": "In Progress",
+      "owner": { "name": "Nina Shah", "initials": "NS" },
+      "score": 74,
+      "stage": "Discovery",
+      "intent": "New Logo",
+      "path": "VP Sales + RevOps",
+      "contacts": ["Jules Price", "Nina Shah", "Leo Grant"],
+      "recommendedAction": "Run signal scan on rollout initiative",
+      "context": "Orion Labs is evaluating vendors for a multi-region rollout. Recent buying signals mapped to their growth initiative. Partner referral channel may be relevant.",
+      "activities": [
+        { "type": "signal", "text": "Buying signals mapped to rollout initiative", "time": "5h ago", "account": "Orion Labs" },
+        { "type": "prioritised", "text": "Account prioritised for outbound workflow", "time": "4h ago", "account": "Orion Labs" }
+      ]
+    },
+    {
+      "id": "acc-004",
+      "company": "Summit Group",
+      "avatar": "SG",
+      "signal": "Cross-sell expansion in operations division",
+      "signalType": "Campaign Signals",
+      "priority": "Medium",
+      "status": "Approved",
+      "owner": { "name": "Chris Wade", "initials": "CW" },
+      "score": 79,
+      "stage": "Engaged",
+      "intent": "Cross-sell",
+      "path": "VP Growth + Product",
+      "contacts": ["Chris Wade", "Priya Menon", "Maddie Ross"],
+      "recommendedAction": "Execute approved outreach sequence",
+      "context": "Summit Group operations division is expanding. Cross-sell opportunity validated by product team. Multi-threaded engagement sequence approved and ready for execution.",
+      "activities": [
+        { "type": "approved", "text": "Outreach sequence approved by governance layer", "time": "30m ago", "account": "Summit Group" },
+        { "type": "action", "text": "Engagement sequence generated", "time": "2h ago", "account": "Summit Group" },
+        { "type": "signal", "text": "Cross-sell opportunity validated", "time": "4h ago", "account": "Summit Group" }
+      ]
+    },
+    {
+      "id": "acc-005",
+      "company": "Vertex Digital",
+      "avatar": "VD",
+      "signal": "Website pricing page visits — 3 sessions",
+      "signalType": "Website Activity",
+      "priority": "Low",
+      "status": "Queued",
+      "owner": { "name": "Demo User", "initials": "DU" },
+      "score": 61,
+      "stage": "Discovery",
+      "intent": "New Logo",
+      "path": "Marketing Director",
+      "contacts": ["Alex Morgan"],
+      "recommendedAction": "Run initial signal scan",
+      "context": "Vertex Digital has shown website engagement — 3 pricing page sessions this week. Limited context available. Initial signal scan recommended before prioritisation.",
+      "activities": [
+        { "type": "signal", "text": "Website activity detected — pricing page visits", "time": "1d ago", "account": "Vertex Digital" }
+      ]
+    },
+    {
+      "id": "acc-006",
+      "company": "Pioneer Health",
+      "avatar": "PH",
+      "signal": "New CTO appointment — buying committee change",
+      "signalType": "Company Changes",
+      "priority": "High",
+      "status": "Awaiting Approval",
+      "owner": { "name": "Sarah Chen", "initials": "SC" },
+      "score": 85,
+      "stage": "Qualification",
+      "intent": "New Logo",
+      "path": "CTO + VP Engineering",
+      "contacts": ["Dr. Rachel Foster", "Tom Nguyen"],
+      "recommendedAction": "Approve intro sequence to new CTO",
+      "context": "Pioneer Health appointed a new CTO last week. The new CTO previously worked at a company that used similar infrastructure. This is a strong buying signal for a warm introduction.",
+      "activities": [
+        { "type": "signal", "text": "New CTO appointment detected", "time": "6h ago", "account": "Pioneer Health" },
+        { "type": "prioritised", "text": "Account flagged — buying committee change", "time": "5h ago", "account": "Pioneer Health" },
+        { "type": "action", "text": "Intro sequence drafted, awaiting approval", "time": "3h ago", "account": "Pioneer Health" }
+      ]
+    }
+  ],
+  "signals": [
+    { "id": "sig-01", "type": "Company Changes", "account": "Acme Technologies", "text": "Platform expansion initiative announced", "time": "2h ago", "importance": "High", "status": "Prioritised", "action": "Queue warm intro" },
+    { "id": "sig-02", "type": "CRM Events", "account": "Nova Systems", "text": "Renewal risk — budget review flagged", "time": "3h ago", "importance": "High", "status": "Prioritised", "action": "Run signal scan" },
+    { "id": "sig-03", "type": "Research / News", "account": "Orion Labs", "text": "Multi-region rollout requirement", "time": "5h ago", "importance": "Medium", "status": "Reviewed", "action": "Run signal scan" },
+    { "id": "sig-04", "type": "Campaign Signals", "account": "Summit Group", "text": "Cross-sell expansion in operations", "time": "4h ago", "importance": "Medium", "status": "Prioritised", "action": "Execute outreach" },
+    { "id": "sig-05", "type": "Website Activity", "account": "Vertex Digital", "text": "Pricing page visits — 3 sessions", "time": "1d ago", "importance": "Low", "status": "New", "action": "Initial scan" },
+    { "id": "sig-06", "type": "Company Changes", "account": "Pioneer Health", "text": "New CTO appointment", "time": "6h ago", "importance": "High", "status": "Prioritised", "action": "Approve intro" },
+    { "id": "sig-07", "type": "Website Activity", "account": "Acme Technologies", "text": "Case study downloads — 2 assets", "time": "8h ago", "importance": "Medium", "status": "Reviewed", "action": "Monitor" },
+    { "id": "sig-08", "type": "Conversations", "account": "Nova Systems", "text": "Support ticket mentioning renewal", "time": "1d ago", "importance": "Medium", "status": "Reviewed", "action": "Flag for renewal team" },
+    { "id": "sig-09", "type": "Website Activity", "account": "Pioneer Health", "text": "Technical docs page visits", "time": "12h ago", "importance": "Low", "status": "New", "action": "Monitor" },
+    { "id": "sig-10", "type": "Campaign Signals", "account": "Orion Labs", "text": "Webinar registration — rollout planning", "time": "2d ago", "importance": "Low", "status": "Reviewed", "action": "Add to nurture" }
+  ],
+  "actions": [
+    { "id": "act-01", "type": "Warm Intro", "account": "Summit Group", "owner": "Chris Wade", "approval": "Approved", "created": "2h ago", "status": "In Progress" },
+    { "id": "act-02", "type": "Signal Scan", "account": "Nova Systems", "owner": "James Torres", "approval": "Not Required", "created": "1h ago", "status": "Completed" },
+    { "id": "act-03", "type": "Intro Sequence", "account": "Pioneer Health", "owner": "Sarah Chen", "approval": "Pending", "created": "3h ago", "status": "Awaiting Approval" },
+    { "id": "act-04", "type": "Warm Intro", "account": "Acme Technologies", "owner": "Sarah Chen", "approval": "Pending", "created": "45m ago", "status": "Awaiting Approval" },
+    { "id": "act-05", "type": "Signal Scan", "account": "Vertex Digital", "owner": "Demo User", "approval": "Not Required", "created": "30m ago", "status": "Queued" },
+    { "id": "act-06", "type": "Outreach", "account": "Orion Labs", "owner": "Nina Shah", "approval": "Approved", "created": "4h ago", "status": "In Progress" }
+  ],
+  "recentActivity": [
+    { "type": "signal", "text": "New signal detected — platform expansion", "account": "Acme Technologies", "time": "2h ago" },
+    { "type": "prioritised", "text": "Opportunity prioritised — high urgency", "account": "Acme Technologies", "time": "1h ago" },
+    { "type": "approved", "text": "Outreach sequence approved", "account": "Summit Group", "time": "30m ago" },
+    { "type": "status", "text": "Signal scan completed", "account": "Nova Systems", "time": "1h ago" },
+    { "type": "signal", "text": "New CTO appointment detected", "account": "Pioneer Health", "time": "6h ago" },
+    { "type": "action", "text": "Warm intro path identified", "account": "Acme Technologies", "time": "45m ago" },
+    { "type": "signal", "text": "Website pricing page visits", "account": "Vertex Digital", "time": "1d ago" },
+    { "type": "prioritised", "text": "Account flagged — buying committee change", "account": "Pioneer Health", "time": "5h ago" }
+  ]
+}

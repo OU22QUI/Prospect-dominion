@@ -1,112 +1,506 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Prospect Dominion | Product Simulation</title>
-    <meta name="description" content="Prospect Dominion by Aethonex product simulation with sample accounts." />
-    <meta property="og:title" content="Prospect Dominion by Aethonex | Product Simulation" />
-    <meta property="og:url" content="https://dominion.aethonex.com/demo/" />
-    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../styles.css" />
-  </head>
-  <body>
-    <div class="page-shell">
-      <header class="topbar container">
-        <div class="brand-wrap" aria-label="Prospect Dominion home">
-          <img src="../logo-new.png" alt="Aethonex" class="brand-logo-img" />
-          <div class="brand-divider"></div>
-          <div>
-            <div class="brand-name">Prospect Dominion</div>
-            <div class="brand-subtitle">by Aethonex · Owned signal-to-action layer</div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prospect Dominion — Dashboard</title>
+  <meta name="description" content="Prospect Dominion by Aethonex — governed signal-to-action operating layer for revenue teams. Product simulation with sample data.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://dominion.aethonex.com/demo/">
+  <meta property="og:title" content="Prospect Dominion — Dashboard">
+  <meta property="og:description" content="Governed signal-to-action operating layer for revenue teams. Product simulation.">
+  <meta property="og:url" content="https://dominion.aethonex.com/demo/">
+  <meta property="og:site_name" content="Prospect Dominion by Aethonex">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Prospect Dominion — Dashboard">
+  <meta name="twitter:description" content="Governed signal-to-action operating layer for revenue teams.">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../app.css">
+</head>
+<body>
+  <!-- Mobile sidebar backdrop -->
+  <div class="sidebar-backdrop"></div>
+
+  <div class="app-layout">
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-mark">
+          <div class="sidebar-logo">PD</div>
+          <span class="sidebar-brand-text">Prospect Dominion</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">Overview</div>
+        <button class="sidebar-link active" data-page="home" aria-label="Dashboard">
+          <svg class="sidebar-link-icon" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1"/></svg>
+          Home
+        </button>
+
+        <div class="sidebar-section-label">Workflow</div>
+        <button class="sidebar-link" data-page="signals" aria-label="Signals">
+          <svg class="sidebar-link-icon" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Signals
+        </button>
+        <button class="sidebar-link" data-page="opportunities" aria-label="Opportunities">
+          <svg class="sidebar-link-icon" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          Opportunities
+        </button>
+        <button class="sidebar-link" data-page="actions" aria-label="Actions">
+          <svg class="sidebar-link-icon" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Actions
+        </button>
+        <button class="sidebar-link" data-page="approvals" aria-label="Approvals">
+          <svg class="sidebar-link-icon" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          Approvals
+          <span class="sidebar-link-badge">2</span>
+        </button>
+
+        <div class="sidebar-section-label">Data</div>
+        <button class="sidebar-link" data-page="accounts" aria-label="Accounts">
+          <svg class="sidebar-link-icon" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+          Accounts
+        </button>
+        <button class="sidebar-link" data-page="contacts" aria-label="Contacts">
+          <svg class="sidebar-link-icon" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Contacts
+        </button>
+
+        <div class="sidebar-section-label">Insights</div>
+        <button class="sidebar-link" data-page="reports" aria-label="Reports">
+          <svg class="sidebar-link-icon" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2"/></svg>
+          Reports
+        </button>
+        <button class="sidebar-link" data-page="settings" aria-label="Settings">
+          <svg class="sidebar-link-icon" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Settings
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-env">
+          <div class="sidebar-env-dot"></div>
+          <div class="sidebar-env-text"><strong>Demo</strong> workspace</div>
+        </div>
+        <div class="sidebar-user">
+          <div class="sidebar-avatar">DU</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">Demo User</div>
+            <div class="sidebar-user-role">Revenue Operations</div>
           </div>
         </div>
+        <div class="sidebar-aethonex">
+          Prospect Dominion by <a href="https://aethonex.com" target="_blank" rel="noopener noreferrer">Aethonex</a>
+        </div>
+      </div>
+    </aside>
 
-        <nav class="nav" aria-label="Main navigation">
-          <a href="../index.html">Overview</a>
-          <a href="./" class="active">Simulation</a>
-          <a href="../pricing/">Pricing</a>
-          <a href="../pilot/">Pilot</a>
-          <a href="../partners/">Partners</a>
-          <a href="../faq/">FAQ</a>
-          <a href="../tester.html">Technical path</a>
-        </nav>
+    <!-- ===== MAIN AREA ===== -->
+    <div class="main-area">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <h1 class="topbar-title" id="topbar-title">Dashboard</h1>
+
+        <div class="topbar-search">
+          <input type="search" class="topbar-search-input" id="global-search" placeholder="Search accounts, signals..." aria-label="Global search">
+        </div>
+
+        <div class="topbar-actions">
+          <button class="topbar-btn" aria-label="Notifications" title="Notifications">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            <span class="notif-dot"></span>
+          </button>
+          <div class="topbar-env">
+            <div class="topbar-env-dot"></div>
+            Demo
+          </div>
+          <div class="topbar-avatar" title="Demo User">DU</div>
+        </div>
       </header>
 
-      <main class="container simulation-page">
-        <a class="back-link" href="../index.html">← Back to Prospect Dominion</a>
-        <div class="parent-tag">Prospect Dominion by Aethonex</div>
+      <!-- Demo Banner -->
+      <div class="demo-banner">
+        <div class="demo-banner-dot"></div>
+        DEMO &middot; SAMPLE DATA &mdash; This simulation uses fictional companies and illustrative values. No live integrations are active.
+      </div>
 
-        <!-- SIMULATION BADGE -->
-        <div class="simulation-badge-bar">
-          <div style="display: flex; items-center; gap: 8px;">
-            <span class="simulation-pill">PRODUCT SIMULATION</span>
-            <span>Sample accounts · illustrative data · no external actions</span>
+      <!-- Content Area -->
+      <main class="content-area">
+
+        <!-- ===== HOME / DASHBOARD ===== -->
+        <div class="page-view active" id="page-home">
+          <div class="page-header">
+            <div class="page-greeting">Good morning</div>
+            <h2 class="page-title">Dashboard</h2>
+            <p class="page-subtitle">Here's what's happening across your signal-to-action workflow.</p>
+          </div>
+
+          <!-- KPIs -->
+          <div class="kpi-grid" id="kpi-grid"></div>
+
+          <!-- Main Grid: Queue + Side panels -->
+          <div class="dashboard-grid">
+            <!-- Opportunity Queue -->
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Opportunity Queue</div>
+                  <div class="card-subtitle">Prioritised accounts requiring attention</div>
+                </div>
+                <span class="card-action-link" onclick="window.pdApp.navigate('opportunities')">View all →</span>
+              </div>
+              <div class="card-body">
+                <div class="data-table-wrap" id="dashboard-opp-table"></div>
+              </div>
+            </div>
+
+            <!-- Right Side -->
+            <div style="display:flex;flex-direction:column;gap:20px">
+              <!-- Signal Sources -->
+              <div class="card">
+                <div class="card-header">
+                  <div>
+                    <div class="card-title">Signal Sources</div>
+                    <div class="card-subtitle">Sample distribution</div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="sources-grid" id="signal-sources"></div>
+                </div>
+              </div>
+
+              <!-- Recent Activity -->
+              <div class="card" style="flex:1">
+                <div class="card-header">
+                  <div class="card-title">Recent Activity</div>
+                </div>
+                <div class="card-body">
+                  <div class="activity-list" id="dashboard-activity"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <h1>See the operating model before you scope the real workflow.</h1>
-        <p class="lede">Four fictional accounts, seeded activity, and illustrative scores show the Capture → Prioritise → Route → Govern loop. This is not live data and no external action is sent.</p>
-        
-        <div class="simulation-actions" style="margin-bottom: 24px;">
-          <a class="primary-btn" href="../index.html#demo">Open account command center</a>
-          <button class="secondary-btn book-walkthrough-btn" type="button">Request a technical walkthrough</button>
+        <!-- ===== SIGNALS ===== -->
+        <div class="page-view" id="page-signals">
+          <div class="page-header">
+            <h2 class="page-title">Signals</h2>
+            <p class="page-subtitle">Detected buying signals from configured sources. Sample data.</p>
+          </div>
+
+          <div class="filter-bar">
+            <input type="search" class="filter-search" id="signals-search" placeholder="Search signals..." aria-label="Search signals">
+            <div class="filter-tab-group">
+              <button class="filter-tab active" data-signal-filter="All">All</button>
+              <button class="filter-tab" data-signal-filter="New">New</button>
+              <button class="filter-tab" data-signal-filter="Prioritised">Prioritised</button>
+              <button class="filter-tab" data-signal-filter="Reviewed">Reviewed</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="data-table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Source</th>
+                      <th>Account</th>
+                      <th>Signal</th>
+                      <th>Detected</th>
+                      <th>Importance</th>
+                      <th>Status</th>
+                      <th>Next Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="signals-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <section class="panel simulation-note-panel" style="margin-bottom: 24px;">
-          <p class="feature-label">What a pilot changes</p>
-          <h2>The box stays. Your data replaces the sample.</h2>
-          <p>A 30-day pilot connects 1–2 of your sources, loads your target accounts, implements the prioritisation &amp; recommended-action logic for one workflow, enforces human approval before external action, logs outcomes, and hands over the system in your environment.</p>
-          <div style="margin-top: 16px;">
-            <a class="inline-button primary-btn" href="../pilot/">View 30-day pilot scope ($4,500)</a>
+        <!-- ===== OPPORTUNITIES ===== -->
+        <div class="page-view" id="page-opportunities">
+          <div class="page-header">
+            <h2 class="page-title">Opportunities</h2>
+            <p class="page-subtitle">Prioritised account queue. Click any row to see details.</p>
           </div>
-        </section>
 
-        <iframe class="simulation-frame" title="Prospect Dominion account command center simulation" src="../index.html#demo"></iframe>
+          <div class="filter-bar">
+            <input type="search" class="filter-search" id="opp-search" placeholder="Search accounts..." aria-label="Search opportunities">
+            <select class="filter-select" id="opp-status-filter" aria-label="Filter by status">
+              <option value="All">All statuses</option>
+              <option value="Awaiting Approval">Awaiting Approval</option>
+              <option value="Ready">Ready</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Approved">Approved</option>
+              <option value="Queued">Queued</option>
+            </select>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="data-table-wrap" id="opportunities-table"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== ACTIONS ===== -->
+        <div class="page-view" id="page-actions">
+          <div class="page-header">
+            <h2 class="page-title">Actions</h2>
+            <p class="page-subtitle">Tracked actions across the workflow. Demo state.</p>
+          </div>
+
+          <div class="filter-bar">
+            <select class="filter-select" id="action-status-filter" aria-label="Filter by status">
+              <option value="All">All statuses</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Awaiting Approval">Awaiting Approval</option>
+              <option value="Completed">Completed</option>
+              <option value="Queued">Queued</option>
+            </select>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="data-table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Action Type</th>
+                      <th>Account</th>
+                      <th>Owner</th>
+                      <th>Approval</th>
+                      <th>Created</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="actions-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== APPROVALS ===== -->
+        <div class="page-view" id="page-approvals">
+          <div class="page-header">
+            <h2 class="page-title">Approvals</h2>
+            <p class="page-subtitle">Items requiring human governance before execution. Demo actions update simulation state only.</p>
+          </div>
+
+          <div class="approval-cards" id="approvals-list"></div>
+        </div>
+
+        <!-- ===== ACCOUNTS ===== -->
+        <div class="page-view" id="page-accounts">
+          <div class="page-header">
+            <h2 class="page-title">Accounts</h2>
+            <p class="page-subtitle">All accounts in the simulation. Click to view details.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="data-table-wrap" id="accounts-list-table"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== CONTACTS ===== -->
+        <div class="page-view" id="page-contacts">
+          <div class="page-header">
+            <h2 class="page-title">Contacts</h2>
+            <p class="page-subtitle">Relationship contacts across sample accounts.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="data-table-wrap" id="contacts-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== REPORTS ===== -->
+        <div class="page-view" id="page-reports">
+          <div class="page-header">
+            <h2 class="page-title">Reports</h2>
+            <p class="page-subtitle">Operational analytics. Sample data — not real customer metrics.</p>
+          </div>
+
+          <div class="analytics-grid">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Signals Over Time</div>
+                <div class="card-subtitle">Sample trend data</div>
+              </div>
+              <div class="card-body">
+                <div class="mini-bars" id="report-bars"></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Actions by Type</div>
+                <div class="card-subtitle">Sample breakdown</div>
+              </div>
+              <div class="card-body padded">
+                <div style="display:flex;flex-direction:column;gap:12px">
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                      <span style="color:var(--text-secondary)">Warm Intro</span>
+                      <span style="font-weight:600">2</span>
+                    </div>
+                    <div style="height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden">
+                      <div style="width:33%;height:100%;background:var(--blue);border-radius:3px"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                      <span style="color:var(--text-secondary)">Signal Scan</span>
+                      <span style="font-weight:600">2</span>
+                    </div>
+                    <div style="height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden">
+                      <div style="width:33%;height:100%;background:var(--indigo);border-radius:3px"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                      <span style="color:var(--text-secondary)">Intro Sequence</span>
+                      <span style="font-weight:600">1</span>
+                    </div>
+                    <div style="height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden">
+                      <div style="width:17%;height:100%;background:var(--violet);border-radius:3px"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                      <span style="color:var(--text-secondary)">Outreach</span>
+                      <span style="font-weight:600">1</span>
+                    </div>
+                    <div style="height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden">
+                      <div style="width:17%;height:100%;background:var(--teal);border-radius:3px"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Approval Activity</div>
+                <div class="card-subtitle">Sample governance metrics</div>
+              </div>
+              <div class="card-body padded">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;text-align:center">
+                  <div>
+                    <div style="font-size:28px;font-weight:800;font-family:var(--font-display);color:var(--emerald)">4</div>
+                    <div style="font-size:12px;color:var(--text-muted)">Approved</div>
+                  </div>
+                  <div>
+                    <div style="font-size:28px;font-weight:800;font-family:var(--font-display);color:var(--amber)">2</div>
+                    <div style="font-size:12px;color:var(--text-muted)">Pending</div>
+                  </div>
+                  <div>
+                    <div style="font-size:28px;font-weight:800;font-family:var(--font-display);color:var(--blue)">6</div>
+                    <div style="font-size:12px;color:var(--text-muted)">Total Actions</div>
+                  </div>
+                  <div>
+                    <div style="font-size:28px;font-weight:800;font-family:var(--font-display);color:var(--text-primary)">6</div>
+                    <div style="font-size:12px;color:var(--text-muted)">Accounts</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Priority Distribution</div>
+                <div class="card-subtitle">Sample data</div>
+              </div>
+              <div class="card-body padded">
+                <div style="display:flex;flex-direction:column;gap:12px">
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                      <span><span class="badge badge-high">High</span></span>
+                      <span style="font-weight:600">3</span>
+                    </div>
+                    <div style="height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden">
+                      <div style="width:50%;height:100%;background:var(--red);border-radius:3px"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                      <span><span class="badge badge-medium">Medium</span></span>
+                      <span style="font-weight:600">2</span>
+                    </div>
+                    <div style="height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden">
+                      <div style="width:33%;height:100%;background:var(--amber);border-radius:3px"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                      <span><span class="badge badge-low">Low</span></span>
+                      <span style="font-weight:600">1</span>
+                    </div>
+                    <div style="height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden">
+                      <div style="width:17%;height:100%;background:var(--text-muted);border-radius:3px"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== SETTINGS ===== -->
+        <div class="page-view" id="page-settings">
+          <div class="page-header">
+            <h2 class="page-title">Settings</h2>
+            <p class="page-subtitle">Workspace configuration.</p>
+          </div>
+
+          <div class="settings-section">
+            <h3>Workspace</h3>
+            <p>This is a demonstration workspace running with sample data. In a deployed environment, settings would control signal source connections, approval rules, notification preferences, and team access.</p>
+          </div>
+
+          <div class="settings-section">
+            <h3>Environment</h3>
+            <p>Status: <strong>Demo</strong> &middot; No live integrations active. All data is illustrative.</p>
+          </div>
+
+          <div class="settings-section">
+            <h3>About Prospect Dominion</h3>
+            <p>Prospect Dominion is a governed signal-to-action operating layer for revenue teams, built and deployed by <a href="https://aethonex.com" target="_blank" rel="noopener noreferrer" style="color:var(--blue)">Aethonex</a>.</p>
+            <p style="margin-top:8px">
+              <a href="https://dominion.aethonex.com/" style="color:var(--blue)">Product overview</a> &middot;
+              <a href="https://dominion.aethonex.com/pricing/" style="color:var(--blue)">Pricing</a> &middot;
+              <a href="https://dominion.aethonex.com/pilot/" style="color:var(--blue)">Pilot details</a> &middot;
+              <a href="https://dominion.aethonex.com/faq/" style="color:var(--blue)">FAQ</a>
+            </p>
+          </div>
+        </div>
+
       </main>
-
-      <!-- Lead Capture Dialog -->
-      <dialog class="demo-dialog" id="demoDialog" aria-labelledby="dialogTitle">
-        <button class="dialog-close" id="closeDialog" type="button" aria-label="Close product walkthrough panel">&times;</button>
-        <p class="feature-label">Technical Walkthrough Request</p>
-        <h2 id="dialogTitle">Request a Technical Walkthrough</h2>
-        <p>Tell us about your team and where your signal-to-action handoff breaks today. We'll prepare a focused technical walkthrough.</p>
-        <form class="walkthrough-form" id="walkthroughForm">
-          <label for="requestName">Name</label>
-          <input id="requestName" name="name" autocomplete="name" required />
-          <label for="requestEmail">Work email</label>
-          <input id="requestEmail" name="email" type="email" autocomplete="email" required />
-          <label for="requestCompany">Company</label>
-          <input id="requestCompany" name="company" autocomplete="organization" required />
-          <label for="requestRole">Team or role</label>
-          <input id="requestRole" name="role" autocomplete="organization-title" required />
-          <label for="requestUseCase">What workflow are you interested in?</label>
-          <select id="requestUseCase" name="useCase" required>
-            <option value="">Choose primary workflow</option>
-            <option>Intent signals to warm outbound outreach</option>
-            <option>Account prioritisation &amp; routing</option>
-            <option>Churn risk detection to account review</option>
-            <option>Partner overlap co-sell orchestration</option>
-            <option>White-label agency deployment</option>
-          </select>
-          <label for="requestStack">Current stack / tools (Optional)</label>
-          <input id="requestStack" name="stack" placeholder="e.g. HubSpot, Apollo, Clay, N8N, Salesforce" />
-          <p class="form-note">Your context is used to shape a focused walkthrough. No customer data is required for this demo.</p>
-          <button class="primary-btn" type="submit">Submit walkthrough request</button>
-          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
-        </form>
-      </dialog>
-
-      <footer class="container footer">
-        <div>Prospect Dominion by Aethonex</div>
-        <div class="footer-note">Owned, governed signal-to-action infrastructure</div>
-      </footer>
     </div>
+  </div>
 
-    <script src="../config.js"></script>
-    <script src="../script.js"></script>
-  </body>
+  <!-- ===== DETAIL PANEL (Slide-in) ===== -->
+  <div class="detail-overlay" id="detail-overlay">
+    <div class="detail-panel" id="detail-content" role="dialog" aria-label="Account detail"></div>
+  </div>
+
+  <script src="../app.js"></script>
+</body>
 </html>
