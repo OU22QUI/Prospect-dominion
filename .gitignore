@@ -61,6 +61,7 @@ docs/runbooks/
 !demo/README.md
 
 # Internal/private files stay local-only
+local-only/
 Prospect Dominion — MLOps & Model Sovereignty Layer.md
 Prospect-Dominion-*.md
 Prospect-Dominion-*.zip
