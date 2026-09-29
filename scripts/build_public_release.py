@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 ARCHIVE_NAME = f"Prospect-Dominion-Core-v{VERSION}.zip"
 ARCHIVE_PATH = ROOT / ARCHIVE_NAME
 MANIFEST_NAME = f"RELEASE_MANIFEST_v{VERSION}.txt"
@@ -55,6 +55,9 @@ PRIVATE_ROOT_MARKERS = {
     "docs/GO_TO_MARKET_STRATEGY.md",
     "docs/PROSPECT_DOMINION_FINALIZATION_REPORT_2026-09-29.md",
     "docs/DPA_SUBPROCESSORS.md",
+    "docs/FINAL_ACCEPTANCE_MATRIX.md",
+    "docs/FUTURE_COMMERCIAL_MODULES.md",
+    "docs/runbooks",
     "Prospect-Dominion-Commercial-Playbook.md",
     "Prospect-Dominion-Customer-Deployment.md",
     "Prospect-Dominion-Customer-One-Pager.md",
@@ -149,7 +152,7 @@ def run(cmd: list[str], check: bool = True) -> subprocess.CompletedProcess[str]:
 
 def should_exclude(rel_path: str) -> bool:
     rel_lower = rel_path.lower()
-    if rel_path in PRIVATE_ROOT_MARKERS:
+    if any(rel_path == marker or rel_path.startswith(f"{marker.rstrip('/')}/") for marker in PRIVATE_ROOT_MARKERS):
         return True
     for marker in FORBIDDEN_PATTERNS:
         if marker in rel_lower:

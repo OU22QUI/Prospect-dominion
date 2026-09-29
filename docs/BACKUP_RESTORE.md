@@ -43,7 +43,9 @@ Then confirm:
 
 ## Operational requirement
 
-A real pilot deployment is not accepted until a restore rehearsal has been successfully demonstrated on isolated data.
+A local isolated-data rehearsal passed on 2026-09-29 using `python scripts/backup_restore_rehearsal.py`: 24 source tables and 11 total rows matched the restored database, and the API readiness check remained healthy.
+
+This verifies the local dump/restore path only. It does not satisfy the gate for a customer deployment. Before customer data is imported, repeat the rehearsal in that customer's deployment using isolated customer-specific data, record the operator, timestamp, and result, and confirm critical workflow and audit records. Backup protection, retention, and recovery targets must also be agreed for that environment.
 
 ## Recovery notes
 

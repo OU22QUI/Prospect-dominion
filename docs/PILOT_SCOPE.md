@@ -14,7 +14,7 @@ The operator app at `/app` is an API-connected pilot console: a signed-in operat
 
 ## Remaining validation before customer data
 
-The functionality still requires a live Compose/Postgres run, real HTTPS/domain configuration, tested Resend credentials/webhook registration, independent security review, backup-restore rehearsal, and controlled internal dogfood before customer-data use. The legacy unversioned API remains demo compatibility code and is not the pilot API.
+The local isolated-data backup/restore rehearsal passed on 2026-09-29; this does not replace a rehearsal in the customer-specific deployment. Before customer-data use, the deployment still requires a live Compose/Postgres run, real HTTPS/domain configuration, tested Resend credentials/webhook registration, independent security review, a customer-environment backup/restore rehearsal, and controlled internal dogfood. The legacy unversioned API remains demo compatibility code and is not the pilot API.
 
 ## Explicitly out of scope
 

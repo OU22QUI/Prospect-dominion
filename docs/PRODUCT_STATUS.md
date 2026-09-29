@@ -26,7 +26,7 @@ These items are operational requirements, not repository defaults:
 - JWT and database secrets
 - approved data loads
 - operator access and approval policy
-- backup and restore rehearsal
+- customer-environment backup and restore rehearsal (the isolated local rehearsal passed; see `BACKUP_RESTORE.md`)
 
 ## ROADMAP / NOT INCLUDED
 

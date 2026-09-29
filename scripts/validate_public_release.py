@@ -9,7 +9,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 ARCHIVE_NAME = f"Prospect-Dominion-Core-v{VERSION}.zip"
 REQUIRED_FILES = {
     "README.md",
@@ -42,6 +42,9 @@ FORBIDDEN_PREFIXES = (
     "docs/GO_TO_MARKET_STRATEGY.md",
     "docs/PROSPECT_DOMINION_FINALIZATION_REPORT_2026-09-29.md",
     "docs/DPA_SUBPROCESSORS.md",
+    "docs/FINAL_ACCEPTANCE_MATRIX.md",
+    "docs/FUTURE_COMMERCIAL_MODULES.md",
+    "docs/runbooks/",
     ".git",
     ".env",
     ".pytest_cache",

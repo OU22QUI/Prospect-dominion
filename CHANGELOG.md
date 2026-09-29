@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.2.1
+
+### Fixed
+
+- Align CI deployment verification with the single-customer pilot profile.
+- Validate migration completion without requiring unrelated optional services.
+- Keep the proposed pilot scope and release readiness conditions explicit.
+
+### Release
+
+- Publish a validated ZIP, SHA-256 checksum, and manifest as assets on the matching GitHub tag.
+- Customer-data use remains subject to environment-specific security review and signed data-processing terms.
+
 ## v0.2.0
 
 ### Added
