@@ -4,9 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Prospect Dominion by Aethonex | Owned signal-to-action layer</title>
-    <meta name="description" content="Prospect Dominion by Aethonex is the owned, governed signal-to-action layer deployed in your environment. One workflow first. Yours to keep." />
+    <meta name="description" content="Prospect Dominion is an MIT-licensed, self-hostable signal-to-action core. Aethonex offers separately scoped deployment for a proposed outbound agency pilot." />
     <meta property="og:title" content="Prospect Dominion by Aethonex | Owned signal-to-action layer" />
-    <meta property="og:description" content="Turn the signals you already have into approved, tracked actions. Deployed in your environment. One workflow first. Yours to keep." />
+    <meta property="og:description" content="An MIT-licensed, self-hostable signal-to-action core, with a proposed CSV-backed outbound agency pilot from Aethonex." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://dominion.aethonex.com/" />
     <meta property="og:image" content="https://dominion.aethonex.com/og-preview.svg" />
@@ -20,48 +20,73 @@
     <a class="skip-link" href="#overview">Skip to product overview</a>
 
     <div class="page-shell">
-      <header class="topbar container">
-        <div class="brand-wrap" aria-label="Prospect Dominion home">
-          <img src="logo-new.png" alt="Aethonex" class="brand-logo-img" />
-          <div class="brand-divider"></div>
-          <div>
-            <div class="brand-name">Prospect Dominion</div>
-            <div class="brand-subtitle">by Aethonex · Owned signal-to-action layer</div>
-          </div>
-        </div>
+      <div class="topbar-wrapper">
+        <header class="topbar container">
+          <a class="brand-wrap" href="./" aria-label="Prospect Dominion home">
+            <img src="logo-new.png" alt="Aethonex" class="brand-logo-img" />
+            <div class="brand-divider"></div>
+            <div>
+              <div class="brand-name">Prospect Dominion</div>
+              <div class="brand-subtitle">by Aethonex · Owned signal-to-action layer</div>
+            </div>
+          </a>
 
-        <nav class="nav" aria-label="Main navigation">
-          <a href="#overview">Overview</a>
-          <a href="demo/">Simulation</a>
-          <a href="pricing/">Pricing</a>
-          <a href="pilot/">Pilot</a>
-          <a href="partners/">Partners</a>
-          <a href="faq/">FAQ</a>
-          <a href="tester.html">Technical path</a>
-        </nav>
-      </header>
+          <nav class="nav" aria-label="Main navigation">
+            <a href="#overview" class="active">Overview</a>
+            <a href="demo/">Simulation</a>
+            <a href="pricing/">Pricing</a>
+            <a href="pilot/">Pilot</a>
+            <a href="partners/">Partners</a>
+            <a href="faq/">FAQ</a>
+            <a href="tester.html">Technical path</a>
+            <a href="https://github.com/OU22QUI/Prospect-dominion" target="_blank" rel="noopener noreferrer">Open-source repo</a>
+            <a href="demo/" class="nav-cta-btn">Launch Simulation →</a>
+          </nav>
+
+          <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation menu" aria-expanded="false" type="button">
+            <div class="hamburger-box">
+              <span class="hamburger-bar"></span>
+              <span class="hamburger-bar"></span>
+              <span class="hamburger-bar"></span>
+            </div>
+          </button>
+        </header>
+      </div>
+
+      <!-- Mobile Navigation Drawer -->
+      <div class="mobile-nav-drawer" id="mobileNavDrawer" aria-hidden="true">
+        <a href="#overview" class="mobile-nav-link">Overview</a>
+        <a href="demo/" class="mobile-nav-link">Product Simulation</a>
+        <a href="pricing/" class="mobile-nav-link">Proposed pilot pricing</a>
+        <a href="pilot/" class="mobile-nav-link">Pilot scope ($4,500 proposed)</a>
+        <a href="partners/" class="mobile-nav-link">Partner Program</a>
+        <a href="faq/" class="mobile-nav-link">FAQ</a>
+        <a href="tester.html" class="mobile-nav-link">Technical Evaluation</a>
+        <a href="https://github.com/OU22QUI/Prospect-dominion" class="mobile-nav-link" target="_blank" rel="noopener noreferrer">Open-source repository</a>
+        <button class="primary-btn drawer-cta book-walkthrough-btn" type="button">Discuss pilot fit</button>
+      </div>
 
       <main>
         <!-- HERO SECTION -->
         <section class="container hero-content" id="overview">
           <div class="hero-copy">
             <div class="parent-tag">Prospect Dominion by Aethonex</div>
-            <p class="eyebrow">Owned signal-to-action layer</p>
+            <p class="eyebrow">Open-source core · Aethonex deployment</p>
             <h1>Turn the signals you already have into approved, tracked actions.</h1>
             <p class="lede">
-              Prospect Dominion is the owned, governed signal-to-action layer deployed in your environment. One workflow first. Yours to keep.
+              For outbound and lead-generation agencies: turn a customer-provided signal export into prioritized accounts and human-approved next actions. The open-source core is self-hostable; deployment fit and any connector work are confirmed before a pilot is agreed.
             </p>
 
             <div class="cta-row">
-              <button class="primary-btn book-walkthrough-btn" id="requestDemo" type="button">Book a walkthrough</button>
-              <a class="secondary-btn footer-link" href="demo/">Explore the simulation</a>
+              <button class="primary-btn book-walkthrough-btn" id="requestDemo" type="button">Discuss the pilot</button>
+              <a class="secondary-btn footer-link" href="https://github.com/OU22QUI/Prospect-dominion" target="_blank" rel="noopener noreferrer">View open-source core</a>
             </div>
 
             <!-- SIMULATION DISCLAIMER -->
             <div class="simulation-badge-bar" style="margin-top: 20px;">
-              <div style="display: flex; items-center; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
                 <span class="simulation-pill">Product Simulation</span>
-                <span>Sample accounts &amp; illustrative data demonstrate the operating model. The pilot is built on your actual workflow and data.</span>
+                <span>Sample accounts &amp; illustrative data demonstrate the operating model. A pilot depends on technical, security, and data-processing review.</span>
               </div>
             </div>
 
@@ -73,8 +98,6 @@
 
             <div class="buyer-badges" aria-label="Audience fit" style="margin-top: 18px;">
               <span style="background: rgba(232, 184, 109, 0.15); border: 1px solid rgba(232, 184, 109, 0.4); color: var(--accent); font-weight: 700;">Primary: Outbound &amp; lead-generation agencies</span>
-              <span>RevOps / GTM teams</span>
-              <span>SaaS revenue teams</span>
             </div>
           </div>
 
@@ -170,12 +193,12 @@
             <article class="feature-card">
               <p class="feature-label">What you get</p>
               <h3>The 30-day guided pilot</h3>
-              <p>We deploy one real signal-to-action workflow in your environment, connected to 1–2 of your actual data sources, with an operator approval gate.</p>
+              <p>The proposed path starts with one customer-provided CSV signal export and an operator approval gate. Additional connectors require technical validation and written scope.</p>
             </article>
             <article class="feature-card">
               <p class="feature-label">Ownership</p>
               <h3>Deploy in your environment</h3>
-              <p>Your environment. Your instance. Your credentials. Your documentation. Your system after the engagement. No platform lock-in.</p>
+              <p>Target deployment is customer-controlled. Data, credentials, hosting, handover, and rights to custom work are confirmed in the written scope.</p>
             </article>
             <article class="feature-card">
               <p class="feature-label">Governed</p>
@@ -184,34 +207,34 @@
             </article>
           </div>
 
-          <!-- NOT A SAAS SUBSCRIPTION COMPARISON PANEL -->
+          <!-- OPEN-SOURCE CORE AND SERVICE BOUNDARY -->
           <section class="panel" style="margin-top: 36px; padding: 32px; border-color: rgba(198, 168, 107, 0.3); background: rgba(19, 19, 19, 0.95);">
             <div style="text-align: center; max-width: 650px; margin: 0 auto 28px;">
-              <p class="eyebrow" style="color: var(--accent);">Why We Sell Deployments, Not SaaS Subscriptions</p>
-              <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; margin: 8px 0;">Owned Infrastructure vs. Rented SaaS</h2>
-              <p style="color: var(--muted); font-size: 0.95rem;">Prospect Dominion is not a monthly SaaS product where you log into a shared cloud. It is custom-deployed infrastructure built on your server that you own outright.</p>
+              <p class="eyebrow" style="color: var(--accent);">Open-source core · optional services</p>
+              <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; margin: 8px 0;">Self-hostable software. Separately scoped delivery.</h2>
+              <p style="color: var(--muted); font-size: 0.95rem;">The core is MIT-licensed software you can inspect and self-host. Aethonex deployment and customization are separately scoped services, not a subscription required to use the core.</p>
             </div>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
               <div style="background: rgba(230, 129, 112, 0.05); border: 1px solid rgba(230, 129, 112, 0.2); padding: 22px; border-radius: 14px;">
-                <h4 style="color: var(--danger); margin: 0 0 10px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.08em;">❌ Rented SaaS Software</h4>
+                <h4 style="color: var(--danger); margin: 0 0 10px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.08em;">MIT-licensed core</h4>
                 <ul style="margin: 0; padding-left: 18px; color: var(--muted); font-size: 0.88rem; line-height: 1.8;">
-                  <li>Compounding monthly per-seat licenses</li>
-                  <li>Vendor lock-in &amp; data export hurdles</li>
-                  <li>Client data passes through shared 3rd-party servers</li>
-                  <li>Black-box automations with no human safety gate</li>
-                  <li>Unexpected price hikes &amp; credit tier caps</li>
+                  <li>Source is public and inspectable</li>
+                  <li>Self-host in an environment you operate</li>
+                  <li>Pilot-grade workflow foundation, not a hosted SaaS</li>
+                  <li>Human approval is part of the documented workflow</li>
+                  <li>Hosting and provider costs are yours to scope</li>
                 </ul>
               </div>
 
               <div style="background: rgba(198, 168, 107, 0.08); border: 1px solid rgba(198, 168, 107, 0.35); padding: 22px; border-radius: 14px;">
-                <h4 style="color: var(--accent); margin: 0 0 10px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.08em;">✓ Prospect Dominion (Aethonex)</h4>
+                <h4 style="color: var(--accent); margin: 0 0 10px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.08em;">Aethonex services</h4>
                 <ul style="margin: 0; padding-left: 18px; color: var(--text); font-size: 0.88rem; line-height: 1.8;">
-                  <li>Fixed $4,500 pilot / deployment engagement fee</li>
-                  <li>Deploys inside your private cloud environment</li>
-                  <li>You own 100% of code, definitions &amp; documentation</li>
-                  <li>Enforced human operator approval before sending</li>
-                  <li>Zero monthly SaaS subscription fees to Aethonex</li>
+                  <li>Proposed $4,500 fee for the defined pilot scope</li>
+                  <li>Self-host the MIT-licensed core in your environment</li>
+                  <li>You retain your data, credentials, and infrastructure</li>
+                  <li>Approval gates are part of the documented workflow</li>
+                  <li>Hosting and external-provider costs are separate</li>
                 </ul>
               </div>
             </div>
@@ -220,17 +243,17 @@
           <!-- 30-DAY PILOT PROMOTION PANEL -->
           <section class="deployment-panel" aria-labelledby="deploymentTitle">
             <div>
-              <p class="eyebrow">The Salesperson's Weapon</p>
-              <h2 class="section-title" id="deploymentTitle">Dominion Pilot — $4,500 fixed</h2>
-              <p class="deployment-copy">30 days · one workflow · your environment. Full baseline deployment, 1–2 data sources, custom prioritisation, human approval gate, outcome logging, and documented handover.</p>
+              <p class="eyebrow">Proposed pilot</p>
+              <h2 class="section-title" id="deploymentTitle">Proposed Dominion Pilot — $4,500</h2>
+              <p class="deployment-copy">A proposed 30-day scope: one CSV signal input, prioritisation, a human approval step, outcome logging, and handover. Hosting, external providers, and any additional connector work must be agreed separately in writing.</p>
             </div>
             <div class="deployment-options">
-              <div><strong>30 Days</strong><span>Bounded scope</span></div>
+              <div><strong>30 Days</strong><span>Proposed duration</span></div>
               <div><strong>1 Workflow</strong><span>First high-impact loop</span></div>
-              <div><strong>$4,500 Fixed</strong><span>No hidden fees</span></div>
+              <div><strong>$4,500 proposed</strong><span>Final scope in writing</span></div>
             </div>
             <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-              <button class="primary-btn book-walkthrough-btn" type="button">Request a pilot</button>
+              <button class="primary-btn book-walkthrough-btn" type="button">Discuss the pilot</button>
               <a class="secondary-btn" href="pilot/" style="text-decoration: none;">View pilot details &amp; timeline →</a>
             </div>
           </section>
@@ -362,11 +385,11 @@
             <div>
               <p class="eyebrow" style="color: var(--accent);">Parent Company Credibility</p>
               <h3>Built by Aethonex</h3>
-              <p>Prospect Dominion is engineered by Aethonex, a UK-based private infrastructure architecture firm. We help digital and performance agencies replace SaaS dependency with owned, self-hosted automation stacks deployed in their own environment. Direct accountable ownership, transparent code, zero black boxes.</p>
+              <p>Aethonex maintains the open-source Prospect Dominion core and can scope deployment and workflow implementation. The core is MIT-licensed; customer-specific work, infrastructure, and operating responsibilities are agreed separately.</p>
             </div>
             <div style="text-align: right; display: flex; flex-direction: column; gap: 12px; align-items: flex-end;">
               <a href="https://aethonex.com" target="_blank" rel="noopener noreferrer" class="secondary-btn" style="text-decoration: none;">Visit Aethonex.com →</a>
-              <button class="primary-btn book-walkthrough-btn" type="button">Book a walkthrough</button>
+              <button class="primary-btn book-walkthrough-btn" type="button">Discuss the pilot</button>
             </div>
           </section>
         </section>
@@ -375,33 +398,10 @@
       <!-- LEAD CAPTURE DIALOG -->
       <dialog class="demo-dialog" id="demoDialog" aria-labelledby="dialogTitle">
         <button class="dialog-close" id="closeDialog" type="button" aria-label="Close product walkthrough panel">&times;</button>
-        <p class="feature-label">Book a walkthrough / pilot request</p>
-        <h2 id="dialogTitle">See the operating model in action</h2>
-        <p>Tell us about your team and where your signal-to-action handoff breaks today. We&apos;ll prepare a focused technical walkthrough.</p>
-        <form class="walkthrough-form" id="walkthroughForm">
-          <label for="requestName">Name</label>
-          <input id="requestName" name="name" autocomplete="name" required />
-          <label for="requestEmail">Work email</label>
-          <input id="requestEmail" name="email" type="email" autocomplete="email" required />
-          <label for="requestCompany">Company</label>
-          <input id="requestCompany" name="company" autocomplete="organization" required />
-          <label for="requestRole">Team or role</label>
-          <input id="requestRole" name="role" autocomplete="organization-title" required />
-          <label for="requestUseCase">What workflow are you interested in?</label>
-          <select id="requestUseCase" name="useCase" required>
-            <option value="">Choose primary workflow</option>
-            <option>Intent signals to warm outbound outreach</option>
-            <option>Account prioritisation &amp; routing</option>
-            <option>Churn risk detection to account review</option>
-            <option>Partner overlap co-sell orchestration</option>
-            <option>White-label agency deployment</option>
-          </select>
-          <label for="requestStack">Current stack / tools (Optional)</label>
-          <input id="requestStack" name="stack" placeholder="e.g. HubSpot, Apollo, Clay, N8N, Salesforce" />
-          <p class="form-note">Your context is used to shape a focused walkthrough. No customer data is required for this demo.</p>
-          <button class="primary-btn" type="submit">Submit request</button>
-          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
-        </form>
+        <p class="feature-label">External scheduling</p>
+        <h2 id="dialogTitle">Discuss proposed pilot fit</h2>
+        <p>The next step opens Cal.com to schedule a discussion. Review <a href="https://cal.com/privacy" target="_blank" rel="noopener noreferrer">Cal.com's privacy information</a> before providing contact details; do not include customer or confidential data.</p>
+        <a class="primary-btn" href="https://cal.com/aethonex/20-min" target="_blank" rel="noopener noreferrer">Continue to Cal.com</a>
         <div class="dialog-actions">
           <a class="secondary-btn dialog-link" href="tester.html">Open technical evaluation</a>
           <a class="secondary-btn dialog-link" href="pilot/">View 30-day pilot scope</a>
@@ -415,17 +415,29 @@
             <h3>Turn this into a real working sales motion.</h3>
           </div>
           <div class="cta-panel-actions">
-            <button class="primary-btn book-walkthrough-btn" id="finalBookDemo" type="button">Book a walkthrough</button>
-            <a class="secondary-btn footer-link" href="pilot/">Request a pilot ($4,500)</a>
+            <button class="primary-btn book-walkthrough-btn" id="finalBookDemo" type="button">Discuss the pilot</button>
+            <a class="secondary-btn footer-link" href="pilot/">Review pilot scope</a>
             <a class="secondary-btn footer-link" href="tester.html">Technical evaluation</a>
           </div>
         </div>
       </section>
 
       <footer class="container footer">
-        <div>Prospect Dominion by Aethonex</div>
-        <div class="footer-note">Owned, governed signal-to-action infrastructure</div>
+        <div class="footer-brand">
+          <div>Prospect Dominion by Aethonex</div>
+          <div class="footer-note">Owned, governed signal-to-action infrastructure</div>
+        </div>
+        <div class="footer-meta" aria-label="Aethonex links and conversion paths">
+          <a href="https://www.linkedin.com/company/aethonex" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="https://x.com/aethonex" target="_blank" rel="noopener noreferrer">X</a>
+          <a href="https://aethonex.com" target="_blank" rel="noopener noreferrer">Aethonex</a>
+          <a href="https://github.com/OU22QUI/Prospect-dominion" target="_blank" rel="noopener noreferrer">Open-source repo</a>
+          <a href="pilot/">Review pilot scope</a>
+        </div>
       </footer>
+
+      <!-- Floating Toast Notification Container -->
+      <div class="pd-toast-container" id="pdToastContainer" aria-live="polite"></div>
     </div>
 
     <script src="config.js"></script>

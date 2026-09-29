@@ -1,0 +1,5 @@
+# Local pilot reverse proxy only. Configure a real domain and TLS before any
+# customer-data deployment; see docs/runbooks/deploy-pilot.md.
+http://localhost {
+    reverse_proxy api:8000
+}

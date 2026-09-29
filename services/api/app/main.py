@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import base64
 import os
 import socket
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 try:
     import httpx
@@ -33,8 +35,23 @@ from app.orchestration import orchestrator
 from app.stores import store
 from app.workflow import workflow_engine
 
+import hashlib
+import json
+from app.csv_connector import parse_signals
+from app.exports import audit_proof
+from app.resend import ResendSender, verify_webhook
+from app.scoring import score_account, validate_rules
+from app.security import hash_password, issue_token, verify_password, verify_token
+
+try:
+    from app.pilot_store import PilotStore
+except ModuleNotFoundError:  # pragma: no cover
+    PilotStore = None
+
 app = FastAPI(title="Prospect Dominion API")
 security = HTTPBearer(auto_error=False)
+
+APP_HTML_PAGE = Path(__file__).resolve().parent.parent / "static" / "app.html"
 
 HTML_PAGE = Path(__file__).resolve().parent.parent / "static" / "index.html"
 DEFAULT_RUNTIME_PORT = 8000
@@ -74,7 +91,10 @@ def get_expected_api_key() -> str:
 
 
 def get_default_role() -> str:
-    return os.getenv("PD_DEFAULT_ROLE", "admin").strip().lower()
+    configured_role = os.getenv("PD_DEFAULT_ROLE")
+    if configured_role:
+        return configured_role.strip().lower()
+    return "viewer" if os.getenv("APP_ENV", "local").strip().lower() == "production" else "admin"
 
 
 def require_api_key(credentials: HTTPAuthorizationCredentials | None = Depends(security)) -> str:
@@ -87,8 +107,8 @@ def require_api_key(credentials: HTTPAuthorizationCredentials | None = Depends(s
 
 
 def require_role(*allowed_roles: str):
-    def dependency(request: Request, api_key: str = Depends(require_api_key)) -> str:
-        requested_role = (request.headers.get("X-Role") or get_default_role()).strip().lower()
+    def dependency(api_key: str = Depends(require_api_key)) -> str:
+        requested_role = get_default_role()
         if not allowed_roles:
             return requested_role
         if requested_role not in {role.lower() for role in allowed_roles}:
@@ -142,7 +162,17 @@ def validate_runtime_config() -> dict[str, Any]:
     required = ["PD_API_KEY"]
 
     if app_env == "production":
-        required.extend(["JWT_SECRET", "PUBLIC_BASE_URL"])
+        required.extend([
+            "JWT_SECRET",
+            "PUBLIC_BASE_URL",
+            "PG_DSN",
+            "PD_STORE_BACKEND",
+            "PD_PUBLIC_HOST",
+            "PD_CADDYFILE",
+            "PD_DEFAULT_ROLE",
+            "RESEND_API_KEY",
+            "RESEND_WEBHOOK_SECRET",
+        ])
 
     for key in required:
         value = os.getenv(key)
@@ -151,6 +181,32 @@ def validate_runtime_config() -> dict[str, Any]:
 
     if app_env == "production" and not os.getenv("PD_API_KEY", "").startswith("prod-"):
         issues.append("PD_API_KEY_PATTERN")
+    if app_env == "production":
+        jwt_secret = os.getenv("JWT_SECRET", "")
+        if len(jwt_secret) < 32 or jwt_secret.strip().lower() in {"change-me", "changeme", "secret"}:
+            issues.append("JWT_SECRET_STRENGTH")
+        if not os.getenv("PUBLIC_BASE_URL", "").startswith("https://"):
+            issues.append("PUBLIC_BASE_URL_HTTPS")
+        if os.getenv("PD_STORE_BACKEND", "").strip().lower() != "postgres":
+            issues.append("PD_STORE_BACKEND_POSTGRES")
+        public_host = os.getenv("PD_PUBLIC_HOST", "").strip().lower()
+        if public_host != (urlparse(os.getenv("PUBLIC_BASE_URL", "")).hostname or "").lower():
+            issues.append("PD_PUBLIC_HOST_MISMATCH")
+        if Path(os.getenv("PD_CADDYFILE", "").replace("\\", "/")).name != "Caddyfile.production":
+            issues.append("PD_CADDYFILE_PRODUCTION")
+        if get_default_role() != "viewer":
+            issues.append("PD_DEFAULT_ROLE_LEGACY_VIEWER_ONLY")
+        resend_api_key = os.getenv("RESEND_API_KEY", "")
+        if not resend_api_key.startswith("re_") or resend_api_key.startswith("re_example"):
+            issues.append("RESEND_API_KEY_PATTERN")
+        webhook_secret = os.getenv("RESEND_WEBHOOK_SECRET", "")
+        try:
+            encoded_secret = webhook_secret.removeprefix("whsec_")
+            decoded_secret = base64.b64decode(encoded_secret + "=" * (-len(encoded_secret) % 4), validate=True)
+        except ValueError:
+            decoded_secret = b""
+        if not webhook_secret.startswith("whsec_") or len(decoded_secret) != 32:
+            issues.append("RESEND_WEBHOOK_SECRET_PATTERN")
 
     if app_env != "production":
         return {
@@ -176,8 +232,16 @@ def _readiness_checks() -> dict[str, Any]:
         "redis": {"status": "unknown"},
     }
 
-    db_path = store.db_path
-    checks["database"] = {"status": "ok" if db_path.exists() else "missing", "path": str(db_path)}
+    if os.getenv("PD_STORE_BACKEND", "sqlite").strip().lower() == "postgres":
+        try:
+            with get_pilot_store().transaction() as cursor:
+                cursor.execute("SELECT 1")
+            checks["database"] = {"status": "ok", "backend": "postgres"}
+        except Exception as exc:
+            checks["database"] = {"status": "unavailable", "backend": "postgres", "error": type(exc).__name__}
+    else:
+        db_path = store.db_path
+        checks["database"] = {"status": "ok" if db_path.exists() else "missing", "backend": "sqlite", "path": str(db_path)}
 
     qdrant_url = os.getenv("QDRANT_URL", "http://127.0.0.1:6335")
     if httpx is None:
@@ -453,6 +517,423 @@ def seed_demo() -> dict[str, Any]:
         "event_id": event.event_id,
         "outcome_id": outcome.outcome_id,
     }
+
+
+# ==============================================================================
+# Pilot /v1 Governed API & Operator Console
+# ==============================================================================
+
+
+def get_pilot_store() -> PilotStore:
+    if PilotStore is None:
+        raise HTTPException(status_code=500, detail="Pilot store dependencies not installed")
+    try:
+        return PilotStore()
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+def require_pilot_auth(credentials: HTTPAuthorizationCredentials | None = Depends(security)) -> dict[str, Any]:
+    if credentials is None or credentials.scheme.lower() != "bearer":
+        raise HTTPException(status_code=401, detail="Invalid or missing authentication token")
+    try:
+        payload = verify_token(credentials.credentials)
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid or expired session token")
+    store_instance = get_pilot_store()
+    principal = store_instance.principal(payload["sub"], payload["tenant"])
+    if not principal:
+        raise HTTPException(status_code=401, detail="User or workspace not found")
+    return principal
+
+
+def require_pilot_role(*allowed_roles: str):
+    def dependency(principal: dict[str, Any] = Depends(require_pilot_auth)) -> dict[str, Any]:
+        if allowed_roles and principal.get("role") not in allowed_roles:
+            raise HTTPException(status_code=403, detail="Forbidden")
+        return principal
+    return dependency
+
+
+@app.get("/app", response_class=HTMLResponse)
+def get_operator_app() -> str:
+    if not APP_HTML_PAGE.is_file():
+        raise HTTPException(status_code=404, detail="Operator app not found")
+    return APP_HTML_PAGE.read_text(encoding="utf-8")
+
+
+@app.post("/v1/auth/bootstrap", status_code=201)
+def pilot_bootstrap(payload: dict[str, Any]) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    try:
+        p_hash = hash_password(str(payload["password"]))
+        res = store_instance.bootstrap(
+            tenant_slug=str(payload["tenant_slug"]),
+            tenant_name=str(payload["tenant_name"]),
+            email=str(payload["email"]),
+            display_name=str(payload["display_name"]),
+            password_hash=p_hash,
+        )
+        token = issue_token(user_id=res["user_id"], tenant_id=res["tenant_id"])
+        return {**res, "token": token}
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc))
+
+
+@app.post("/v1/auth/login")
+def pilot_login(payload: dict[str, Any]) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    user = store_instance.authenticate(str(payload.get("email", "")))
+    if not user or not verify_password(str(payload.get("password", "")), user.get("password_hash")):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    token = issue_token(user_id=str(user["user_id"]), tenant_id=str(user["tenant_id"]))
+    return {
+        "token": token,
+        "role": user["role"],
+        "user": {
+            "user_id": str(user["user_id"]),
+            "tenant_id": str(user["tenant_id"]),
+            "role": user["role"],
+        },
+    }
+
+
+@app.get("/v1/me")
+def pilot_me(principal: dict[str, Any] = Depends(require_pilot_auth)) -> dict[str, Any]:
+    return principal
+
+
+@app.post("/v1/users", status_code=201)
+def pilot_create_user(
+    payload: dict[str, Any],
+    principal: dict[str, Any] = Depends(require_pilot_role("owner")),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    try:
+        p_hash = hash_password(str(payload["password"]))
+        user = store_instance.create_user(
+            tenant_id=principal["tenant_id"],
+            actor_id=str(principal["user_id"]),
+            email=str(payload["email"]),
+            display_name=str(payload["display_name"]),
+            password_hash=p_hash,
+            role=str(payload["role"]),
+        )
+        return user
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+
+
+@app.get("/v1/users")
+def pilot_list_users(principal: dict[str, Any] = Depends(require_pilot_auth)) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    return {"items": store_instance.list_users(principal["tenant_id"])}
+
+
+@app.post("/v1/sources/csv/import")
+def pilot_import_csv(
+    payload: dict[str, Any],
+    principal: dict[str, Any] = Depends(require_pilot_role("owner", "operator")),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    content = str(payload.get("content", ""))
+    source_name = str(payload.get("source_name", "csv"))
+    try:
+        rows, digest = parse_signals(content)
+    except ValueError as exc:
+        import_key = hashlib.sha256(content.encode()).hexdigest()[:32]
+        store_instance.record_csv_failure(principal["tenant_id"], str(principal["user_id"]), source_name, import_key, str(exc))
+        raise HTTPException(status_code=400, detail=str(exc))
+    return store_instance.import_csv_signals(principal["tenant_id"], str(principal["user_id"]), source_name, rows, digest)
+
+
+@app.get("/v1/settings/icp-rules")
+def pilot_get_rules(principal: dict[str, Any] = Depends(require_pilot_auth)) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    settings = store_instance.get_settings(principal["tenant_id"])
+    return settings.get("icp_rules", {})
+
+
+@app.put("/v1/settings/icp-rules")
+def pilot_save_rules(
+    payload: dict[str, Any],
+    principal: dict[str, Any] = Depends(require_pilot_role("owner", "operator")),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    try:
+        rules = validate_rules(payload.get("rules", {}))
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    return store_instance.save_rules(principal["tenant_id"], str(principal["user_id"]), rules)
+
+
+@app.post("/v1/accounts/{account_id}/score")
+def pilot_score_account(
+    account_id: str,
+    principal: dict[str, Any] = Depends(require_pilot_role("owner", "operator")),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    settings = store_instance.get_settings(principal["tenant_id"])
+    events = store_instance.events_for_account(principal["tenant_id"], account_id)
+    score_res = score_account(events, settings.get("icp_rules", {}))
+    return store_instance.save_score(principal["tenant_id"], str(principal["user_id"]), account_id, score_res)
+
+
+@app.get("/v1/priority-queue")
+def pilot_priority_queue(
+    limit: int = 50,
+    offset: int = 0,
+    principal: dict[str, Any] = Depends(require_pilot_auth),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    items, total = store_instance.priority_queue(principal["tenant_id"], limit=limit, offset=offset)
+    return {"items": items, "total": total}
+
+
+@app.post("/v1/approvals", status_code=201)
+def pilot_create_approval(
+    payload: dict[str, Any],
+    principal: dict[str, Any] = Depends(require_pilot_role("owner", "operator")),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    return store_instance.request_approval(principal["tenant_id"], str(principal["user_id"]), payload)
+
+
+@app.post("/v1/approvals/{approval_id}/approve")
+def pilot_approve(
+    approval_id: str,
+    payload: dict[str, Any] | None = None,
+    principal: dict[str, Any] = Depends(require_pilot_role("owner", "operator")),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    reason = (payload or {}).get("reason") if isinstance(payload, dict) else None
+    approval = store_instance.decide_approval(principal["tenant_id"], str(principal["user_id"]), approval_id, "approved", reason)
+    if not approval:
+        raise HTTPException(status_code=404, detail="Approval not found, expired, or already decided")
+    return approval
+
+
+@app.post("/v1/approvals/{approval_id}/reject")
+def pilot_reject(
+    approval_id: str,
+    payload: dict[str, Any] | None = None,
+    principal: dict[str, Any] = Depends(require_pilot_role("owner", "operator")),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    reason = (payload or {}).get("reason") if isinstance(payload, dict) else None
+    approval = store_instance.decide_approval(principal["tenant_id"], str(principal["user_id"]), approval_id, "rejected", reason)
+    if not approval:
+        raise HTTPException(status_code=404, detail="Approval not found, expired, or already decided")
+    return approval
+
+
+@app.post("/v1/approvals/{approval_id}/send")
+def pilot_send(
+    approval_id: str,
+    payload: dict[str, Any],
+    principal: dict[str, Any] = Depends(require_pilot_role("owner", "operator")),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    idempotency_key = str(payload.get("idempotency_key", ""))
+    if not idempotency_key:
+        raise HTTPException(status_code=400, detail="idempotency_key is required")
+    try:
+        claim = store_instance.claim_approved_send(
+            tenant_id=principal["tenant_id"],
+            actor_id=str(principal["user_id"]),
+            approval_id=approval_id,
+            idempotency_key=idempotency_key,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc))
+
+    if not claim["should_send"]:
+        return {"attempt": claim["attempt"], "sent": False}
+
+    sender = ResendSender()
+    try:
+        msg_id = sender.send(claim["payload"])
+        attempt = store_instance.record_send_result(
+            tenant_id=principal["tenant_id"],
+            actor_id=str(principal["user_id"]),
+            attempt_id=str(claim["attempt"]["id"]),
+            message_id=msg_id,
+        )
+        return {"attempt": attempt, "sent": True}
+    except Exception as exc:
+        attempt = store_instance.record_send_result(
+            tenant_id=principal["tenant_id"],
+            actor_id=str(principal["user_id"]),
+            attempt_id=str(claim["attempt"]["id"]),
+            error=str(exc),
+        )
+        return {"attempt": attempt, "sent": False, "error": str(exc)}
+
+
+@app.post("/v1/webhooks/resend/{tenant_id}")
+async def pilot_resend_webhook(
+    tenant_id: str,
+    request: Request,
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    if tenant_id != store_instance.bootstrap_tenant_id():
+        raise HTTPException(status_code=404, detail="Webhook not found")
+    raw_body = await request.body()
+    try:
+        verify_webhook(raw_body, dict(request.headers))
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    try:
+        event = json.loads(raw_body)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON body")
+    processed = store_instance.receive_resend_webhook(tenant_id, event)
+    return {"processed": processed}
+
+
+# List endpoints
+@app.get("/v1/accounts")
+def pilot_list_accounts(
+    limit: int = 50,
+    offset: int = 0,
+    principal: dict[str, Any] = Depends(require_pilot_auth),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    items, total = store_instance.list_records("accounts", principal["tenant_id"], limit=limit, offset=offset)
+    return {"items": items, "total": total}
+
+
+@app.post("/v1/accounts", status_code=201)
+def pilot_create_account(
+    payload: dict[str, Any],
+    principal: dict[str, Any] = Depends(require_pilot_role("owner", "operator")),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    return store_instance.create_account(principal["tenant_id"], str(principal["user_id"]), payload)
+
+
+@app.get("/v1/people")
+def pilot_list_people(
+    limit: int = 50,
+    offset: int = 0,
+    principal: dict[str, Any] = Depends(require_pilot_auth),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    items, total = store_instance.list_records("people", principal["tenant_id"], limit=limit, offset=offset)
+    return {"items": items, "total": total}
+
+
+@app.post("/v1/people", status_code=201)
+def pilot_create_person(
+    payload: dict[str, Any],
+    principal: dict[str, Any] = Depends(require_pilot_role("owner", "operator")),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    return store_instance.create_person(principal["tenant_id"], str(principal["user_id"]), payload)
+
+
+@app.get("/v1/threads")
+def pilot_list_threads(
+    limit: int = 50,
+    offset: int = 0,
+    principal: dict[str, Any] = Depends(require_pilot_auth),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    items, total = store_instance.list_records("threads", principal["tenant_id"], limit=limit, offset=offset)
+    return {"items": items, "total": total}
+
+
+@app.post("/v1/threads", status_code=201)
+def pilot_create_thread(
+    payload: dict[str, Any],
+    principal: dict[str, Any] = Depends(require_pilot_role("owner", "operator")),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    return store_instance.create_thread(principal["tenant_id"], str(principal["user_id"]), payload)
+
+
+@app.get("/v1/events")
+def pilot_list_events(
+    limit: int = 50,
+    offset: int = 0,
+    principal: dict[str, Any] = Depends(require_pilot_auth),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    items, total = store_instance.list_records("events", principal["tenant_id"], limit=limit, offset=offset)
+    return {"items": items, "total": total}
+
+
+@app.get("/v1/outcomes")
+def pilot_list_outcomes(
+    limit: int = 50,
+    offset: int = 0,
+    principal: dict[str, Any] = Depends(require_pilot_auth),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    items, total = store_instance.list_records("outcomes", principal["tenant_id"], limit=limit, offset=offset)
+    return {"items": items, "total": total}
+
+
+@app.get("/v1/approvals")
+def pilot_list_approvals(
+    limit: int = 50,
+    offset: int = 0,
+    principal: dict[str, Any] = Depends(require_pilot_auth),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    items, total = store_instance.list_records("approvals", principal["tenant_id"], limit=limit, offset=offset)
+    return {"items": items, "total": total}
+
+
+@app.get("/v1/source-connections")
+def pilot_list_sources(
+    limit: int = 50,
+    offset: int = 0,
+    principal: dict[str, Any] = Depends(require_pilot_auth),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    items, total = store_instance.list_records("source_connections", principal["tenant_id"], limit=limit, offset=offset)
+    return {"items": items, "total": total}
+
+
+@app.get("/v1/ingest-failures")
+def pilot_list_ingest_failures(
+    limit: int = 50,
+    offset: int = 0,
+    principal: dict[str, Any] = Depends(require_pilot_auth),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    items, total = store_instance.list_records("ingest_failures", principal["tenant_id"], limit=limit, offset=offset)
+    return {"items": items, "total": total}
+
+
+@app.get("/v1/action-feedback")
+def pilot_list_action_feedback(
+    limit: int = 50,
+    offset: int = 0,
+    principal: dict[str, Any] = Depends(require_pilot_auth),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    items, total = store_instance.list_records("action_feedback", principal["tenant_id"], limit=limit, offset=offset)
+    return {"items": items, "total": total}
+
+
+@app.get("/v1/audit-events")
+def pilot_list_audit_events(
+    limit: int = 50,
+    offset: int = 0,
+    principal: dict[str, Any] = Depends(require_pilot_auth),
+) -> dict[str, Any]:
+    store_instance = get_pilot_store()
+    items, total = store_instance.list_records("audit_events", principal["tenant_id"], limit=limit, offset=offset)
+    return {"items": items, "total": total}
+
+
+@app.get("/v1/exports/audit-proof")
+def pilot_audit_proof(principal: dict[str, Any] = Depends(require_pilot_auth)) -> list[dict[str, Any]]:
+    store_instance = get_pilot_store()
+    events, _ = store_instance.list_records("audit_events", principal["tenant_id"], limit=1000, offset=0)
+    return audit_proof(events)
 
 
 if __name__ == "__main__":

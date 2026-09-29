@@ -18,15 +18,14 @@ REQUIRED_SERVICES = {
     "api",
     "caddy",
     "crawl4ai",
+    "garage",
     "litellm",
     "mem0",
-    "n8n",
     "neo4j",
     "osint",
     "postgres",
     "qdrant",
     "redis",
-    "workers",
 }
 HEALTH_REQUIRED = {"api", "litellm", "osint", "postgres", "redis"}
 

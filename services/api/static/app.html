@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prospect Dominion — Pilot operator</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #081018;
+      --panel: rgba(17, 26, 33, 0.9);
+      --line: rgba(140, 170, 185, 0.18);
+      --accent: #8fe3ff;
+      --accent-soft: rgba(143, 227, 255, 0.12);
+      --text: #eaf3f8;
+      --muted: #9ab2be;
+      --danger: #ff9d9d;
+      --ok: #93f0b6;
+      --shadow: 0 18px 48px rgba(4, 9, 14, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      font: 15px/1.5 Inter, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, rgba(109, 207, 247, 0.12), transparent 30%), linear-gradient(180deg, var(--bg) 0%, #0c1418 100%);
+      color: var(--text);
+    }
+
+    button, input, textarea { font: inherit; }
+    header { position: sticky; top: 0; z-index: 3; backdrop-filter: blur(10px); background: rgba(8, 16, 24, 0.82); border-bottom: 1px solid var(--line); }
+    .topbar, main { max-width: 1200px; margin: 0 auto; padding: 18px 20px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-mark { width: 12px; height: 12px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #6dcff7); box-shadow: 0 0 16px rgba(143, 227, 255, 0.8); }
+    .brand-title { font-weight: 700; letter-spacing: 0.02em; }
+    .muted { color: var(--muted); }
+    button {
+      border: 1px solid transparent; border-radius: 10px; padding: 9px 14px; cursor: pointer; font-weight: 600;
+      background: var(--accent); color: #0b1920; transition: transform 0.15s ease, opacity 0.2s ease;
+    }
+    button:hover { transform: translateY(-1px); }
+    button.secondary { background: rgba(255,255,255,0.04); border-color: var(--line); color: var(--text); }
+    button.danger { background: rgba(255, 157, 157, 0.12); border-color: rgba(255, 157, 157, 0.35); color: var(--danger); }
+
+    main { padding-top: 22px; padding-bottom: 100px; }
+    .shell { background: rgba(12, 20, 26, 0.5); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); }
+    section, .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 18px; margin: 18px 0; }
+    section[hidden], #operator[hidden], #login[hidden] { display: none; }
+    .login-wrap { max-width: 760px; margin: 42px auto; }
+    .hero { margin-bottom: 18px; }
+    .hero h1 { margin: 0 0 6px; font-size: clamp(2rem, 3vw, 3rem); letter-spacing: -0.04em; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    label { display: grid; gap: 6px; color: var(--muted); margin: 10px 0; }
+    input, textarea { width: 100%; background: rgba(5, 11, 15, 0.78); border: 1px solid var(--line); border-radius: 10px; color: var(--text); padding: 10px 12px; outline: none; }
+    input:focus, textarea:focus { border-color: rgba(143, 227, 255, 0.8); box-shadow: 0 0 0 3px rgba(143, 227, 255, 0.12); }
+    textarea { min-height: 170px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .nav-row { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 20px 18px; border-bottom: 1px solid var(--line); }
+    .nav-button { background: transparent; color: var(--muted); border: 1px solid var(--line); }
+    .nav-button.active { background: var(--accent-soft); border-color: rgba(143, 227, 255, 0.45); color: var(--text); }
+    .status-bar { margin: 20px 20px 0; min-height: 28px; display: flex; align-items: center; color: var(--muted); }
+    .status-bar.error { color: var(--danger); }
+    .status-bar.ok { color: var(--ok); }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-top: 18px; }
+    .kpi { padding: 18px; border-radius: 14px; background: linear-gradient(180deg, rgba(18, 32, 42, 0.72), rgba(14, 22, 28, 0.8)); border: 1px solid var(--line); }
+    .kpi-label { display: block; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .kpi-value { font-size: clamp(1.6rem, 2vw, 2.2rem); font-weight: 700; line-height: 1.1; }
+    .table-wrap { max-width: 100%; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+    td button { margin-right: 6px; margin-bottom: 6px; }
+    .empty-state { color: var(--muted); padding: 18px 0 10px; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; color: var(--muted); margin-top: 12px; background: rgba(3, 8, 11, 0.55); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+    @media (max-width: 700px) { .topbar { align-items: flex-start; } .nav-row { padding-left: 10px; padding-right: 10px; } main { padding-inline: 12px; } section, .panel { padding: 14px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div>
+          <div class="brand-title">Prospect Dominion</div>
+          <div class="muted">Pilot operator console</div>
+        </div>
+      </div>
+      <button class="secondary" id="logout" hidden>Log out</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="login" class="shell login-wrap">
+      <div class="hero">
+        <h1>Revenue operations, with human approval built in.</h1>
+        <p class="muted">Use an owner or operator account to govern queue prioritization, signal imports, and outbound approval flow.</p>
+      </div>
+
+      <div class="grid">
+        <div class="panel">
+          <h2>Sign in</h2>
+          <label>Email <input id="email" type="email" autocomplete="username" placeholder="owner@acme.com"></label>
+          <label>Password <input id="password" type="password" autocomplete="current-password" placeholder="Enter your password"></label>
+          <button id="loginButton">Sign in</button>
+          <p id="loginStatus" class="muted" role="status"></p>
+        </div>
+
+        <div class="panel">
+          <h2>Initial workspace setup</h2>
+          <p class="muted">Use this once for a fresh pilot database.</p>
+          <label>Workspace slug <input id="tenantSlug" placeholder="acme-revenue"></label>
+          <label>Workspace name <input id="tenantName" placeholder="Acme Revenue"></label>
+          <label>Your display name <input id="displayName" placeholder="Jordan Lee"></label>
+          <button id="bootstrapButton" class="secondary">Create initial owner</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="operator" class="shell" hidden>
+      <div class="nav-row">
+        <button class="nav-button active" data-view="queue">Priority queue</button>
+        <button class="nav-button" data-view="accounts">Accounts</button>
+        <button class="nav-button" data-view="approvals">Approvals</button>
+        <button class="nav-button" data-view="timeline">Timeline</button>
+        <button class="nav-button" data-view="sources">Sources</button>
+        <button class="nav-button" data-view="settings">Settings</button>
+        <button class="nav-button" data-view="history">History</button>
+      </div>
+
+      <div id="status" class="status-bar" role="status">Ready.</div>
+
+      <div class="kpis" id="kpiRow">
+        <div class="kpi"><span class="kpi-label">Queue</span><span class="kpi-value" id="kpiQueue">0</span></div>
+        <div class="kpi"><span class="kpi-label">Pending approvals</span><span class="kpi-value" id="kpiApprovals">0</span></div>
+        <div class="kpi"><span class="kpi-label">Healthy sources</span><span class="kpi-value" id="kpiSources">0</span></div>
+        <div class="kpi"><span class="kpi-label">Last source update</span><span class="kpi-value" id="kpiSync">—</span></div>
+      </div>
+
+      <section id="queue"><h2>Opportunity priority queue</h2><p class="muted">Scores are deterministic and paired with a clear explanation.</p><button id="refreshQueue" class="secondary">Refresh</button><div id="queueTable" class="empty-state">Loading queue…</div></section>
+      <section id="accounts" hidden><h2>Accounts</h2><p class="muted">Score an imported account before selecting its recommended action.</p><div id="accountTable" class="empty-state">Loading accounts…</div></section>
+      <section id="approvals" hidden><h2>Approval queue</h2><div class="panel"><h3>Request approval</h3><div class="grid"><label>Thread ID <input id="approvalThread" placeholder="thread_123"></label><label>Action <input id="approvalAction" value="draft_outreach"></label><label>From <input id="approvalFrom" placeholder="Team <team@your-domain>"></label><label>To <input id="approvalTo" type="email" placeholder="dana@acme.test"></label><label>Subject <input id="approvalSubject" placeholder="Follow-up on pricing signal"></label></div><label>HTML body <textarea id="approvalHtml" placeholder="<p>Hello...</p>"></textarea></label><button id="requestApproval">Request operator approval</button></div><div id="approvalTable" class="empty-state">Loading approvals…</div></section>
+      <section id="timeline" hidden><h2>Account event timeline</h2><p class="muted">Each event includes source, external ID, and raw import reference.</p><div id="eventTable" class="empty-state">Loading events…</div></section>
+      <section id="sources" hidden><h2>Source connection status</h2><div class="grid"><div class="panel"><h3>CSV signal import</h3><p class="muted">Required columns: external_id, domain, email, full_name, signal_type, observed_at. Optional consent_basis values are none, consent, or legitimate_interest. If omitted, the basis is recorded as none and sending stays blocked until a permitted basis is recorded.</p><label>Source name <input id="sourceName" value="Structured research import"></label><label>CSV content <textarea id="csvContent" placeholder="external_id,domain,email,full_name,signal_type,observed_at,consent_basis"></textarea></label><button id="importCsv">Import signals</button></div><div class="panel"><h3>Connections</h3><div id="sourceTable" class="empty-state">Loading source health…</div></div></div></section>
+      <section id="settings" hidden><h2>Workspace settings</h2><p class="muted">Only owners can update ICP rules. Scores are never generated from hidden logic.</p><label>ICP rules JSON <textarea id="rules" placeholder="{ ... }"></textarea></label><button id="saveRules">Save ICP rules</button></section>
+      <section id="history" hidden><h2>Action and outcome history</h2><button id="exportAudit" class="secondary">Download anonymized audit proof</button><div class="grid"><div><h3>Outcomes</h3><div id="outcomeTable" class="empty-state">Loading outcomes…</div></div><div><h3>Action feedback</h3><div id="feedbackTable" class="empty-state">Loading feedback…</div></div><div><h3>Audit log</h3><div id="auditTable" class="empty-state">Loading audit events…</div></div></div></section>
+    </div>
+  </main>
+  <script>
+    const state = { token: sessionStorage.getItem('pd-pilot-token') || '', role: '' };
+    const $ = id => document.getElementById(id);
+    function message(text, error=false) { const node=$('status'); node.textContent=text; node.className=error?'error':'notice'; }
+    async function api(path, options={}) { const headers={...(options.headers||{}), Authorization:`Bearer ${state.token}`}; if (options.body && !headers['Content-Type']) headers['Content-Type']='application/json'; const response=await fetch(path,{...options,headers}); const body=await response.json().catch(()=>({})); if(!response.ok) throw new Error(body.detail||`Request failed (${response.status})`); return body; }
+    function cell(value) { const td=document.createElement('td'); td.textContent=value == null ? '—' : (typeof value==='object'?JSON.stringify(value):String(value)); return td; }
+    function table(target, rows, columns, actions) { const host=$(target); host.textContent=''; if(!rows.length){host.textContent='No records yet.'; return;} const t=document.createElement('table'), head=document.createElement('thead'), body=document.createElement('tbody'), tr=document.createElement('tr'), wrap=document.createElement('div'); wrap.className='table-wrap'; columns.forEach(c=>{const th=document.createElement('th');th.textContent=c[0];tr.appendChild(th)}); if(actions){const th=document.createElement('th');th.textContent='Actions';tr.appendChild(th)} head.appendChild(tr); rows.forEach(row=>{const line=document.createElement('tr'); columns.forEach(([,key])=>line.appendChild(cell(key(row)))); if(actions){const td=document.createElement('td'); actions(row,td);line.appendChild(td)} body.appendChild(line)});t.append(head,body);wrap.appendChild(t);host.appendChild(wrap); }
+    async function loadQueue(){ const data=await api('/v1/priority-queue'); table('queueTable',data.items,[['Account',r=>r.display_name||r.domain],['Score',r=>r.score],['Recommended action',r=>r.action_type],['Why',r=>r.explanation?.factors?.map(f=>`${f.signal_type}: ${f.contribution}`).join('; ')]]); }
+    async function loadKpis(){ const [queue,approvals,sources]=await Promise.all([api('/v1/priority-queue?limit=1'),api('/v1/approvals?limit=1000'),api('/v1/source-connections?limit=1000')]); const activeSources=sources.items.filter(item=>item.status==='active'); const latestSource=activeSources.map(item=>item.updated_at).filter(Boolean).sort().at(-1); $('kpiQueue').textContent=queue.total; $('kpiApprovals').textContent=approvals.items.filter(item=>item.status==='pending').length; $('kpiSources').textContent=activeSources.length; $('kpiSync').textContent=latestSource?new Intl.DateTimeFormat(undefined,{dateStyle:'medium',timeStyle:'short'}).format(new Date(latestSource)):'—'; }
+    async function loadAccounts(){ const data=await api('/v1/accounts'); table('accountTable',data.items,[['Account',r=>r.display_name||r.domain],['Domain',r=>r.domain],['Industry',r=>r.industry]],(r,td)=>{if(!['owner','operator'].includes(state.role))return;const b=document.createElement('button');b.textContent='Score';b.onclick=async()=>{try{await api(`/v1/accounts/${encodeURIComponent(r.id)}/score`,{method:'POST'});message(`${r.display_name||r.domain} scored.`);await loadAccounts()}catch(e){message(e.message,true)}};td.appendChild(b)});}
+    async function loadApprovals(){ const data=await api('/v1/approvals'); table('approvalTable',data.items,[['Thread',r=>r.thread_id],['Action',r=>r.action_type],['Status',r=>r.status],['Requested',r=>r.requested_at],['Payload',r=>r.action_payload]],(r,td)=>{if(!['owner','operator'].includes(state.role))return;if(r.status==='pending'){for(const [label,path] of [['Approve','approve'],['Reject','reject']]){const b=document.createElement('button');b.textContent=label;b.className=path==='reject'?'danger':'';b.onclick=async()=>{try{await api(`/v1/approvals/${r.id}/${path}`,{method:'POST',body:JSON.stringify({reason:''})});await loadApprovals();message(`Approval ${path}d.`)}catch(e){message(e.message,true)}};td.appendChild(b)}}else if(r.status==='approved'){const b=document.createElement('button');b.textContent='Send approved action';b.onclick=async()=>{try{const result=await api(`/v1/approvals/${r.id}/send`,{method:'POST',body:JSON.stringify({idempotency_key:crypto.randomUUID()})});message(result.sent?'Send submitted to provider.':'No provider send was performed.');await loadApprovals()}catch(e){message(e.message,true)}};td.appendChild(b)}}); }
+    async function loadTimeline(){const data=await api('/v1/events');table('eventTable',data.items,[['When',r=>r.occurred_at],['Signal',r=>r.event_type],['Source',r=>r.source],['External ID',r=>r.external_id],['Raw reference',r=>r.raw_ref],['Payload',r=>r.payload]]);}
+    async function loadSources(){const [data,failures]=await Promise.all([api('/v1/source-connections'),api('/v1/ingest-failures')]);table('sourceTable',data.items,[['Name',r=>r.display_name],['Type',r=>r.source_type],['Status',r=>r.status],['Last error',r=>r.last_error],['Updated',r=>r.updated_at]]);if(failures.items.length){const failure=document.createElement('pre');failure.textContent='Import failures\n'+failures.items.map(f=>`${f.created_at}: ${f.error_detail} (attempt ${f.attempts})`).join('\n');$('sourceTable').appendChild(failure)}}
+    async function loadSettings(){const rules=await api('/v1/settings/icp-rules');$('rules').value=JSON.stringify(rules,null,2);}
+    async function loadHistory(){const [outcomes,feedback,audit]=await Promise.all([api('/v1/outcomes'),api('/v1/action-feedback'),api('/v1/audit-events')]);table('outcomeTable',outcomes.items,[['When',r=>r.occurred_at],['Stage',r=>r.stage_to],['Reason',r=>r.reason]]);table('feedbackTable',feedback.items,[['When',r=>r.occurred_at],['Feedback',r=>r.feedback_type],['Details',r=>r.details]]);table('auditTable',audit.items,[['When',r=>r.occurred_at],['Event',r=>r.event_type],['Entity',r=>r.entity_type],['Details',r=>r.details]]);}
+    const loaders={queue:loadQueue,accounts:loadAccounts,approvals:loadApprovals,timeline:loadTimeline,sources:loadSources,settings:loadSettings,history:loadHistory};
+    async function show(view){document.querySelectorAll('#operator section').forEach(s=>s.hidden=s.id!==view);try{await loaders[view]();await loadKpis()}catch(e){message(e.message,true)}}
+    document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>show(b.dataset.view));
+    $('refreshQueue').onclick=()=>show('queue');
+    $('importCsv').onclick=async()=>{try{const result=await api('/v1/sources/csv/import',{method:'POST',body:JSON.stringify({source_name:$('sourceName').value,content:$('csvContent').value})});message(`Imported ${result.created}; ${result.deduplicated} duplicate events ignored.`);await loadSources();await loadKpis()}catch(e){message(e.message,true)}};
+    $('saveRules').onclick=async()=>{try{await api('/v1/settings/icp-rules',{method:'PUT',body:JSON.stringify({rules:JSON.parse($('rules').value)})});message('ICP rules saved. Re-score accounts to apply them.')}catch(e){message(e.message,true)}};
+    $('requestApproval').onclick=async()=>{try{const payload={from:$('approvalFrom').value,to:$('approvalTo').value,subject:$('approvalSubject').value,html:$('approvalHtml').value};await api('/v1/approvals',{method:'POST',body:JSON.stringify({thread_id:$('approvalThread').value,action_type:$('approvalAction').value,action_payload:payload,idempotency_key:crypto.randomUUID()})});message('Approval requested.');await loadApprovals()}catch(e){message(e.message,true)}};
+    $('exportAudit').onclick=async()=>{try{const proof=await api('/v1/exports/audit-proof');const blob=new Blob([JSON.stringify(proof,null,2)],{type:'application/json'}),link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='prospect-dominion-audit-proof.json';link.click();URL.revokeObjectURL(link.href);message('Anonymized audit proof downloaded.')}catch(e){message(e.message,true)}};
+    $('loginButton').onclick=async()=>{try{const r=await fetch('/v1/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:$('email').value,password:$('password').value})});const b=await r.json();if(!r.ok)throw new Error(b.detail||'Login failed');state.token=b.token;state.role=b.role;sessionStorage.setItem('pd-pilot-token',b.token);$('login').hidden=true;$('operator').hidden=false;$('logout').hidden=false;await show('queue')}catch(e){$('loginStatus').textContent=e.message}};
+    $('bootstrapButton').onclick=async()=>{try{const r=await fetch('/v1/auth/bootstrap',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tenant_slug:$('tenantSlug').value,tenant_name:$('tenantName').value,email:$('email').value,display_name:$('displayName').value,password:$('password').value})});const b=await r.json();if(!r.ok)throw new Error(b.detail||'Setup failed');state.token=b.token;state.role=b.role;sessionStorage.setItem('pd-pilot-token',b.token);$('login').hidden=true;$('operator').hidden=false;$('logout').hidden=false;await show('queue')}catch(e){$('loginStatus').textContent=e.message}};
+    $('logout').onclick=()=>{sessionStorage.removeItem('pd-pilot-token');location.reload()};
+    if(state.token){$('login').hidden=true;$('operator').hidden=false;$('logout').hidden=false;api('/v1/me').then(p=>{state.role=p.role;show('queue')}).catch(()=>{sessionStorage.removeItem('pd-pilot-token');location.reload()})}
+  </script>
+</body>
+</html>

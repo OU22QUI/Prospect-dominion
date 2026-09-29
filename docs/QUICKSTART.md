@@ -10,8 +10,8 @@
 ## 1. Clone and configure
 
 ```bash
-git clone <repo-url>
-cd Prospect-Dominion
+git clone https://github.com/OU22QUI/Prospect-dominion.git
+cd Prospect-dominion
 cp deploy/customer.env.example .env
 ```
 

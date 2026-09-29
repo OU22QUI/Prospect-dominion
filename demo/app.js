@@ -175,7 +175,7 @@
           </tr>
         </thead>
         <tbody>
-          ${accounts.map((acc, i) => `
+          ${accounts.length ? accounts.map((acc, i) => `
             <tr data-account-id="${acc.id}" onclick="window.pdApp.openDetail('${acc.id}')">
               <td>
                 <div class="opp-company">
@@ -199,7 +199,7 @@
                 <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); window.pdApp.openDetail('${acc.id}')">${acc.status === 'Awaiting Approval' ? 'Review' : 'View'}</button>
               </td>
             </tr>
-          `).join('')}
+          `).join('') : '<tr class="opp-empty"><td colspan="6">No opportunities match these filters.</td></tr>'}
         </tbody>
       </table>`;
   }
@@ -673,11 +673,13 @@
     // Global search
     document.getElementById('global-search')?.addEventListener('input', (e) => {
       const q = e.target.value.trim().toLowerCase();
+      const oppSearch = document.getElementById('opp-search');
       if (q.length >= 2) {
-        // Navigate to opportunities and filter
-        navigate('opportunities');
-        const oppSearch = document.getElementById('opp-search');
+        if (currentPage !== 'opportunities') navigate('opportunities');
         if (oppSearch) { oppSearch.value = q; renderOpportunities(); }
+      } else if (oppSearch && oppSearch.value) {
+        oppSearch.value = '';
+        if (currentPage === 'opportunities') renderOpportunities();
       }
     });
 

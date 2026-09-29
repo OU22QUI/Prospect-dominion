@@ -45,52 +45,29 @@
           <details open><summary>What is Prospect Dominion?</summary><p>It is an owned, governed signal-to-action layer deployed in your environment. It connects selected signals to prioritised accounts, context, a recommended next action, and a human approval step.</p></details>
           <details><summary>Who is Aethonex?</summary><p>Aethonex is the UK-based parent infrastructure firm behind Prospect Dominion. We specialize in private, self-hosted automation infrastructure for digital and outbound agencies.</p></details>
           <details><summary>Is the public demo live?</summary><p>No. The public demo is a simulation using fictional sample accounts, seeded activity, and illustrative values. It sends no external actions and does not use customer data.</p></details>
-          <details><summary>What does the pilot include?</summary><p>A 30-day, fixed-scope build for one workflow: deployment baseline, 1–2 sources, prioritisation logic, recommended-action engine, human approval gate, outcome logging, and handover documentation.</p></details>
-          <details><summary>What does the pilot cost?</summary><p>The Dominion Pilot is $4,500 fixed. Standard deployment starts at $15,000 setup plus $1,500/month for operate and extend.</p></details>
+          <details><summary>What does the proposed pilot include?</summary><p>One CSV signal input, prioritisation, a human approval step, outcome logging, and handover. The target duration is 30 days; deployment readiness, acceptance criteria, exclusions, and final price must be agreed in writing before work begins.</p></details>
+          <details><summary>What does the proposed pilot cost?</summary><p>The current proposed pilot price is $4,500 for the defined scope. Hosting, external services, and additional connector work are separate unless the written agreement says otherwise. No standard post-pilot tier is currently offered.</p></details>
           <details><summary>Does Dominion replace our CRM or sequencer?</summary><p>No. Dominion sits between the tools you keep. It is designed to connect a workflow across your existing stack, not replace the systems that already own your records or sending.</p></details>
           <details><summary>Is it autonomous?</summary><p>No. The commercial model is governed: a human operator approves, edits, or rejects an external action before it is sent.</p></details>
-          <details><summary>Where does it run?</summary><p>The deployment is single-tenant and runs inside your cloud environment (AWS, Hetzner, GCP, or private server) using your credentials and infrastructure.</p></details>
-          <details><summary>What happens after the pilot?</summary><p>You receive full code, workflow definitions, runbooks, and handover documentation. You can expand to additional workflows, keep the pilot as-is, or stop. No revenue outcome is guaranteed.</p></details>
+          <details><summary>Where does it run?</summary><p>The intended deployment is customer-controlled and single-tenant. Hosting, external providers, data flows, and operational responsibilities are confirmed during technical scoping; do not provide customer data before those arrangements are approved.</p></details>
+          <details><summary>What do we retain?</summary><p>The shared core is MIT-licensed. You retain your data, credentials, and infrastructure. Rights and handover for customer-specific work are defined in the written agreement.</p></details>
         </div>
 
         <section class="panel commercial-note">
           <p class="feature-label">Next step</p>
           <h2>Have a workflow worth testing?</h2>
           <p>Request a technical walkthrough or start with the product simulation.</p>
-          <button class="primary-btn book-walkthrough-btn" type="button">Book a walkthrough</button>
+          <button class="primary-btn book-walkthrough-btn" type="button">Discuss pilot fit</button>
         </section>
       </main>
 
-      <!-- Lead Capture Dialog -->
+      <!-- External scheduling dialog -->
       <dialog class="demo-dialog" id="demoDialog" aria-labelledby="dialogTitle">
         <button class="dialog-close" id="closeDialog" type="button" aria-label="Close product walkthrough panel">&times;</button>
-        <p class="feature-label">Request a pilot / walkthrough</p>
-        <h2 id="dialogTitle">Talk to the Aethonex team</h2>
-        <p>Tell us about your team and the workflow you want to automate. We'll follow up within 24 hours.</p>
-        <form class="walkthrough-form" id="walkthroughForm">
-          <label for="requestName">Name</label>
-          <input id="requestName" name="name" autocomplete="name" required />
-          <label for="requestEmail">Work email</label>
-          <input id="requestEmail" name="email" type="email" autocomplete="email" required />
-          <label for="requestCompany">Company</label>
-          <input id="requestCompany" name="company" autocomplete="organization" required />
-          <label for="requestRole">Team or role</label>
-          <input id="requestRole" name="role" autocomplete="organization-title" required />
-          <label for="requestUseCase">What workflow are you interested in?</label>
-          <select id="requestUseCase" name="useCase" required>
-            <option value="">Choose primary workflow</option>
-            <option>Intent signals to warm outbound outreach</option>
-            <option>Account prioritisation &amp; routing</option>
-            <option>Churn risk detection to account review</option>
-            <option>Partner overlap co-sell orchestration</option>
-            <option>White-label agency deployment</option>
-          </select>
-          <label for="requestStack">Current stack / tools (Optional)</label>
-          <input id="requestStack" name="stack" placeholder="e.g. HubSpot, Apollo, Clay, N8N, Salesforce" />
-          <p class="form-note">Your context is used to shape a focused discussion. No customer data is required.</p>
-          <button class="primary-btn" type="submit">Submit request</button>
-          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
-        </form>
+        <p class="feature-label">External scheduling</p>
+        <h2 id="dialogTitle">Discuss proposed pilot fit</h2>
+        <p>Scheduling opens Cal.com. Review <a href="https://cal.com/privacy" target="_blank" rel="noopener noreferrer">Cal.com's privacy information</a> before providing contact details; do not include customer or confidential data.</p>
+        <a class="primary-btn" href="https://cal.com/aethonex/20-min" target="_blank" rel="noopener noreferrer">Continue to Cal.com</a>
       </dialog>
 
       <footer class="container footer">

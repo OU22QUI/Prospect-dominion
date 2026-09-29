@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 ARCHIVE_NAME = f"Prospect-Dominion-Core-v{VERSION}.zip"
 ARCHIVE_PATH = ROOT / ARCHIVE_NAME
 MANIFEST_NAME = f"RELEASE_MANIFEST_v{VERSION}.txt"
@@ -52,6 +52,9 @@ PUBLIC_DIRS = [
 ]
 
 PRIVATE_ROOT_MARKERS = {
+    "docs/GO_TO_MARKET_STRATEGY.md",
+    "docs/PROSPECT_DOMINION_FINALIZATION_REPORT_2026-09-29.md",
+    "docs/DPA_SUBPROCESSORS.md",
     "Prospect-Dominion-Commercial-Playbook.md",
     "Prospect-Dominion-Customer-Deployment.md",
     "Prospect-Dominion-Customer-One-Pager.md",

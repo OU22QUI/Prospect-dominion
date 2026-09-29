@@ -11,8 +11,9 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DEMO_ROOT = REPO_ROOT / "demo"
 REQUIRED_FILES = ("index.html", "tester.html", "styles.css", "config.js", "script.js", "demo-data.json", "favicon.svg", "og-preview.svg", "robots.txt", "sitemap.xml", "README.md", ".nojekyll")
 FORBIDDEN_MARKERS = ("PD_API_KEY", "JWT_SECRET", "LITELLM_MASTER_KEY", "change-me-strong", "localhost:", "127.0.0.1")
-REQUIRED_IDS = ("accountList", "detailCompany", "runAction", "undoAction", "scoreFactors", "recommendedAction", "walkthroughForm", "formStatus", "guideStrip", "resetDemo", "accountSearch", "stageFilter", "intentFilter")
+REQUIRED_IDS = ("accountList", "detailCompany", "runAction", "undoAction", "scoreFactors", "recommendedAction", "demoDialog", "requestDemo", "guideStrip", "resetDemo", "accountSearch", "stageFilter", "intentFilter")
 REQUIRED_ROUTES = ("demo/index.html", "pricing/index.html", "partners/index.html", "faq/index.html", "tester.html")
+SCHEDULING_ROUTES = ("index.html", "pricing/index.html", "pilot/index.html", "faq/index.html")
 FORBIDDEN_PUBLIC_CLAIMS = ("AI operating layer", "AI-assisted", "AI ranked", "real-time intelligence", "Book a live product walkthrough")
 
 
@@ -58,6 +59,15 @@ def main() -> int:
     for required_id in REQUIRED_IDS:
         if required_id not in parser.ids:
             issues.append(f"missing interaction hook: {required_id}")
+
+    for route in SCHEDULING_ROUTES:
+        page = (DEMO_ROOT / route).read_text(encoding="utf-8")
+        if "<form" in page.lower():
+            issues.append(f"first-party contact form is not permitted before privacy review: {route}")
+        if "https://cal.com/aethonex/20-min" not in page:
+            issues.append(f"missing external scheduling link: {route}")
+        if "https://cal.com/privacy" not in page:
+            issues.append(f"missing scheduler privacy disclosure: {route}")
 
     try:
         payload = json.loads((DEMO_ROOT / "demo-data.json").read_text(encoding="utf-8"))

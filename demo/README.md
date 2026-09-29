@@ -1,6 +1,6 @@
 # Prospect Dominion Demo
 
-This is the public Prospect Dominion product experience: a customer-facing homepage, product simulation, pilot pricing, partner model, and technical evaluation path.
+This is the public Prospect Dominion product experience: a customer-facing homepage, product simulation, proposed pilot scope, deferred partner information, and technical evaluation path.
 
 ## Use
 Open `index.html` in a browser or serve the folder with any simple static server.
@@ -16,25 +16,23 @@ Then open the local address shown in the terminal.
 
 Public paths:
 
-- `/` — product homepage and walkthrough request
+- `/` — product overview and simulation
 - `/demo/` — simulation with sample accounts
-- `/pricing/` — pilot and deployment pricing
-- `/partners/` — partner model
+- `/pricing/` — proposed pilot scope and exclusions
+- `/partners/` — partner program status (not open)
 - `/tester.html` — technical evaluation instructions
 
 ## Optional configuration
 
-`config.js` accepts public, non-secret endpoints for a lead form and analytics sink:
+`config.js` accepts an optional public, non-secret analytics endpoint:
 
 ```js
 window.PD_DEMO_CONFIG = {
-	requestEndpoint: "https://example.com/demo-request",
-	analyticsEndpoint: "https://example.com/demo-events",
-	bookingUrl: "https://example.com/book"
+	analyticsEndpoint: "https://example.com/demo-events"
 };
 ```
 
-Leave both values empty for a credential-free public demo. Requests and events remain local to the browser session when no endpoint is configured.
+Leave the endpoint empty for a credential-free public demo. Demo interaction events are kept in `sessionStorage` for the current tab. The site does not collect or submit contact details; scheduling links open Cal.com in a separate tab.
 
 ## Purpose
 The public experience presents the product concept and commercial path:

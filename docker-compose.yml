@@ -27,13 +27,20 @@ volumes:
   n8n-data:
 
 services:
+  # ========================================================
+  # PILOT PROFILE: Single-tenant governed workflow foundation
+  # Postgres (SoR) + Migrations runner + API + Caddy
+  # ========================================================
+
   postgres:
-    image: postgres:16-alpine
-    profiles: ["data", "core"]
+    image: postgres:16.4-alpine
+    profiles: ["pilot", "full", "data", "core"]
     environment:
       POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD: ${PG_PASSWORD}
       POSTGRES_DB: ${PG_DB}
+    ports:
+      - "127.0.0.1:${PG_PORT:-5432}:5432"
     volumes:
       - pg-data:/var/lib/postgresql/data
       - ./migrations/postgres:/docker-entrypoint-initdb.d:ro
@@ -43,9 +50,99 @@ services:
     networks: [pd-net]
     logging: *default-logging
 
+  migrations:
+    build:
+      context: ./services/api
+    profiles: ["pilot", "full", "core"]
+    command: ["python", "/services/migrations/apply.py"]
+    environment:
+      PG_DSN: postgresql://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
+      MIGRATIONS_DIR: /migrations/postgres
+    volumes:
+      - ./services/migrations:/services/migrations:ro
+      - ./migrations/postgres:/migrations/postgres:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [pd-net]
+    logging: *default-logging
+
+  api:
+    build:
+      context: ./services/api
+    profiles: ["pilot", "full", "core"]
+    ports:
+      - "127.0.0.1:${API_PORT:-8010}:8000"
+    environment:
+      APP_ENV: ${APP_ENV:-local}
+      PD_PORT: ${PD_PORT:-8010}
+      PD_STORE_BACKEND: ${PD_STORE_BACKEND:-postgres}
+      PD_API_KEY: ${PD_API_KEY:-dev-local-key}
+      PD_DEFAULT_ROLE: ${PD_DEFAULT_ROLE:-admin}
+      PD_BRAND_NAME: ${PD_BRAND_NAME:-Prospect Dominion}
+      PD_BRAND_TAGLINE: ${PD_BRAND_TAGLINE:-Operational control surface}
+      PD_PRIMARY_COLOR: ${PD_PRIMARY_COLOR:-#C6A86B}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost}
+      PD_PUBLIC_HOST: ${PD_PUBLIC_HOST:-localhost}
+      PD_CADDYFILE: ${PD_CADDYFILE:-./infra/caddy/Caddyfile}
+      PG_DSN: postgresql://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
+      QDRANT_URL: http://qdrant:6333
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+      JWT_SECRET: ${JWT_SECRET:-change-me}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      RESEND_WEBHOOK_SECRET: ${RESEND_WEBHOOK_SECRET:-}
+      PD_CORS_ALLOW_ORIGINS: ${PD_CORS_ALLOW_ORIGINS:-https://dominion.aethonex.com,https://aethonex.com}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/ready', timeout=3)"]
+      <<: *hc
+    networks: [pd-net]
+    logging: *default-logging
+
+  caddy:
+    image: caddy:2.8.4-alpine
+    profiles: ["pilot", "full", "demo", "core"]
+    environment:
+      PD_PUBLIC_HOST: ${PD_PUBLIC_HOST:-localhost}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ${PD_CADDYFILE:-./infra/caddy/Caddyfile}:/etc/caddy/Caddyfile:ro
+      - ./demo:/srv/demo:ro
+    depends_on:
+      api:
+        condition: service_healthy
+        required: false
+    networks: [pd-net]
+    logging: *default-logging
+
+  # ========================================================
+  # FULL PROFILE: Extended intelligence & optional modules
+  # (Out of scope for pilot, not required for pilot health)
+  # ========================================================
+
+  redis:
+    image: redis:7.2.5-alpine
+    profiles: ["full", "data", "core"]
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
+    volumes:
+      - redis-data:/data
+    ports:
+      - "127.0.0.1:${REDIS_PORT:-6380}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      <<: *hc
+    networks: [pd-net]
+    logging: *default-logging
+
   neo4j:
-    image: neo4j:5-community
-    profiles: ["data", "core"]
+    image: neo4j:5.22-community
+    profiles: ["full", "data", "core"]
     environment:
       NEO4J_AUTH: ${NEO4J_USER}/${NEO4J_PASSWORD}
       NEO4J_PLUGINS: '["apoc"]'
@@ -58,35 +155,20 @@ services:
     logging: *default-logging
 
   qdrant:
-    image: qdrant/qdrant:latest
-    profiles: ["data", "core"]
+    image: qdrant/qdrant:v1.11.0
+    profiles: ["full", "data", "core"]
     volumes:
       - qdrant-data:/qdrant/storage
     ports:
       - "127.0.0.1:6335:6333"
-    # The upstream image has no HTTP client. Deployment validation probes /readyz from the host.
     healthcheck:
       disable: true
     networks: [pd-net]
     logging: *default-logging
 
-  redis:
-    image: redis:7-alpine
-    profiles: ["data", "core"]
-    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
-    volumes:
-      - redis-data:/data
-    ports:
-      - "127.0.0.1:${REDIS_PORT:-6380}:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
-      <<: *hc
-    networks: [pd-net]
-    logging: *default-logging
-
   garage:
     image: dxflrs/garage:v1.0.0
-    profiles: ["data", "core"]
+    profiles: ["full", "data", "core"]
     command: ["/garage", "--config", "/etc/garage.toml", "server"]
     volumes:
       - garage-data:/data
@@ -98,7 +180,7 @@ services:
   mem0:
     build:
       context: ./services/mem0
-    profiles: ["data", "core"]
+    profiles: ["full", "data", "core"]
     environment:
       MEM0_VECTOR_STORE: qdrant
       QDRANT_URL: http://qdrant:6333
@@ -110,11 +192,11 @@ services:
     logging: *default-logging
 
   litellm:
-    image: ghcr.io/berriai/litellm:main-latest
-    profiles: ["intel", "core"]
+    image: ghcr.io/berriai/litellm:v1.103.0
+    profiles: ["full", "intel", "core"]
     environment:
       LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}
-      DATABASE_URL: postgresql://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
+      DATABASE_URL: postgresql://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}?schema=litellm
       LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
       LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
       LANGFUSE_HOST: http://langfuse:3000
@@ -131,8 +213,8 @@ services:
     logging: *default-logging
 
   crawl4ai:
-    image: unclecode/crawl4ai:latest
-    profiles: ["intel", "core"]
+    image: unclecode/crawl4ai:0.9.2
+    profiles: ["full", "intel", "core"]
     shm_size: "1gb"
     networks: [pd-net]
     logging: *default-logging
@@ -140,7 +222,7 @@ services:
   osint:
     build:
       context: ./services/osint
-    profiles: ["intel", "core"]
+    profiles: ["full", "intel", "core"]
     ports:
       - "127.0.0.1:${OSINT_PORT:-8081}:8080"
     environment:
@@ -158,44 +240,9 @@ services:
     networks: [pd-net]
     logging: *default-logging
 
-  api:
-    build:
-      context: ./services/api
-    profiles: ["core"]
-    ports:
-      - "127.0.0.1:${API_PORT:-8010}:8000"
-    environment:
-      APP_ENV: ${APP_ENV:-local}
-      PD_PORT: ${PD_PORT:-8010}
-      PD_API_KEY: ${PD_API_KEY:-dev-local-key}
-      PD_BRAND_NAME: ${PD_BRAND_NAME:-Prospect Dominion}
-      PD_BRAND_TAGLINE: ${PD_BRAND_TAGLINE:-Operational control surface}
-      PD_PRIMARY_COLOR: ${PD_PRIMARY_COLOR:-#4f8ef7}
-      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost}
-      PG_DSN: postgresql://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
-      NEO4J_URL: bolt://neo4j:7687
-      QDRANT_URL: http://qdrant:6333
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
-      LITELLM_BASE_URL: http://litellm:4000
-      JWT_SECRET: ${JWT_SECRET:-change-me}
-    depends_on:
-      postgres:
-        condition: service_healthy
-      neo4j:
-        condition: service_healthy
-      qdrant:
-        condition: service_started
-      redis:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)"]
-      <<: *hc
-    networks: [pd-net]
-    logging: *default-logging
-
   n8n:
-    image: n8nio/n8n:latest
-    profiles: ["core"]
+    image: n8nio/n8n:1.56.0
+    profiles: ["full"]
     environment:
       DB_TYPE: postgresdb
       DB_POSTGRESDB_HOST: postgres
@@ -219,7 +266,7 @@ services:
   workers:
     build:
       context: ./services/workers
-    profiles: ["core"]
+    profiles: ["full"]
     environment:
       PG_DSN: postgresql://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
@@ -229,19 +276,5 @@ services:
         condition: service_started
       redis:
         condition: service_healthy
-    networks: [pd-net]
-    logging: *default-logging
-
-  caddy:
-    image: caddy:2-alpine
-    profiles: ["core"]
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
-    depends_on:
-      api:
-        condition: service_started
     networks: [pd-net]
     logging: *default-logging

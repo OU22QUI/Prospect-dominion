@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const demoSection = document.getElementById('demo');
   const dialog = document.getElementById('demoDialog');
-  const requestDemo = document.getElementById('requestDemo');
   const viewWorkflow = document.getElementById('viewWorkflow');
   const dialogWorkflow = document.getElementById('dialogWorkflow');
   const closeDialog = document.getElementById('closeDialog');
@@ -32,11 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const guideTitleEl = document.getElementById('guideTitle');
   const guideCopyEl = document.getElementById('guideCopy');
   const guideNextBtn = document.getElementById('guideNext');
-  const finalBookDemoBtn = document.getElementById('finalBookDemo');
   const scenarioChips = document.querySelectorAll('.scenario-chip');
   const actionFeedbackEl = document.getElementById('actionFeedback');
-  const walkthroughForm = document.getElementById('walkthroughForm');
-  const formStatusEl = document.getElementById('formStatus');
   const summaryEls = {
     trustScore: document.getElementById('trustScore'),
     qualifiedAccounts: document.getElementById('qualifiedAccounts'),
@@ -131,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const actionHistory = [];
   const storageKey = 'prospect-dominion-demo-state-v1';
   const baseConfig = window.PD_DEMO_CONFIG || {};
-  const leadStorageKey = 'prospect-dominion-demo-leads-v1';
 
   const track = (eventName, details = {}) => {
     const event = { eventName, details, timestamp: new Date().toISOString() };
@@ -491,18 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (guideStep === 1) renderAccountDetail();
     if (guideStep === 2) document.getElementById('runAction')?.focus();
   });
-  dialogWorkflow?.addEventListener('click', () => {
-    dialog?.close();
-    scrollToWorkflow();
-  });
   closeDialog?.addEventListener('click', () => dialog?.close());
-  requestDemo?.addEventListener('click', () => {
-    if (dialog?.showModal) {
-      dialog.showModal();
-    } else {
-      scrollToWorkflow();
-    }
-  });
 
   document.querySelectorAll('.action-button').forEach((button) => {
     button.addEventListener('click', () => performAction(button.dataset.action));
@@ -580,51 +564,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  walkthroughForm?.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const formData = new FormData(walkthroughForm);
-    const name = String(formData.get('name') || '').trim();
-    const email = String(formData.get('email') || '').trim();
-
-    if (!name || !email) {
-      if (formStatusEl) formStatusEl.textContent = 'Add your name and work email to continue.';
-      return;
-    }
-
-    if (formStatusEl) {
-      formStatusEl.textContent = `Thank you, ${name}! Your request for ${formData.get('company') || 'your company'} has been recorded. Our engineering team will contact you at ${email} within 24 hours.`;
-    }
-    try {
-      const leads = JSON.parse(localStorage.getItem(leadStorageKey) || '[]');
-      leads.push({ ...Object.fromEntries(formData.entries()), capturedAt: new Date().toISOString() });
-      localStorage.setItem(leadStorageKey, JSON.stringify(leads.slice(-20)));
-    } catch (error) {
-      // Local capture is optional in restricted browser contexts.
-    }
-    track('walkthrough_request', { role: formData.get('role') || 'unknown' });
-    if (baseConfig.requestEndpoint) {
-      fetch(baseConfig.requestEndpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(Object.fromEntries(formData.entries())),
-      }).catch(() => {
-        // Fallback handled
-      });
-    }
-    if (baseConfig.bookingUrl && formStatusEl) {
-      const bookingLink = document.createElement('a');
-      bookingLink.href = baseConfig.bookingUrl;
-      bookingLink.target = '_blank';
-      bookingLink.rel = 'noreferrer';
-      bookingLink.className = 'form-booking-link';
-      bookingLink.textContent = 'Choose a walkthrough time';
-      formStatusEl.append(' ', bookingLink);
-    }
-    walkthroughForm.reset();
-  });
-
   // Attach modal opener to all walkthrough / pilot buttons
-  const openModalBtns = document.querySelectorAll('.book-walkthrough-btn, #requestDemo, #finalBookDemo');
+  const openModalBtns = document.querySelectorAll('.book-walkthrough-btn');
   openModalBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       if (dialog?.showModal) {

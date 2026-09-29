@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import base64
 import argparse
 import json
 import re
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 
 
 REQUIRED_KEYS = {
@@ -14,11 +16,22 @@ REQUIRED_KEYS = {
     "PD_BRAND_TAGLINE",
     "PD_PRIMARY_COLOR",
     "PD_API_KEY",
+    "PD_DEFAULT_ROLE",
     "JWT_SECRET",
     "API_PORT",
     "PD_PORT",
     "OSINT_PORT",
     "REDIS_PORT",
+    "PG_USER",
+    "PG_PASSWORD",
+    "PG_DB",
+    "NEO4J_USER",
+    "NEO4J_PASSWORD",
+    "REDIS_PASSWORD",
+    "LITELLM_MASTER_KEY",
+    "N8N_ENCRYPTION_KEY",
+    "PD_PUBLIC_HOST",
+    "PD_CADDYFILE",
 }
 PLACEHOLDER_VALUES = {
     "change-me",
@@ -56,6 +69,8 @@ def validate_config(values: dict[str, str], production: bool = False) -> list[st
     if environment not in {"local", "production"}:
         issues.append("APP_ENV must be local or production")
     if production:
+        if environment != "production":
+            issues.append("production validation requires APP_ENV=production")
         environment = "production"
 
     if not HEX_COLOR.fullmatch(values.get("PD_PRIMARY_COLOR", "").strip()):
@@ -82,13 +97,37 @@ def validate_config(values: dict[str, str], production: bool = False) -> list[st
     if environment == "production":
         if not values.get("PD_API_KEY", "").startswith("prod-"):
             issues.append("production PD_API_KEY must start with prod-")
+        if values.get("PD_DEFAULT_ROLE", "").strip().lower() != "viewer":
+            issues.append("production PD_DEFAULT_ROLE must be viewer; use /v1 server-issued RBAC for writes")
         if len(values.get("JWT_SECRET", "")) < 32 or values.get("JWT_SECRET") in PLACEHOLDER_VALUES:
             issues.append("production JWT_SECRET must be a non-placeholder value of at least 32 characters")
         if not public_url.startswith("https://"):
             issues.append("production PUBLIC_BASE_URL must use https://")
-        for key in ("PG_PASSWORD", "NEO4J_PASSWORD", "REDIS_PASSWORD", "N8N_ENCRYPTION_KEY"):
+        public_host = values.get("PD_PUBLIC_HOST", "").strip().lower()
+        if public_host != (urlparse(public_url).hostname or "").lower():
+            issues.append("production PD_PUBLIC_HOST must match the PUBLIC_BASE_URL hostname")
+        caddyfile = values.get("PD_CADDYFILE", "").replace("\\", "/")
+        if Path(caddyfile).name != "Caddyfile.production":
+            issues.append("production PD_CADDYFILE must select infra/caddy/Caddyfile.production")
+        for key in ("PG_PASSWORD", "NEO4J_PASSWORD", "REDIS_PASSWORD", "N8N_ENCRYPTION_KEY", "LITELLM_MASTER_KEY"):
             if values.get(key) in PLACEHOLDER_VALUES:
                 issues.append(f"production {key} must be replaced")
+        for key in ("RESEND_API_KEY", "RESEND_WEBHOOK_SECRET"):
+            if not values.get(key, "").strip():
+                issues.append(f"missing:{key}")
+        if not values.get("RESEND_API_KEY", "").startswith("re_") or values.get("RESEND_API_KEY", "").startswith("re_example"):
+            issues.append("production RESEND_API_KEY must be a configured Resend key")
+        webhook_secret = values.get("RESEND_WEBHOOK_SECRET", "")
+        if not webhook_secret.startswith("whsec_"):
+            issues.append("production RESEND_WEBHOOK_SECRET must be a configured signing secret")
+        else:
+            encoded_secret = webhook_secret.removeprefix("whsec_")
+            try:
+                decoded_secret = base64.b64decode(encoded_secret + "=" * (-len(encoded_secret) % 4), validate=True)
+            except ValueError:
+                decoded_secret = b""
+            if len(decoded_secret) != 32:
+                issues.append("production RESEND_WEBHOOK_SECRET must encode a 32-byte signing key")
 
     return issues
 
