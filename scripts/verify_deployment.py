@@ -17,22 +17,16 @@ API_KEY = os.getenv("PD_API_KEY", "dev-local-key")
 REQUIRED_SERVICES = {
     "api",
     "caddy",
-    "crawl4ai",
-    "garage",
-    "litellm",
-    "mem0",
-    "neo4j",
-    "osint",
+    "migrations",
     "postgres",
-    "qdrant",
-    "redis",
 }
-HEALTH_REQUIRED = {"api", "litellm", "osint", "postgres", "redis"}
+RUNNING_REQUIRED_SERVICES = {"api", "caddy", "postgres"}
+HEALTH_REQUIRED = {"api", "postgres"}
 
 
 def run_compose(*arguments: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
-        ["docker", "compose", "--profile", "core", *arguments],
+        ["docker", "compose", "--profile", "pilot", *arguments],
         cwd=REPO_ROOT,
         capture_output=True,
         encoding="utf-8",
@@ -107,10 +101,14 @@ def verify() -> dict[str, object]:
         raise RuntimeError(f"missing Compose services: {', '.join(missing)}")
 
     not_running = sorted(
-        name for name in REQUIRED_SERVICES if str(services[name].get("State", "")).lower() != "running"
+        name for name in RUNNING_REQUIRED_SERVICES if str(services[name].get("State", "")).lower() != "running"
     )
     if not_running:
         raise RuntimeError(f"services not running: {', '.join(not_running)}")
+
+    migrations = services["migrations"]
+    if str(migrations.get("State", "")).lower() != "exited" or str(migrations.get("ExitCode", "")) != "0":
+        raise RuntimeError("database migrations did not complete successfully")
 
     unhealthy = sorted(
         name
