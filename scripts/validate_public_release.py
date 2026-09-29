@@ -97,7 +97,9 @@ def ensure_zip(path: Path) -> list[str]:
                 raise SystemExit(f"Archive contains forbidden public file: {name}")
             if name.startswith(".git/") or name.startswith(".github/"):
                 raise SystemExit(f"Archive contains forbidden internal path: {name}")
-            if name.startswith(".env") or ".env" in name:
+            if name.endswith(".env.example"):
+                continue
+            if name.startswith(".env") or name.endswith(".env") or ".env" in name:
                 raise SystemExit(f"Archive contains env file: {name}")
             if name.endswith((".pyc", ".pyo", ".dump", ".sqlite", ".sqlite3", ".db")):
                 raise SystemExit(f"Archive contains runtime artifact: {name}")
