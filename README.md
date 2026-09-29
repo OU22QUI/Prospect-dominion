@@ -1,90 +1,94 @@
 # Prospect Dominion
 
-### Know where to move next.
+Prospect Dominion is open-source signal-to-action infrastructure for teams that want to run a governed GTM workflow in their own environment.
 
-Prospect Dominion helps revenue teams turn scattered buying signals into a ranked account queue, a credible relationship path, and a controlled next action.
+The core idea is simple:
 
-**[Open the live demo](https://ou22qui.github.io/Prospect-dominion/)** · **[Explore the simulation](https://ou22qui.github.io/Prospect-dominion/demo/)** · **[See pricing](https://ou22qui.github.io/Prospect-dominion/pricing/)** · **[Technical evaluation](https://ou22qui.github.io/Prospect-dominion/tester.html)**
+signals
+→ prioritize
+→ route
+→ approve
+→ act
+→ track
 
-## Start here
+It is designed for real operator control and human approval gates, not for unchecked autonomous outreach.
 
-Open the [live demo](https://ou22qui.github.io/Prospect-dominion/) and select **Account command center**.
+## Why use Dominion?
 
-The demo opens without an account, credentials, or installation. It uses a curated sample workspace so you can explore the product experience immediately.
+- run an accountable workflow instead of a black-box outbound system
+- keep workflow approvals and send decisions visible
+- normalize signals into a shared operating model
+- track outcomes and audit actions
+- self-host the core in your environment
 
-## How to use the demo
+## What is included
 
-1. Choose an account from the queue, or use the scenario buttons for Expansion, Renewal, New logo, and Cross-sell.
-2. Read the account summary: intent, stage, buying signal, decision path, and score explanation.
-3. Review the relationship map to see the people and paths connected to the opportunity.
-4. Use **Run signal scan**, **Queue warm intro**, or **Approve outreach** to test a governed workflow action.
-5. Use **Undo** to reverse the last action, or **Reset** to return the demo to its starting state.
-6. Use search and filters to find accounts by company, intent, or stage.
-7. Select **Compare** on another account to compare its score and priority with the selected account.
-8. Use **Share** to copy a link that opens the current scenario.
+- FastAPI-based workflow service
+- Postgres-backed storage for pilot-grade operational state
+- demo and static product experience for evaluation
+- validation and deployment scripts
+- service dockerization for a local pilot path
 
-Your changes are stored in your browser for the current demo workspace. No customer data is required.
+## What is not included
 
-## What Prospect Dominion shows
+This repository is not a generic multi-tenant cloud product. It is a self-hosted core plus a bounded pilot/deployment path designed to be extended by real operators and deployment partners.
 
-- **Signal intelligence**: identify which accounts deserve attention now.
-- **Account prioritization**: compare intent, stage, score, and buying context.
-- **Relationship intelligence**: see the people and routes that can make an introduction credible.
-- **Governed execution**: make the next action visible before it is approved.
-- **Operational trust**: keep human review in the loop for sensitive actions.
+## Open-source core and commercial path
 
-## Walkthrough request
+Prospect Dominion intentionally separates:
 
-Select **Book a walkthrough** in the demo to open the request form. Add your name, work email, role, company, and primary use case.
+- open-source core: usable and self-hostable
+- Aethonex deployment services: production setup, DNS/TLS, secret management, workflow implementation, support
+- future premium modules: advanced workflow packs and enterprise-specific additions
 
-The public demo confirms the request locally. To connect the form to your own follow-up service, configure `demo/config.js` with a public HTTPS endpoint:
+See [docs/OPEN_SOURCE_CORE.md](docs/OPEN_SOURCE_CORE.md) and [docs/COMMERCIAL_BOUNDARY.md](docs/COMMERCIAL_BOUNDARY.md).
 
-```js
-window.PD_DEMO_CONFIG = {
-	requestEndpoint: "https://example.com/demo-request",
-	analyticsEndpoint: "https://example.com/demo-events",
-	bookingUrl: "https://example.com/book"
-};
-```
-
-Leave these values empty when running the demo without external services.
-
-## Run the demo locally
+## Quickstart
 
 ```bash
-cd demo
-python -m http.server 8000
-```
-
-Open <http://127.0.0.1:8000> in your browser.
-
-For the product path, open <http://127.0.0.1:8000/tester.html>.
-
-## Local development
-
-The public experience is plain HTML, CSS, and JavaScript, so no build step is required. After editing a file, refresh the browser page served from the `demo` directory.
-
-Useful checks from the repository root:
-
-```bash
-node --check demo/script.js
-python scripts/audit_public_demo.py
-python scripts/validate_customer_config.py --env-file deploy/customer.env.example --check-public-demo
+cp deploy/customer.env.example .env
+python scripts/validate_customer_config.py --env-file .env --check-public-demo
 python -m pytest -q
+docker compose -f docker-compose.yml -f docker-compose.override.yml --profile core up -d --build --wait
+python scripts/verify_deployment.py
 ```
 
-## Deployment options
+Then browse:
 
-- **Demo**: share the hosted GitHub Pages experience.
-- **Pilot**: use the interactive path to align a focused workflow with a revenue team.
-- **Private deployment**: connect the operating model to a controlled customer environment.
+- API readiness: http://127.0.0.1:8010/ready
+- demo: http://127.0.0.1:8000
 
-See the [full pricing page](https://ou22qui.github.io/Prospect-dominion/pricing/) for the $4,500 fixed pilot, deployment pricing, and the partner model.
+For full setup steps, see [docs/QUICKSTART.md](docs/QUICKSTART.md).
 
-## Support
+## Demo
 
-For a guided walkthrough or pilot conversation, use the request form in the live demo.
+The public demo is a simulation for product explanation and evaluation. It uses sample values and clearly represents a demonstration workspace.
+
+It should not be mistaken for a live customer environment.
+
+## Documentation
+
+- [docs/QUICKSTART.md](docs/QUICKSTART.md)
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
+- [docs/PRODUCTION.md](docs/PRODUCTION.md)
+- [docs/PILOT.md](docs/PILOT.md)
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- [docs/OPEN_SOURCE_CORE.md](docs/OPEN_SOURCE_CORE.md)
+- [docs/COMMERCIAL_BOUNDARY.md](docs/COMMERCIAL_BOUNDARY.md)
+- [docs/PRODUCT_STATUS.md](docs/PRODUCT_STATUS.md)
+- [docs/ROADMAP_GAPS.md](docs/ROADMAP_GAPS.md)
+- [docs/AETHONEX_PILOT.md](docs/AETHONEX_PILOT.md)
+
+## Security and contribution
+
+- [SECURITY.md](SECURITY.md)
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [CHANGELOG.md](CHANGELOG.md)
 
 ## License
 
-This repository is a private product demonstration for Prospect Dominion. It is not licensed for reuse, redistribution, or production deployment.
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
+
+## Commercial model
+
+Aethonex can provide deployment, configuration, workflow customization, operation, and support services around the open-source core. The pilot remains a bounded paid implementation for real customer environments, not a claim that every deployment problem is solved by the OSS layer alone.
