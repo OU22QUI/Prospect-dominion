@@ -31,7 +31,7 @@ jobs:
       - name: Start integration dependencies
         run: |
           cp deploy/customer.env.example .env
-          docker compose -f docker-compose.yml -f docker-compose.override.yml --profile core up -d --build --wait
+          docker compose -f docker-compose.yml -f docker-compose.override.yml --profile pilot up -d --build --wait
 
       - name: Run tests
         env:
@@ -55,4 +55,4 @@ jobs:
 
       - name: Tear down integration dependencies
         if: always()
-        run: docker compose -f docker-compose.yml -f docker-compose.override.yml --profile core down --remove-orphans
+        run: docker compose -f docker-compose.yml -f docker-compose.override.yml --profile pilot down --remove-orphans
