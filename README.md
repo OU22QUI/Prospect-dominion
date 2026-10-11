@@ -65,7 +65,7 @@ cd Prospect-dominion
 cp deploy/customer.env.example .env
 python scripts/validate_customer_config.py --env-file .env --check-public-demo
 python -m pytest -q
-docker compose -f docker-compose.yml -f docker-compose.override.yml --profile core up -d --build --wait
+docker compose -f docker-compose.yml -f docker-compose.override.yml --profile pilot up -d --build --wait
 python scripts/verify_deployment.py
 ```
 
@@ -111,10 +111,22 @@ The same simulation is included in `demo/` for local use.
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE).
 
+## Relationship to other Aethonex repositories
+
+Prospect Dominion is an independent open-source project, not the commercial Aethonex Control Plane and not a runtime dependency of it. This repository's current pilot imports customer-provided CSV data and supports a Resend-backed send path; it does not currently ingest Prospect Intelligence OS `dossier_v1` files. The three-repository boundary and current product scope are documented here to avoid implying an integration that has not been built.
+
 ## Project status
 
 See [docs/PRODUCT_STATUS.md](docs/PRODUCT_STATUS.md) for the verified scope and [docs/ROADMAP_GAPS.md](docs/ROADMAP_GAPS.md) for known limitations. This is a self-hosted core with a bounded pilot path, not a general-purpose multi-tenant SaaS service.
 
 ## Commercial model
 
-Aethonex can provide deployment, configuration, workflow customization, operation, and support services around the open-source core. The pilot remains a bounded paid implementation for real customer environments, not a claim that every deployment problem is solved by the OSS layer alone.
+Prospect Dominion is an independent MIT-licensed workflow project. It is not a dependency or bundled module of the Aethonex Control Plane product. The current Dominion pilot uses customer-provided CSV signals and a configured Resend provider; it does not provide the OSINT research pipeline or local SMTP fleet in the separate [Aethonex Control Plane](https://github.com/OU22QUI/Aethonex-control-plane).
+
+The three-repository portfolio currently has these boundaries:
+
+- [Prospect Intelligence OS](https://github.com/OU22QUI/prospect-intelligence-os): Apache-2.0 public-data company research; emits the versioned `dossier_v1` JSON contract.
+- [Aethonex Control Plane](https://github.com/OU22QUI/Aethonex-control-plane): intended commercial self-hosted operations product; imports `dossier_v1` and runs its own local workflow.
+- Prospect Dominion: independent MIT-licensed governed signal-to-action API and pilot console. It does not currently consume `dossier_v1` or act as a component of the Control Plane.
+
+This is a technical boundary, not a claim that the Control Plane's commercial distribution license or production readiness is complete.

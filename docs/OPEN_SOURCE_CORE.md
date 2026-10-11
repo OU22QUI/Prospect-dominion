@@ -32,3 +32,7 @@ The Core is not a universal SaaS platform, a multi-tenant cloud control plane, o
 ## Why this is legitimate open source
 
 It is useful, runnable, and testable without requiring a paid deployment. It acts as a deployable developer core and creates a path to Aethonex deployment and custom implementation services.
+
+## Portfolio boundary
+
+Prospect Dominion is an independent MIT-licensed workflow project. It is not included in, required by, or integrated with the Aethonex Control Plane package. Its current pilot ingests CSV signals and does not consume the `dossier_v1` contract from Prospect Intelligence OS. Treat those as separate products until a versioned adapter and end-to-end integration test exist.

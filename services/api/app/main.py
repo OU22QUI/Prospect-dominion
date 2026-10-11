@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import logging
 import os
 import socket
 from pathlib import Path
@@ -18,7 +19,7 @@ except ModuleNotFoundError:  # pragma: no cover - optional dependency fallback
     redis = None
 
 from fastapi import Depends, FastAPI, HTTPException, Request, status
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.models import (
@@ -49,9 +50,11 @@ except ModuleNotFoundError:  # pragma: no cover
     PilotStore = None
 
 app = FastAPI(title="Prospect Dominion API")
+logger = logging.getLogger(__name__)
 security = HTTPBearer(auto_error=False)
 
 APP_HTML_PAGE = Path(__file__).resolve().parent.parent / "static" / "app.html"
+APP_LOGO_IMAGE = Path(__file__).resolve().parent.parent / "static" / "aethonex-logo.png"
 
 HTML_PAGE = Path(__file__).resolve().parent.parent / "static" / "index.html"
 DEFAULT_RUNTIME_PORT = 8000
@@ -243,30 +246,36 @@ def _readiness_checks() -> dict[str, Any]:
         db_path = store.db_path
         checks["database"] = {"status": "ok" if db_path.exists() else "missing", "backend": "sqlite", "path": str(db_path)}
 
-    qdrant_url = os.getenv("QDRANT_URL", "http://127.0.0.1:6335")
-    if httpx is None:
-        checks["qdrant"] = {"status": "unknown", "url": qdrant_url, "note": "httpx not installed"}
+    if os.getenv("PD_CHECK_QDRANT", "").strip().lower() == "true":
+        qdrant_url = os.getenv("QDRANT_URL", "http://127.0.0.1:6335")
+        if httpx is None:
+            checks["qdrant"] = {"status": "unknown", "url": qdrant_url, "note": "httpx not installed"}
+        else:
+            try:
+                response = httpx.get(f"{qdrant_url}/readyz", timeout=3.0)
+                checks["qdrant"] = {
+                    "status": "ok" if response.status_code == 200 else "degraded",
+                    "url": qdrant_url,
+                    "http_status": response.status_code,
+                }
+            except Exception as exc:  # pragma: no cover - runtime dependency check
+                checks["qdrant"] = {"status": "unavailable", "url": qdrant_url, "error": str(exc)}
     else:
-        try:
-            response = httpx.get(f"{qdrant_url}/readyz", timeout=3.0)
-            checks["qdrant"] = {
-                "status": "ok" if response.status_code == 200 else "degraded",
-                "url": qdrant_url,
-                "http_status": response.status_code,
-            }
-        except Exception as exc:  # pragma: no cover - runtime dependency check
-            checks["qdrant"] = {"status": "unavailable", "url": qdrant_url, "error": str(exc)}
+        checks["qdrant"] = {"status": "unknown", "note": "optional service checks disabled"}
 
-    redis_url = os.getenv("REDIS_URL", "redis://:change-me-strong@127.0.0.1:6380")
-    if redis is None:
-        checks["redis"] = {"status": "unknown", "url": redis_url, "note": "redis package not installed"}
+    if os.getenv("PD_CHECK_REDIS", "").strip().lower() == "true":
+        redis_url = os.getenv("REDIS_URL", "redis://:change-me-strong@127.0.0.1:6380")
+        if redis is None:
+            checks["redis"] = {"status": "unknown", "url": redis_url, "note": "redis package not installed"}
+        else:
+            try:
+                client = redis.Redis.from_url(redis_url, decode_responses=True, socket_connect_timeout=2)
+                client.ping()
+                checks["redis"] = {"status": "ok", "url": redis_url}
+            except Exception as exc:  # pragma: no cover - runtime dependency check
+                checks["redis"] = {"status": "unavailable", "url": redis_url, "error": str(exc)}
     else:
-        try:
-            client = redis.Redis.from_url(redis_url, decode_responses=True, socket_connect_timeout=2)
-            client.ping()
-            checks["redis"] = {"status": "ok", "url": redis_url}
-        except Exception as exc:  # pragma: no cover - runtime dependency check
-            checks["redis"] = {"status": "unavailable", "url": redis_url, "error": str(exc)}
+        checks["redis"] = {"status": "unknown", "note": "optional service checks disabled"}
 
     return checks
 
@@ -562,6 +571,13 @@ def get_operator_app() -> str:
     return APP_HTML_PAGE.read_text(encoding="utf-8")
 
 
+@app.get("/aethonex-logo.png", include_in_schema=False)
+def get_aethonex_logo() -> FileResponse:
+    if not APP_LOGO_IMAGE.is_file():
+        raise HTTPException(status_code=404, detail="Aethonex logo not found")
+    return FileResponse(APP_LOGO_IMAGE, media_type="image/png")
+
+
 @app.post("/v1/auth/bootstrap", status_code=201)
 def pilot_bootstrap(payload: dict[str, Any]) -> dict[str, Any]:
     store_instance = get_pilot_store()
@@ -753,21 +769,27 @@ def pilot_send(
     sender = ResendSender()
     try:
         msg_id = sender.send(claim["payload"])
-        attempt = store_instance.record_send_result(
-            tenant_id=principal["tenant_id"],
-            actor_id=str(principal["user_id"]),
-            attempt_id=str(claim["attempt"]["id"]),
-            message_id=msg_id,
-        )
-        return {"attempt": attempt, "sent": True}
     except Exception as exc:
-        attempt = store_instance.record_send_result(
+        attempt_id = str(claim["attempt"]["id"])
+        store_instance.record_send_result(
             tenant_id=principal["tenant_id"],
             actor_id=str(principal["user_id"]),
-            attempt_id=str(claim["attempt"]["id"]),
+            attempt_id=attempt_id,
             error=str(exc),
         )
-        return {"attempt": attempt, "sent": False, "error": str(exc)}
+        logger.warning("Outbound send failed for approval %s (attempt %s)", approval_id, attempt_id)
+        raise HTTPException(
+            status_code=502,
+            detail=f"Outbound send failed; attempt {attempt_id} was recorded. Review it before retrying.",
+        ) from exc
+
+    attempt = store_instance.record_send_result(
+        tenant_id=principal["tenant_id"],
+        actor_id=str(principal["user_id"]),
+        attempt_id=str(claim["attempt"]["id"]),
+        message_id=msg_id,
+    )
+    return {"attempt": attempt, "sent": True}
 
 
 @app.post("/v1/webhooks/resend/{tenant_id}")

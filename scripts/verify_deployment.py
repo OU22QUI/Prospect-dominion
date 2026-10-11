@@ -59,10 +59,13 @@ def fetch(
     method: str = "GET",
     payload: dict[str, object] | None = None,
     authenticated: bool = True,
+    bearer_token: str | None = None,
 ) -> tuple[int, object]:
     body = json.dumps(payload).encode("utf-8") if payload is not None else None
     headers = {"Accept": "application/json"}
-    if authenticated:
+    if bearer_token:
+        headers["Authorization"] = f"Bearer {bearer_token}"
+    elif authenticated:
         headers["Authorization"] = f"Bearer {API_KEY}"
     if body is not None:
         headers["Content-Type"] = "application/json"
@@ -122,12 +125,6 @@ def verify() -> dict[str, object]:
     health_status, health = fetch("/health")
     unauthenticated_status, _ = fetch("/dashboard", method="GET", authenticated=False)
     branding_status, branding = fetch("/branding")
-    seed_status, seed = fetch("/demo/seed", method="POST")
-    thread_status, thread = fetch(
-        "/threads",
-        method="POST",
-        payload={"person_id": "verify-person", "account_id": "verify-account", "campaign_id": "verify-campaign"},
-    )
 
     if health_status != 200 or not isinstance(health, dict) or health.get("status") != "ok":
         raise RuntimeError("/health verification failed")
@@ -135,19 +132,24 @@ def verify() -> dict[str, object]:
         raise RuntimeError(f"unauthorized dashboard access returned {unauthenticated_status}")
     if branding_status != 200:
         raise RuntimeError("/branding verification failed")
-    if seed_status != 200:
-        raise RuntimeError("demo seed verification failed")
-    if thread_status != 201 or not isinstance(thread, dict):
-        raise RuntimeError("thread creation verification failed")
 
-    thread_id = str(thread["thread_id"])
-    advance_status, advanced = fetch(
-        f"/threads/{thread_id}/advance",
-        method="POST",
-        payload={"event_type": "reply.positive", "source": "deployment-verification"},
-    )
-    if advance_status != 200:
-        raise RuntimeError("workflow advancement verification failed")
+    pilot_token = os.getenv("PD_PILOT_TOKEN", "").strip()
+    if pilot_token:
+        pilot_status, principal = fetch("/v1/me", authenticated=False, bearer_token=pilot_token)
+        if pilot_status != 200 or not isinstance(principal, dict):
+            raise RuntimeError("pilot session verification failed")
+        accounts_status, accounts = fetch("/v1/accounts", authenticated=False, bearer_token=pilot_token)
+        queue_status, queue = fetch("/v1/priority-queue", authenticated=False, bearer_token=pilot_token)
+        if accounts_status != 200 or not isinstance(accounts, dict) or not isinstance(accounts.get("items"), list):
+            raise RuntimeError("pilot accounts verification failed")
+        if queue_status != 200 or not isinstance(queue, dict) or not isinstance(queue.get("items"), list):
+            raise RuntimeError("pilot priority queue verification failed")
+        pilot_checks = ["session", "accounts", "priority_queue"]
+    else:
+        pilot_status, _ = fetch("/v1/me", authenticated=False)
+        if pilot_status != 401:
+            raise RuntimeError(f"unauthenticated pilot session returned {pilot_status}, expected 401")
+        pilot_checks = ["authentication_required"]
 
     return {
         "status": "passed",
@@ -156,14 +158,13 @@ def verify() -> dict[str, object]:
         "ready": ready,
         "health": health,
         "branding": branding,
-        "seed": seed,
-        "workflow": advanced,
+        "pilot_checks": pilot_checks,
     }
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Verify the running Prospect Dominion Compose deployment")
-    parser.add_argument("--teardown", action="store_true", help="stop the Compose core profile after verification")
+    parser.add_argument("--teardown", action="store_true", help="stop the Compose pilot profile after verification")
     args = parser.parse_args()
     try:
         print(json.dumps(verify(), indent=2, default=str))

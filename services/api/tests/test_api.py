@@ -258,9 +258,23 @@ def test_operator_app_serves_html() -> None:
     response = client.get("/app")
     assert response.status_code == 200
     assert "Pilot operator" in response.text
+    assert "by Aethonex" in response.text
+    assert 'src="/aethonex-logo.png"' in response.text
     assert "Revenue operations" in response.text
     assert "kpiRow" in response.text
     assert "Priority queue" in response.text
+    assert "CSV signals" in response.text
+    assert "Score accounts" in response.text
+    assert "Choose an imported contact" in response.text
+    assert "Viewer access is read-only" in response.text
+    assert "Send this already-approved action" in response.text
+
+
+def test_aethonex_logo_is_served() -> None:
+    response = client.get("/aethonex-logo.png")
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "image/png"
+    assert response.content.startswith(b"\x89PNG\r\n\x1a\n")
 
 
 def test_v1_auth_required() -> None:

@@ -14,6 +14,8 @@ The public core remains free and open for:
 
 The shared core is MIT-licensed. Aethonex does not claim exclusive ownership of the core or restrict use of the public software. Customers retain their data, credentials, and infrastructure; rights to bespoke work and any paid deliverables must be defined in the signed scope.
 
+Prospect Dominion is a separate MIT-licensed project. It is not a module in the Aethonex Control Plane package, which has its own repository, runtime, and distribution terms. The public research component is a third, separate Apache-2.0 repository.
+
 The free Core is the distribution wedge. It is not the full customer delivery model.
 
 ## Aethonex Services

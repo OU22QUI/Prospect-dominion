@@ -70,7 +70,7 @@ See [BACKUP_RESTORE.md](BACKUP_RESTORE.md).
 ## 9. Restart sequence
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.override.yml --profile core restart
+docker compose -f docker-compose.yml -f docker-compose.override.yml --profile pilot restart
 python scripts/verify_deployment.py
 ```
 
@@ -89,7 +89,7 @@ Review:
 Use a controlled shutdown after signoff or maintenance:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.override.yml --profile core down --remove-orphans
+docker compose -f docker-compose.yml -f docker-compose.override.yml --profile pilot down --remove-orphans
 ```
 
 ## 12. Known boundary

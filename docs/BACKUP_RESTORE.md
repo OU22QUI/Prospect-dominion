@@ -9,7 +9,7 @@ This procedure covers the controlled backup and restore of the Postgres-backed p
 From the repository root:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.override.yml --profile core exec -T postgres pg_dump -U "$PG_USER" -Fc "$PG_DB" > prospect-dominion-backup.dump
+docker compose -f docker-compose.yml -f docker-compose.override.yml --profile pilot exec -T postgres pg_dump -U "$PG_USER" -Fc "$PG_DB" > prospect-dominion-backup.dump
 ```
 
 Recommended follow-up:
@@ -25,7 +25,7 @@ Store the encrypted or protected file according to the customer retention policy
 To restore into a test or controlled environment:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.override.yml --profile core exec -T postgres pg_restore -U "$PG_USER" -d "$PG_DB" --clean --if-exists < prospect-dominion-backup.dump
+docker compose -f docker-compose.yml -f docker-compose.override.yml --profile pilot exec -T postgres pg_restore -U "$PG_USER" -d "$PG_DB" --clean --if-exists < prospect-dominion-backup.dump
 ```
 
 After restore, validate:
@@ -43,7 +43,9 @@ Then confirm:
 
 ## Operational requirement
 
-A local isolated-data rehearsal passed on 2026-09-29 using `python scripts/backup_restore_rehearsal.py`: 24 source tables and 11 total rows matched the restored database, and the API readiness check remained healthy.
+A local isolated-data rehearsal passed on 2026-09-29 using `python scripts/backup_restore_rehearsal.py`: 24 source tables and 11 total rows matched the restored database, and the API readiness check remained healthy. The rehearsal compares per-table row counts and order-independent row-data fingerprints, rather than only comparing a combined row total.
+
+The rehearsal uses a randomly named `pd_restore_...` database and refuses to replace an existing database. If setting `PD_RESTORE_TEST_DB`, use an unused name with the `pd_restore_` prefix; never point it at a customer or source database.
 
 This verifies the local dump/restore path only. It does not satisfy the gate for a customer deployment. Before customer data is imported, repeat the rehearsal in that customer's deployment using isolated customer-specific data, record the operator, timestamp, and result, and confirm critical workflow and audit records. Backup protection, retention, and recovery targets must also be agreed for that environment.
 

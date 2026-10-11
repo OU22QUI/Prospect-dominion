@@ -53,6 +53,9 @@ jobs:
           PD_API_KEY: dev-local-key
         run: python scripts/verify_deployment.py
 
+      - name: Rehearse isolated backup and restore
+        run: python scripts/backup_restore_rehearsal.py
+
       - name: Tear down integration dependencies
         if: always()
         run: docker compose -f docker-compose.yml -f docker-compose.override.yml --profile pilot down --remove-orphans

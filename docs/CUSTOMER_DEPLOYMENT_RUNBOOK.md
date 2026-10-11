@@ -81,7 +81,7 @@ Expected result: JSON output with `"status": "valid"` and no production validati
 ## 6. Start the stack
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.override.yml --profile core up -d --build --wait
+docker compose -f docker-compose.yml -f docker-compose.override.yml --profile pilot up -d --build --wait
 ```
 
 Expected result: the Postgres, migrations, API, Caddy, and required core services start successfully.
@@ -92,7 +92,17 @@ Expected result: the Postgres, migrations, API, Caddy, and required core service
 python scripts/verify_deployment.py
 ```
 
-Expected result: a JSON payload with `"status": "passed"`.
+By default, the verifier is read-only: it checks Compose service state, API health and readiness, branding, and that the versioned pilot API requires authentication. It does not seed demo records or mutate a customer workflow. Do not use its optional `--teardown` flag on a customer deployment.
+
+To also verify authenticated read access to the pilot API, provide a current session token for a pilot user:
+
+```powershell
+$env:PD_PILOT_TOKEN = "<current pilot session token>"
+python scripts/verify_deployment.py
+Remove-Item Env:PD_PILOT_TOKEN
+```
+
+Expected result: a JSON payload with `"status": "passed"`. The token is not printed. End-to-end workflow behavior is covered by the Postgres-backed integration suite; do not exercise real outbound sends as a deployment health check.
 
 ## 8. Bootstrap the pilot
 

@@ -36,10 +36,10 @@ Expected result: a passing suite.
 ## 4. Start the core stack
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.override.yml --profile core up -d --build --wait
+docker compose -f docker-compose.yml -f docker-compose.override.yml --profile pilot up -d --build --wait
 ```
 
-Expected result: Postgres, Redis, Qdrant, Neo4j, API, and related services start successfully.
+Expected result: Postgres, the migration runner, API, and Caddy start. This is the lean single-workspace pilot profile; optional Redis, Qdrant, Neo4j, LiteLLM, and crawling services are not required.
 
 ## 5. Verify deployment
 
@@ -68,22 +68,23 @@ Expected result: `status: ready`.
 
 ## Troubleshooting
 
-### Docker network or stale volume issue
+### Docker startup issue
 
-If you see a startup failure caused by stale Neo4j or Redis state, stop and remove stale volumes:
+Inspect the pilot service status and logs first:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.override.yml --profile core down -v --remove-orphans
+docker compose -f docker-compose.yml -f docker-compose.override.yml --profile pilot ps
+docker compose -f docker-compose.yml -f docker-compose.override.yml --profile pilot logs --tail=200
 ```
 
-Then repeat the startup command.
+Do not remove Docker volumes as a routine troubleshooting step; the Postgres volume contains persistent workflow data.
 
 ### API not ready
 
 Check the API logs:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.override.yml --profile core logs --tail=200 api
+docker compose -f docker-compose.yml -f docker-compose.override.yml --profile pilot logs --tail=200 api
 ```
 
 ### Config validation fails
@@ -93,3 +94,5 @@ Review `.env` entries and ensure placeholders are replaced for production.
 ## Production note
 
 A real deployment still requires the external deployment setup described in [DEPLOYMENT.md](DEPLOYMENT.md).
+
+The pilot does not require Redis or Qdrant. For a deployment that enables those optional services, set `PD_CHECK_REDIS=true` and/or `PD_CHECK_QDRANT=true` to include them in production readiness checks. Sending through the pilot currently requires customer-configured Resend credentials; provider pricing and free allowances are outside this repository and are not guaranteed.

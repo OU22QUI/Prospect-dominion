@@ -88,6 +88,8 @@ services:
       PG_DSN: postgresql://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
       QDRANT_URL: http://qdrant:6333
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+      PD_CHECK_QDRANT: ${PD_CHECK_QDRANT:-false}
+      PD_CHECK_REDIS: ${PD_CHECK_REDIS:-false}
       JWT_SECRET: ${JWT_SECRET:-change-me}
       RESEND_API_KEY: ${RESEND_API_KEY:-}
       RESEND_WEBHOOK_SECRET: ${RESEND_WEBHOOK_SECRET:-}

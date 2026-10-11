@@ -56,9 +56,14 @@ def auth(token: str) -> dict[str, str]:
 def test_complete_governed_workflow(client, monkeypatch) -> None:
     from app import main
 
+    send_calls: list[dict[str, str]] = []
+
     class FakeResend:
         def send(self, payload):
             assert payload["to"] == "dana@acme.test"
+            send_calls.append(payload)
+            if len(send_calls) == 1:
+                raise RuntimeError("provider unavailable")
             return "resend-message-1"
 
     monkeypatch.setattr(main, "ResendSender", FakeResend)
@@ -83,10 +88,20 @@ def test_complete_governed_workflow(client, monkeypatch) -> None:
     assert client.post(f"/v1/approvals/{approval_id}/approve", headers=auth(viewer_token), json={}).status_code == 403
     assert client.post(f"/v1/approvals/{approval_id}/send", headers=auth(token), json={"idempotency_key": "send-before-approval"}).status_code == 409
     assert client.post(f"/v1/approvals/{approval_id}/approve", headers=auth(token), json={}).status_code == 200
+    failed = client.post(f"/v1/approvals/{approval_id}/send", headers=auth(token), json={"idempotency_key": "send-e2e-fail"})
+    assert failed.status_code == 502, failed.text
+    assert "provider unavailable" not in failed.text
+    failed_attempt_id = failed.json()["detail"].split("attempt ", 1)[1].split(" ", 1)[0]
+    failed_replay = client.post(f"/v1/approvals/{approval_id}/send", headers=auth(token), json={"idempotency_key": "send-e2e-fail"})
+    assert failed_replay.status_code == 200
+    assert failed_replay.json()["sent"] is False
+    assert failed_replay.json()["attempt"]["id"] == failed_attempt_id
+    assert failed_replay.json()["attempt"]["status"] == "failed"
     sent = client.post(f"/v1/approvals/{approval_id}/send", headers=auth(token), json={"idempotency_key": "send-e2e-1"})
     assert sent.status_code == 200 and sent.json()["attempt"]["status"] == "sent"
     duplicate = client.post(f"/v1/approvals/{approval_id}/send", headers=auth(token), json={"idempotency_key": "send-e2e-1"})
     assert duplicate.json()["sent"] is False
+    assert len(send_calls) == 2
     event = {"id": "evt-e2e-1", "type": "email.delivered", "data": {"email_id": "resend-message-1"}}
     webhook = client.post(f"/v1/webhooks/resend/{bootstrap.json()['tenant_id']}", content=json.dumps(event), headers={"content-type": "application/json"})
     assert webhook.status_code == 200 and webhook.json()["processed"] is True

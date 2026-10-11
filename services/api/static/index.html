@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{BRAND_NAME}}</title>
+    <link rel="icon" href="/aethonex-logo.png" type="image/png" />
     <style>
       :root {
         --brand-primary: {{BRAND_PRIMARY_COLOR}};
@@ -31,6 +32,24 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 24px;
+      }
+      .brand-lockup {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .brand-lockup img {
+        width: 52px;
+        height: 42px;
+        object-fit: contain;
+      }
+      .brand-lockup h1,
+      .brand-lockup p {
+        margin: 0;
+      }
+      .brand-attribution {
+        color: var(--pd-silver);
+        font-size: 13px;
       }
       .cards {
         display: grid;
@@ -86,9 +105,13 @@
   <body>
     <div class="container">
       <div class="header">
-        <div>
-          <h1>{{BRAND_NAME}}</h1>
-          <p>{{BRAND_TAGLINE}}</p>
+        <div class="brand-lockup">
+          <img src="/aethonex-logo.png" alt="" aria-hidden="true" />
+          <div>
+            <h1>{{BRAND_NAME}}</h1>
+            <p>{{BRAND_TAGLINE}}</p>
+            <p class="brand-attribution">Prospect Dominion by Aethonex</p>
+          </div>
         </div>
         <button id="refreshBtn">Refresh dashboard</button>
       </div>

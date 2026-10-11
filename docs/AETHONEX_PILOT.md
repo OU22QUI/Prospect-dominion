@@ -2,10 +2,10 @@
 
 ## Pilot offer
 
-- proposed price: $4,500, subject to technical review and signed scope
-- target duration: 30 days
-- proposed scope: one governed CSV-backed outbound workflow
-- bounded environment: one customer deployment
+- price: not fixed or validated; provide a written proposal only after technical and scope review
+- target duration: up to 30 days, subject to agreed scope
+- proposed scope: one governed workflow using one approved CSV input
+- bounded environment: a single-customer deployment, subject to technical and security review
 - approval gate: human approval required before outbound send
 - review cadence: to be agreed in the written scope
 

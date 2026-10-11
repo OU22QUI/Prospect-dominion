@@ -52,7 +52,7 @@ cp deploy/customer.env.example .env
 # replace placeholder values with real customer values
 python scripts/validate_customer_config.py --env-file .env --production
 
-docker compose -f docker-compose.yml -f docker-compose.override.yml --profile core up -d --build --wait
+docker compose -f docker-compose.yml -f docker-compose.override.yml --profile pilot up -d --build --wait
 python scripts/verify_deployment.py
 ```
 
@@ -62,8 +62,8 @@ Expected outcome:
 - /health returns `{"status":"ok"}`
 - required service set is running
 - Postgres is healthy
-- API can seed a workflow and advance it
-- unauthorized access to protected routes is denied
+- the deployment verifier confirms readiness and unauthenticated access to pilot routes is denied
+- when provided, a valid pilot session can read accounts and the priority queue
 
 ## Authentication and authorization
 
@@ -116,6 +116,8 @@ python scripts/verify_deployment.py
 
 Expected result: all checks pass, and the deployment verifier returns a `passed` status.
 
+By default, the verifier is read-only. The full governed workflow—including import, prioritization, approval, send failure/retry handling, webhook outcome, and audit recording—must be validated by the Postgres-backed integration suite against a disposable database. Do not use a deployment health check to send real customer messages.
+
 ## Sign-off rule
 
 The pilot is accepted only if:
@@ -128,4 +130,4 @@ The pilot is accepted only if:
 - customer handover is complete
 - product claims match actual scope
 
-This is the standard for a real $4,500 founder pilot.
+These criteria apply only to an agreed pilot scope. Passing code tests alone does not establish customer acceptance or a business outcome.
