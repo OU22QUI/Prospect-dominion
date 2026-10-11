@@ -14,46 +14,45 @@ The public core remains free and open for:
 
 The shared core is MIT-licensed. Aethonex does not claim exclusive ownership of the core or restrict use of the public software. Customers retain their data, credentials, and infrastructure; rights to bespoke work and any paid deliverables must be defined in the signed scope.
 
-Prospect Dominion is a separate MIT-licensed project. It is not a module in the Aethonex Control Plane package, which has its own repository, runtime, and distribution terms. The public research component is a third, separate Apache-2.0 repository.
+Prospect Dominion is an independent MIT-licensed project. It does not include or depend on other Aethonex products, and there is no integrated suite implied by this repository.
 
 The free Core is the distribution wedge. It is not the full customer delivery model.
 
-## Aethonex Services
+## Current paid path: implementation services
 
-Customers pay Aethonex for:
+The current paid path is a scoped delivery engagement around the MIT-licensed Core. Customers pay for agreed implementation work, not exclusive access to or a restriction on the Core:
 
 - deployment into a real customer environment
 - DNS/TLS configuration
 - secret management and environment hardening
 - workflow implementation around the customer process
-- operational support and updates
-- data source integration and custom tuning
+- agreed data source integration and custom tuning
+- validation against written acceptance checks
 - pilot delivery and handover
 - customer-specific governance and approval setup
 
-This is where the real commercial value sits: taking the core and making it work in a real business workflow.
+Support and updates must be separately scoped and agreed; they are not implied by the MIT license or by a one-time implementation engagement.
+
+The specific offer, customer responsibilities, price, payment terms, delivery schedule, support, data handling, and rights to bespoke deliverables must be defined in a signed agreement. No standard price or customer license terms are published here.
+
+See [Commercial Offer](COMMERCIAL_OFFER.md) for the initial bounded scope and acceptance expectations.
 
 ## Strategic Priorities
 
-The operating model is intentionally simple:
+The product boundary is intentionally simple:
 
-1. Freeze and finalize the core.
-2. Open-source the useful core.
-3. Sell implementation, not software access.
-4. Keep Aethonex Services outbound running.
-5. Use the OSS repo as a distribution engine.
-6. Productize repeated implementation work into paid modules.
+1. Keep the useful Core MIT-licensed and independently runnable.
+2. Charge for scoped implementation and delivery work, not exclusive Core access.
+3. Build separate paid modules only when demand, capability boundaries, and licensing are established.
 
-This strategy keeps the public project credible, useful, and commercially viable without over-claiming what the free core alone is designed to do.
+This boundary keeps the public project useful without implying that a paid edition or integrated product suite already exists.
 
-## Future Commercial Modules
+## Future paid software modules
 
-Potential premium modules may include:
+No proprietary Dominion module or paid self-hosted edition is currently shipped. Potential future modules may include:
 
-- advanced connectors
+- versioned connectors for additional customer-approved sources
 - specialized workflow packs
-- additional governance or approval patterns
-- monitoring and support tiers
-- operational runbooks tailored to customer environments
+- additional, validated governance patterns
 
-These are future opportunities, not hidden paid features inside the core.
+These are future opportunities, not hidden paid features inside the Core. A module must have a defined and tested capability boundary, distribution terms, support policy, and compatibility contract before it is offered for sale. It must not make the MIT Core unusable without purchasing the module.
