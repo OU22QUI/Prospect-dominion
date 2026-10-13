@@ -288,6 +288,8 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   async function loadDemoState() {
+    if (!accountListEl) return;
+
     const candidates = ['./demo-data.json', './demo/demo-data.json'];
 
     for (const path of candidates) {
