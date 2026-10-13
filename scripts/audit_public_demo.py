@@ -5,6 +5,7 @@ import re
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import urlsplit
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -14,6 +15,7 @@ FORBIDDEN_MARKERS = ("PD_API_KEY", "JWT_SECRET", "LITELLM_MASTER_KEY", "change-m
 REQUIRED_IDS = ("accountList", "detailCompany", "runAction", "undoAction", "scoreFactors", "recommendedAction", "demoDialog", "guideStrip", "resetDemo", "accountSearch", "stageFilter", "intentFilter")
 REQUIRED_ROUTES = ("demo/index.html", "pricing/index.html", "partners/index.html", "faq/index.html", "tester.html")
 SCHEDULING_ROUTES = ("index.html", "pricing/index.html", "pilot/index.html", "faq/index.html")
+SCRIPT_ROUTES = ("index.html", "partners/index.html", "pricing/index.html", "pilot/index.html", "faq/index.html")
 FORBIDDEN_PUBLIC_CLAIMS = ("AI operating layer", "AI-assisted", "AI ranked", "real-time intelligence", "Book a live product walkthrough")
 
 
@@ -54,7 +56,7 @@ def main() -> int:
     for reference in parser.references:
         if reference.startswith(("#", "http://", "https://", "mailto:")):
             continue
-        referenced_path = DEMO_ROOT / reference
+        referenced_path = DEMO_ROOT / urlsplit(reference).path
         if not referenced_path.is_file() and not (referenced_path.is_dir() and (referenced_path / "index.html").is_file()):
             issues.append(f"broken local asset reference: {reference}")
 
@@ -63,6 +65,11 @@ def main() -> int:
             issues.append(f"missing interaction hook: {required_id}")
     if "book-walkthrough-btn" not in parser.classes:
         issues.append("missing pilot-discussion interaction: book-walkthrough-btn")
+
+    for route in SCRIPT_ROUTES:
+        page = (DEMO_ROOT / route).read_text(encoding="utf-8")
+        if not re.search(r'<script\b[^>]*\bsrc="(?:\.\./)?script\.js\?v=[a-zA-Z0-9._-]+"', page):
+            issues.append(f"unversioned cached script reference: {route}")
 
     for route in SCHEDULING_ROUTES:
         page = (DEMO_ROOT / route).read_text(encoding="utf-8")
