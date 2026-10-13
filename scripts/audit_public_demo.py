@@ -16,6 +16,7 @@ REQUIRED_IDS = ("accountList", "detailCompany", "runAction", "undoAction", "scor
 REQUIRED_ROUTES = ("demo/index.html", "pricing/index.html", "partners/index.html", "faq/index.html", "tester.html")
 SCHEDULING_ROUTES = ("index.html", "pricing/index.html", "pilot/index.html", "faq/index.html")
 SCRIPT_ROUTES = ("index.html", "partners/index.html", "pricing/index.html", "pilot/index.html", "faq/index.html")
+MIT_SERVICE_ROUTES = ("index.html", "pricing/index.html", "pilot/index.html", "faq/index.html")
 FORBIDDEN_PUBLIC_CLAIMS = ("AI operating layer", "AI-assisted", "AI ranked", "real-time intelligence", "Book a live product walkthrough")
 
 
@@ -70,6 +71,11 @@ def main() -> int:
         page = (DEMO_ROOT / route).read_text(encoding="utf-8")
         if not re.search(r'<script\b[^>]*\bsrc="(?:\.\./)?script\.js\?v=[a-zA-Z0-9._-]+"', page):
             issues.append(f"unversioned cached script reference: {route}")
+
+    for route in MIT_SERVICE_ROUTES:
+        page = (DEMO_ROOT / route).read_text(encoding="utf-8")
+        if "MIT-licensed" not in page or "not exclusive access" not in page:
+            issues.append(f"missing MIT-source and paid-service distinction: {route}")
 
     for route in SCHEDULING_ROUTES:
         page = (DEMO_ROOT / route).read_text(encoding="utf-8")
