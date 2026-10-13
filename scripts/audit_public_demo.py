@@ -68,8 +68,12 @@ def main() -> int:
         page = (DEMO_ROOT / route).read_text(encoding="utf-8")
         if "<form" in page.lower():
             issues.append(f"first-party contact form is not permitted before privacy review: {route}")
-        if "https://cal.com/aethonex/20-min" not in page:
-            issues.append(f"missing external scheduling link: {route}")
+        if 'href="https://www.aethonex.com/demo/"' not in page:
+            issues.append(f"missing shared Workflow Fit Call path: {route}")
+        if "Free 15–20 minute Workflow Fit Call" not in page:
+            issues.append(f"missing free 15–20 minute fit-call CTA: {route}")
+        if "not a free technical audit or implementation" not in page:
+            issues.append(f"missing fit-call scope boundary: {route}")
         if "https://cal.com/privacy" not in page:
             issues.append(f"missing scheduler privacy disclosure: {route}")
 
