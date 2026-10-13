@@ -109,6 +109,10 @@ def main() -> int:
 
     if "Simulation" not in index or "sample accounts" not in index.lower():
         issues.append("homepage must visibly frame the public experience as a simulation")
+    if "pre-revenue and pre-incorporation" not in index:
+        issues.append("homepage must accurately disclose Aethonex's pre-incorporation status")
+    if "Parent Company Credibility" in index:
+        issues.append("homepage must not imply Aethonex is an incorporated parent company")
 
     styles = (DEMO_ROOT / "styles.css").read_text(encoding="utf-8")
     if "@media (max-width: 900px)" not in styles or "@media (max-width: 560px)" not in styles:
