@@ -51,7 +51,14 @@ jobs:
           test -s demo/partners/index.html
           test -s demo/faq/index.html
           grep -Fq "Owned signal-to-action layer" demo/index.html
-          grep -Fq "Discuss the pilot" demo/index.html
+          grep -Fq "Prospect Dominion Workflow Pilot" demo/index.html
+          grep -Fq '£2,500 UK / $3,000 US' demo/pricing/index.html
+          grep -Fq '£750 UK / $950 US per month' demo/pricing/index.html
+          grep -Fq "one already-supported and tested action provider or type" demo/pricing/index.html
+          grep -Fq "not validated by completed customer purchases" demo/faq/index.html
+          grep -Fq "Free 15–20 minute Workflow Fit Call" demo/index.html
+          if grep -Fq "No fixed pilot price" demo/index.html demo/pricing/index.html demo/pilot/index.html demo/faq/index.html; then exit 1; fi
+          if grep -Eiq '\$4,500|Stack Ownership Sprint|SaaS Exit Blueprint|One Workflow, Owned|\$900' demo/index.html demo/pricing/index.html demo/pilot/index.html demo/faq/index.html; then exit 1; fi
           grep -Fq "Simulation" demo/demo/index.html
           grep -Fq "scenarioChips" demo/script.js
           python -c "import json; json.load(open('demo/demo-data.json', encoding='utf-8'))"

@@ -2,13 +2,14 @@
 
 ## Commercial pilot unit
 
-Prospect Dominion is being evaluated for a bounded, scoped pilot deployment. This is a proposed scope, not evidence of a completed customer deployment or a validated service package.
+Prospect Dominion is being evaluated for a bounded, scoped pilot deployment. The initial test price and scope below are not evidence of a completed customer deployment or validated customer demand.
 
-- price: not fixed or validated; confirmed in a written proposal after technical review
-- target duration: up to 30 days
-- scope: one governed workflow using one approved CSV input
-- approval gate: human approval before external send
-- review cadence: weekly review and operational signoff
+- initial test price: £2,500 UK / $3,000 US; not validated by completed customer purchases
+- target duration: 30 days, subject to feasibility
+- scope: one bounded workflow in a customer-controlled environment, one supported CSV input, one implemented prioritisation path, one human approval gate, and one already-supported and tested action provider or type
+- planning limits: up to 200 target accounts and five users, subject to feasibility
+- handover: documentation, agreed acceptance criteria, and provenance, action-result, or audit functionality where supported
+- final scope, exclusions, and payment terms: confirmed in writing after feasibility review and before work begins
 
 ## What the pilot proves
 
