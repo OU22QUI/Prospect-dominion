@@ -10,15 +10,16 @@ Other Aethonex products are separate and are not included in or integrated with 
 
 ## Initial engagement scope
 
-Each engagement must be scoped and accepted in writing before work starts. The current pilot-sized baseline is:
+Each engagement must be scoped and accepted in writing before work starts. The current pilot-sized initial test offer is:
 
 - one customer-controlled environment and one workspace
-- up to five named users and approximately 200 target accounts
-- one bounded workflow and one or two agreed input sources
-- signal intake, prioritization, a human approval step, the approved action, and outcome recording
-- deployment configuration, verification, operator documentation, and handover
+- one supported CSV input, one bounded workflow, and one implemented prioritization path
+- one human approval step and one already-supported and tested action provider or type
+- up to five users and 200 target accounts, subject to feasibility
+- deployment configuration, verification, documentation, agreed acceptance criteria, and handover
+- provenance, action-result, or audit functionality where supported
 
-These are planning limits, not a promise that every source, provider, environment, or workflow is already supported. Confirm feasibility for the customer's actual systems before agreeing to scope.
+The initial test price is £2,500 UK / $3,000 US. These are initial test prices, not prices validated by completed customer purchases. These scope boundaries are planning limits, not a promise that every environment, input, or action provider is already supported. Confirm feasibility for the customer's actual systems before agreeing to scope.
 
 ## Delivery and acceptance
 
@@ -35,7 +36,9 @@ Use synthetic data and a controlled test provider for demonstrations. A live pro
 
 ## Commercial terms
 
-There is no published standard price, subscription, or customer license grant in this repository. Provide a written proposal and signed agreement that define price, payment schedule, delivery dates, support, update commitments, data handling, and the customer's rights to the Core and any separately delivered work. Do not describe the MIT Core as exclusive, or imply that buying an implementation service changes the MIT license.
+The published initial test price is £2,500 UK / $3,000 US for the feasibility-dependent pilot scope above; it has not been validated by completed customer purchases. A written proposal and signed agreement must confirm feasibility, final scope, acceptance criteria, separately charged costs, payment schedule, delivery dates, support, update commitments, data handling, and the customer's rights to the Core and any separately delivered work. Do not describe the MIT Core as exclusive, or imply that buying an implementation service changes the MIT license.
+
+Workflow Care & Improvement is a separate Aethonex service at £750 UK / $950 US per month, available only after successful deployment and where ongoing support is appropriate. It includes up to four defined hours of maintenance or small changes and one operational review; hosting, third-party costs, major development, and 24/7 support are excluded. It is not part of the Pilot price and is not automatic. No software subscription or customer license grant is included in the implementation engagement.
 
 Do not promise ongoing managed operation or recurring support until the support scope and delivery economics are agreed in writing.
 

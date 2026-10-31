@@ -5,6 +5,7 @@ import re
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import urlsplit
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -14,6 +15,8 @@ FORBIDDEN_MARKERS = ("PD_API_KEY", "JWT_SECRET", "LITELLM_MASTER_KEY", "change-m
 REQUIRED_IDS = ("accountList", "detailCompany", "runAction", "undoAction", "scoreFactors", "recommendedAction", "demoDialog", "requestDemo", "guideStrip", "resetDemo", "accountSearch", "stageFilter", "intentFilter")
 REQUIRED_ROUTES = ("demo/index.html", "pricing/index.html", "partners/index.html", "faq/index.html", "tester.html")
 SCHEDULING_ROUTES = ("index.html", "pricing/index.html", "pilot/index.html", "faq/index.html")
+SCRIPT_ROUTES = ("index.html", "partners/index.html", "pricing/index.html", "pilot/index.html", "faq/index.html")
+MIT_SERVICE_ROUTES = ("index.html", "pricing/index.html", "pilot/index.html", "faq/index.html")
 FORBIDDEN_PUBLIC_CLAIMS = ("AI operating layer", "AI-assisted", "AI ranked", "real-time intelligence", "Book a live product walkthrough")
 
 
@@ -52,7 +55,7 @@ def main() -> int:
     for reference in parser.references:
         if reference.startswith(("#", "http://", "https://", "mailto:")):
             continue
-        referenced_path = DEMO_ROOT / reference
+        referenced_path = DEMO_ROOT / urlsplit(reference).path
         if not referenced_path.is_file() and not (referenced_path.is_dir() and (referenced_path / "index.html").is_file()):
             issues.append(f"broken local asset reference: {reference}")
 
@@ -60,12 +63,26 @@ def main() -> int:
         if required_id not in parser.ids:
             issues.append(f"missing interaction hook: {required_id}")
 
+    for route in SCRIPT_ROUTES:
+        page = (DEMO_ROOT / route).read_text(encoding="utf-8")
+        if not re.search(r'<script\b[^>]*\bsrc="(?:\.\./)?script\.js\?v=[a-zA-Z0-9._-]+"', page):
+            issues.append(f"unversioned cached script reference: {route}")
+
+    for route in MIT_SERVICE_ROUTES:
+        page = (DEMO_ROOT / route).read_text(encoding="utf-8")
+        if "MIT-licensed" not in page or "not exclusive access" not in page:
+            issues.append(f"missing MIT-source and paid-service distinction: {route}")
+
     for route in SCHEDULING_ROUTES:
         page = (DEMO_ROOT / route).read_text(encoding="utf-8")
         if "<form" in page.lower():
             issues.append(f"first-party contact form is not permitted before privacy review: {route}")
-        if "https://cal.com/aethonex/20-min" not in page:
-            issues.append(f"missing external scheduling link: {route}")
+        if 'href="https://www.aethonex.com/demo/"' not in page:
+            issues.append(f"missing shared Workflow Fit Call path: {route}")
+        if "Free 15–20 minute Workflow Fit Call" not in page:
+            issues.append(f"missing free 15–20 minute fit-call CTA: {route}")
+        if "not a free technical audit or implementation" not in page:
+            issues.append(f"missing fit-call scope boundary: {route}")
         if "https://cal.com/privacy" not in page:
             issues.append(f"missing scheduler privacy disclosure: {route}")
 
@@ -101,6 +118,10 @@ def main() -> int:
 
     if "Simulation" not in index or "sample accounts" not in index.lower():
         issues.append("homepage must visibly frame the public experience as a simulation")
+    if "pre-revenue and pre-incorporation" not in index:
+        issues.append("homepage must accurately disclose Aethonex's pre-incorporation status")
+    if "Parent Company Credibility" in index:
+        issues.append("homepage must not imply Aethonex is an incorporated parent company")
 
     styles = (DEMO_ROOT / "styles.css").read_text(encoding="utf-8")
     if "@media (max-width: 900px)" not in styles or "@media (max-width: 560px)" not in styles:
