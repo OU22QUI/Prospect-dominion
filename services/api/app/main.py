@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import base64
-import logging
 import os
 import socket
 from pathlib import Path
@@ -40,7 +39,7 @@ import hashlib
 import json
 from app.csv_connector import parse_signals
 from app.exports import audit_proof
-from app.resend import ResendSender, verify_webhook
+from app.resend import LocalSimulationSender, ResendSender, verify_webhook
 from app.scoring import score_account, validate_rules
 from app.security import hash_password, issue_token, verify_password, verify_token
 
@@ -50,7 +49,6 @@ except ModuleNotFoundError:  # pragma: no cover
     PilotStore = None
 
 app = FastAPI(title="Prospect Dominion API")
-logger = logging.getLogger(__name__)
 security = HTTPBearer(auto_error=False)
 
 APP_HTML_PAGE = Path(__file__).resolve().parent.parent / "static" / "app.html"
@@ -98,6 +96,17 @@ def get_default_role() -> str:
     if configured_role:
         return configured_role.strip().lower()
     return "viewer" if os.getenv("APP_ENV", "local").strip().lower() == "production" else "admin"
+
+
+def get_action_provider_mode() -> str:
+    raw_mode = os.getenv("PD_ACTION_PROVIDER", "resend").strip().lower()
+    if raw_mode == "mock":
+        raw_mode = "simulation"
+    if raw_mode not in {"resend", "simulation"}:
+        raise HTTPException(status_code=500, detail=f"Unsupported action provider: {raw_mode}")
+    if os.getenv("APP_ENV", "local").strip().lower() == "production" and raw_mode == "simulation":
+        raise HTTPException(status_code=503, detail="Mock action provider is not permitted in production")
+    return raw_mode
 
 
 def require_api_key(credentials: HTTPAuthorizationCredentials | None = Depends(security)) -> str:
@@ -246,36 +255,34 @@ def _readiness_checks() -> dict[str, Any]:
         db_path = store.db_path
         checks["database"] = {"status": "ok" if db_path.exists() else "missing", "backend": "sqlite", "path": str(db_path)}
 
-    if os.getenv("PD_CHECK_QDRANT", "").strip().lower() == "true":
-        qdrant_url = os.getenv("QDRANT_URL", "http://127.0.0.1:6335")
-        if httpx is None:
-            checks["qdrant"] = {"status": "unknown", "url": qdrant_url, "note": "httpx not installed"}
-        else:
-            try:
-                response = httpx.get(f"{qdrant_url}/readyz", timeout=3.0)
-                checks["qdrant"] = {
-                    "status": "ok" if response.status_code == 200 else "degraded",
-                    "url": qdrant_url,
-                    "http_status": response.status_code,
-                }
-            except Exception as exc:  # pragma: no cover - runtime dependency check
-                checks["qdrant"] = {"status": "unavailable", "url": qdrant_url, "error": str(exc)}
-    else:
+    qdrant_url = os.getenv("QDRANT_URL", "http://127.0.0.1:6335")
+    if os.getenv("PD_CHECK_QDRANT", "").strip().lower() not in {"1", "true", "yes", "on"}:
         checks["qdrant"] = {"status": "unknown", "note": "optional service checks disabled"}
-
-    if os.getenv("PD_CHECK_REDIS", "").strip().lower() == "true":
-        redis_url = os.getenv("REDIS_URL", "redis://:change-me-strong@127.0.0.1:6380")
-        if redis is None:
-            checks["redis"] = {"status": "unknown", "url": redis_url, "note": "redis package not installed"}
-        else:
-            try:
-                client = redis.Redis.from_url(redis_url, decode_responses=True, socket_connect_timeout=2)
-                client.ping()
-                checks["redis"] = {"status": "ok", "url": redis_url}
-            except Exception as exc:  # pragma: no cover - runtime dependency check
-                checks["redis"] = {"status": "unavailable", "url": redis_url, "error": str(exc)}
+    elif httpx is None:
+        checks["qdrant"] = {"status": "unknown", "url": qdrant_url, "note": "httpx not installed"}
     else:
+        try:
+            response = httpx.get(f"{qdrant_url}/readyz", timeout=3.0)
+            checks["qdrant"] = {
+                "status": "ok" if response.status_code == 200 else "degraded",
+                "url": qdrant_url,
+                "http_status": response.status_code,
+            }
+        except Exception as exc:  # pragma: no cover - runtime dependency check
+            checks["qdrant"] = {"status": "unavailable", "url": qdrant_url, "error": str(exc)}
+
+    redis_url = os.getenv("REDIS_URL", "redis://:change-me-strong@127.0.0.1:6380")
+    if os.getenv("PD_CHECK_REDIS", "").strip().lower() not in {"1", "true", "yes", "on"}:
         checks["redis"] = {"status": "unknown", "note": "optional service checks disabled"}
+    elif redis is None:
+        checks["redis"] = {"status": "unknown", "url": redis_url, "note": "redis package not installed"}
+    else:
+        try:
+            client = redis.Redis.from_url(redis_url, decode_responses=True, socket_connect_timeout=2)
+            client.ping()
+            checks["redis"] = {"status": "ok", "url": redis_url}
+        except Exception as exc:  # pragma: no cover - runtime dependency check
+            checks["redis"] = {"status": "unavailable", "url": redis_url, "error": str(exc)}
 
     return checks
 
@@ -753,12 +760,14 @@ def pilot_send(
     idempotency_key = str(payload.get("idempotency_key", ""))
     if not idempotency_key:
         raise HTTPException(status_code=400, detail="idempotency_key is required")
+    provider = get_action_provider_mode()
     try:
         claim = store_instance.claim_approved_send(
             tenant_id=principal["tenant_id"],
             actor_id=str(principal["user_id"]),
             approval_id=approval_id,
             idempotency_key=idempotency_key,
+            provider=provider,
         )
     except ValueError as exc:
         raise HTTPException(status_code=409, detail=str(exc))
@@ -766,30 +775,36 @@ def pilot_send(
     if not claim["should_send"]:
         return {"attempt": claim["attempt"], "sent": False}
 
+    if provider == "simulation":
+        attempt = store_instance.record_send_result(
+            tenant_id=principal["tenant_id"],
+            actor_id=str(principal["user_id"]),
+            attempt_id=str(claim["attempt"]["id"]),
+            simulated=True,
+        )
+        return {"attempt": attempt, "sent": False, "simulated": True}
+
     sender = ResendSender()
     try:
         msg_id = sender.send(claim["payload"])
-    except Exception as exc:
-        attempt_id = str(claim["attempt"]["id"])
-        store_instance.record_send_result(
+        attempt = store_instance.record_send_result(
             tenant_id=principal["tenant_id"],
             actor_id=str(principal["user_id"]),
-            attempt_id=attempt_id,
+            attempt_id=str(claim["attempt"]["id"]),
+            message_id=msg_id,
+        )
+        return {"attempt": attempt, "sent": True}
+    except Exception as exc:
+        attempt = store_instance.record_send_result(
+            tenant_id=principal["tenant_id"],
+            actor_id=str(principal["user_id"]),
+            attempt_id=str(claim["attempt"]["id"]),
             error=str(exc),
         )
-        logger.warning("Outbound send failed for approval %s (attempt %s)", approval_id, attempt_id)
         raise HTTPException(
             status_code=502,
-            detail=f"Outbound send failed; attempt {attempt_id} was recorded. Review it before retrying.",
+            detail=f"Outbound send failed; attempt {attempt['id']} was recorded. Review it before retrying.",
         ) from exc
-
-    attempt = store_instance.record_send_result(
-        tenant_id=principal["tenant_id"],
-        actor_id=str(principal["user_id"]),
-        attempt_id=str(claim["attempt"]["id"]),
-        message_id=msg_id,
-    )
-    return {"attempt": attempt, "sent": True}
 
 
 @app.post("/v1/webhooks/resend/{tenant_id}")

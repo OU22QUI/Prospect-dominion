@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 from __future__ import annotations
 
 import json
@@ -13,70 +13,92 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 API_PORT = os.getenv("API_PORT", "8010")
 
 
+def validate_restore_database(database: str) -> str:
+    """Require an isolated restore database name with the expected pd_restore_ prefix."""
+    if not isinstance(database, str):
+        raise ValueError("PD_RESTORE_TEST_DB must use the pd_restore_ prefix and be a safe, isolated PostgreSQL identifier")
+    if len(database) < len("pd_restore_") or not database.startswith("pd_restore_"):
+        raise ValueError("PD_RESTORE_TEST_DB must use the pd_restore_ prefix and be a safe, isolated PostgreSQL identifier")
+    if len(database) > 50:
+        raise ValueError("PD_RESTORE_TEST_DB must use the pd_restore_ prefix and be a safe, isolated PostgreSQL identifier")
+    if not re.fullmatch(r"pd_restore_[A-Za-z_][A-Za-z0-9_]*", database):
+        raise ValueError("PD_RESTORE_TEST_DB must use the pd_restore_ prefix and be a safe, isolated PostgreSQL identifier")
+    return database
+
+
 def run(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
     return subprocess.run(args, cwd=str(REPO_ROOT), text=True, capture_output=True, check=check)
-
-
-def validate_restore_database(database: str) -> None:
-    if not re.fullmatch(r"pd_restore_[a-zA-Z0-9_]{1,50}", database):
-        raise ValueError("restore database name must use the pd_restore_ prefix and contain only letters, digits, or underscores")
 
 
 def main() -> int:
     restore_database = os.getenv("PD_RESTORE_TEST_DB", f"pd_restore_{uuid.uuid4().hex[:12]}")
     try:
-        validate_restore_database(restore_database)
+        restore_database = validate_restore_database(restore_database)
     except ValueError as exc:
-        print(str(exc), file=sys.stderr)
+        print(exc, file=sys.stderr)
         return 2
 
     shell_script = f"""
 set -euo pipefail
 restore_database='{restore_database}'
-backup_file="/tmp/${{restore_database}}.dump"
 restore_database_created=false
+backup_file="/tmp/${{restore_database}}.dump"
 cleanup() {{
     if [[ "$restore_database_created" == true ]]; then
-        dropdb -U aethonex "$restore_database" >/dev/null
+        dropdb -U aethonex --if-exists "$restore_database" >/dev/null 2>&1 || true
     fi
     rm -f "$backup_file"
 }}
 trap cleanup EXIT
 
-count_table_rows() {{
+count_rows() {{
     local database="$1"
-    local table
+    local total=0
     while IFS= read -r table; do
         [[ -n "$table" ]] || continue
-        fingerprint="$(psql -v ON_ERROR_STOP=1 -U aethonex -d "$database" -Atc "SELECT count(*) || E'\\\\t' || COALESCE(bit_xor(hashtextextended(row_to_json(t)::text, 0)), 0) || E'\\\\t' || COALESCE(sum(hashtextextended(row_to_json(t)::text, 1)::numeric), 0) FROM $table AS t")"
-        printf '%s\\t%s\\n' "$table" "$fingerprint"
+        count="$(psql -v ON_ERROR_STOP=1 -U aethonex -d "$database" -Atc "SELECT count(*) FROM $table")"
+        total=$((total + count))
     done < <(psql -v ON_ERROR_STOP=1 -U aethonex -d "$database" -Atc "SELECT quote_ident(schemaname) || '.' || quote_ident(tablename) FROM pg_tables WHERE schemaname = 'public' ORDER BY 1")
+    printf '%s' "$total"
 }}
 
-total_rows() {{
-    awk -F '\\t' '{{total += $2}} END {{print total + 0}}' <<< "$1"
+fingerprint_table() {{
+    local database="$1"
+    local table="$2"
+    psql -v ON_ERROR_STOP=1 -U aethonex -d "$database" -Atqc "SELECT coalesce(sum(bit_xor(hashtextextended(row_to_json(t)::text, 0))), 0) FROM (SELECT * FROM $table) t"
 }}
 
-source_tables="$(psql -v ON_ERROR_STOP=1 -U aethonex -d prospect_dominion -Atc "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'")"
-source_counts="$(count_table_rows prospect_dominion)"
-source_rows="$(total_rows "$source_counts")"
-pg_dump -U aethonex -d prospect_dominion -Fc > "$backup_file"
-if psql -v ON_ERROR_STOP=1 -U aethonex -d postgres -Atc "SELECT 1 FROM pg_database WHERE datname = '$restore_database'" | grep -q 1; then
-    printf 'Refusing to replace existing restore database: %s\\n' "$restore_database" >&2
+fingerprint_database() {{
+    local database="$1"
+    local total=0
+    while IFS= read -r table; do
+        [[ -n "$table" ]] || continue
+        total=$((total + $(fingerprint_table "$database" "$table")))
+    done < <(psql -v ON_ERROR_STOP=1 -U aethonex -d "$database" -Atc "SELECT quote_ident(schemaname) || '.' || quote_ident(tablename) FROM pg_tables WHERE schemaname = 'public' ORDER BY 1")
+    printf '%s' "$total"
+}}
+
+if psql -v ON_ERROR_STOP=1 -U aethonex -d postgres -Atqc "SELECT 1 FROM pg_database WHERE datname = '$restore_database'" | grep -q 1; then
+    printf 'Refusing to replace existing restore database: %s\n' "$restore_database" >&2
     exit 1
 fi
+pg_dump -U aethonex -d prospect_dominion -Fc > "$backup_file"
 createdb -U aethonex "$restore_database"
 restore_database_created=true
+source_tables="$(psql -v ON_ERROR_STOP=1 -U aethonex -d prospect_dominion -Atc "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'")"
+source_rows="$(count_rows prospect_dominion)"
+source_counts="$(count_rows prospect_dominion)"
+source_fingerprint="$(fingerprint_database prospect_dominion)"
 pg_restore --exit-on-error -U aethonex -d "$restore_database" "$backup_file"
 restored_tables="$(psql -v ON_ERROR_STOP=1 -U aethonex -d "$restore_database" -Atc "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'")"
-restored_counts="$(count_table_rows "$restore_database")"
-restored_rows="$(total_rows "$restored_counts")"
-if [[ "$source_tables" -eq 0 || "$source_tables" -ne "$restored_tables" || "$source_counts" != "$restored_counts" ]]; then
-    printf 'Restore mismatch: source tables=%s rows=%s; restored tables=%s rows=%s\\n' "$source_tables" "$source_rows" "$restored_tables" "$restored_rows" >&2
-    diff <(printf '%s\\n' "$source_counts") <(printf '%s\\n' "$restored_counts") >&2 || true
+restored_rows="$(count_rows "$restore_database")"
+restored_counts="$(count_rows "$restore_database")"
+restored_fingerprint="$(fingerprint_database "$restore_database")"
+if [[ "$source_tables" -eq 0 || "$source_tables" -ne "$restored_tables" || "$source_counts" != "$restored_counts" || "$source_fingerprint" != "$restored_fingerprint" ]]; then
+    printf 'Restore mismatch: source tables=%s rows=%s fingerprint=%s; restored tables=%s rows=%s fingerprint=%s\n' "$source_tables" "$source_rows" "$source_fingerprint" "$restored_tables" "$restored_rows" "$restored_fingerprint" >&2
     exit 1
 fi
-printf '{{"status":"passed","source_tables":%s,"restored_tables":%s,"source_rows":%s,"restored_rows":%s,"per_table_data_fingerprints_verified":true}}\\n' "$source_tables" "$restored_tables" "$source_rows" "$restored_rows"
+printf '{{"status":"passed","source_tables":%s,"restored_tables":%s,"source_rows":%s,"restored_rows":%s}}\n' "$source_tables" "$restored_tables" "$source_rows" "$restored_rows"
     """
 
     result = run(

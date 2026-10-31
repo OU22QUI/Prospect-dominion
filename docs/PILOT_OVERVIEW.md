@@ -2,17 +2,20 @@
 
 ## Commercial pilot unit
 
-Prospect Dominion is being evaluated for a bounded, scoped pilot deployment. This is a proposed scope, not evidence of a completed customer deployment or a validated service package.
+Prospect Dominion is being sold as a fixed, scoped pilot deployment.
 
-- price: not fixed or validated; confirmed in a written proposal after technical review
-- target duration: up to 30 days
-- scope: one governed workflow using one approved CSV input
+- price: $4,500
+- duration: 30 days
+- scope: one governed workflow
+- user count: up to five named users
+- account count: up to 200 targets
+- sources: one to two approved sources
 - approval gate: human approval before external send
 - review cadence: weekly review and operational signoff
 
 ## What the pilot proves
 
-If approved and delivered, a pilot would evaluate whether:
+The pilot is intended to validate whether:
 
 - customer configuration can be handled predictably
 - the workflow can ingest approved signals
@@ -24,4 +27,4 @@ If approved and delivered, a pilot would evaluate whether:
 
 ## What the pilot does not promise
 
-These are acceptance questions, not proven outcomes. The pilot would not establish broad enterprise readiness, unlimited integrations, or a generic SaaS platform. No customer result or business impact is claimed.
+It does not promise broad enterprise readiness, unlimited integrations, or a generic SaaS platform. The pilot validates the operating model for one controlled customer workflow, not every future expansion.

@@ -1,0 +1,11 @@
+external_id,domain,email,full_name,signal_type,observed_at,consent_basis
+acct-001,example.test,ava1@example.test,Ava Shah,company_profile,2026-10-01T12:00:00+00:00,consent
+acct-002,northstar.example.test,milo2@northstar.example.test,Milo Chen,engagement_signal,2026-10-03T09:00:00+00:00,legitimate_interest
+acct-003,atlas.example.test,emma3@atlas.example.test,Emma Lopez,trigger_event,2026-10-05T15:30:00+00:00,consent
+acct-004,harbor.example.test,theo4@harbor.example.test,Theo Nguyen,intent_signal,2026-10-07T08:45:00+00:00,none
+acct-005,spark.example.test,noah5@spark.example.test,Noah Patel,company_profile,2026-10-09T11:15:00+00:00,consent
+acct-006,example.test,sofia6@example.test,Sofia Alvarez,engagement_signal,2026-10-11T17:00:00+00:00,legitimate_interest
+acct-007,northstar.example.test,leo7@northstar.example.test,Leo Martin,trigger_event,2026-10-13T14:20:00+00:00,none
+acct-008,atlas.example.test,ruby8@atlas.example.test,Ruby Walker,intent_signal,2026-10-15T20:40:00+00:00,consent
+acct-009,harbor.example.test,daniel9@harbor.example.test,Daniel Brooks,company_profile,2026-10-18T07:30:00+00:00,legitimate_interest
+acct-010,spark.example.test,iris10@spark.example.test,Iris Kim,engagement_signal,2026-10-20T12:10:00+00:00,consent

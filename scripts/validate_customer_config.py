@@ -20,9 +20,16 @@ REQUIRED_KEYS = {
     "JWT_SECRET",
     "API_PORT",
     "PD_PORT",
+    "OSINT_PORT",
+    "REDIS_PORT",
     "PG_USER",
     "PG_PASSWORD",
     "PG_DB",
+    "NEO4J_USER",
+    "NEO4J_PASSWORD",
+    "REDIS_PASSWORD",
+    "LITELLM_MASTER_KEY",
+    "N8N_ENCRYPTION_KEY",
     "PD_PUBLIC_HOST",
     "PD_CADDYFILE",
 }
@@ -74,23 +81,13 @@ def validate_config(values: dict[str, str], production: bool = False) -> list[st
         issues.append("PD_BRAND_TAGLINE must contain 1-160 characters")
 
     ports: dict[str, int] = {}
-    for key in ("API_PORT", "PD_PORT"):
+    for key in ("API_PORT", "PD_PORT", "OSINT_PORT", "REDIS_PORT"):
         raw_value = values.get(key, "")
         try:
             port = int(raw_value)
             if not 1 <= port <= 65535:
                 raise ValueError
             ports[key] = port
-        except ValueError:
-            issues.append(f"{key} must be an integer between 1 and 65535")
-    for key in ("OSINT_PORT", "REDIS_PORT"):
-        raw_value = values.get(key, "").strip()
-        if not raw_value:
-            continue
-        try:
-            port = int(raw_value)
-            if not 1 <= port <= 65535:
-                raise ValueError
         except ValueError:
             issues.append(f"{key} must be an integer between 1 and 65535")
     if "API_PORT" in ports and "PD_PORT" in ports and ports["API_PORT"] != ports["PD_PORT"]:
@@ -112,7 +109,7 @@ def validate_config(values: dict[str, str], production: bool = False) -> list[st
         caddyfile = values.get("PD_CADDYFILE", "").replace("\\", "/")
         if Path(caddyfile).name != "Caddyfile.production":
             issues.append("production PD_CADDYFILE must select infra/caddy/Caddyfile.production")
-        for key in ("PG_PASSWORD",):
+        for key in ("PG_PASSWORD", "NEO4J_PASSWORD", "REDIS_PASSWORD", "N8N_ENCRYPTION_KEY", "LITELLM_MASTER_KEY"):
             if values.get(key) in PLACEHOLDER_VALUES:
                 issues.append(f"production {key} must be replaced")
         for key in ("RESEND_API_KEY", "RESEND_WEBHOOK_SECRET"):

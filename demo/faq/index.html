@@ -15,26 +15,51 @@
   </head>
   <body>
     <div class="page-shell">
-      <header class="topbar container">
-        <div class="brand-wrap" aria-label="Prospect Dominion home">
-          <img src="../logo-new.png" alt="Aethonex" class="brand-logo-img" />
-          <div class="brand-divider"></div>
-          <div>
-            <div class="brand-name">Prospect Dominion</div>
-            <div class="brand-subtitle">by Aethonex · Owned signal-to-action layer</div>
-          </div>
-        </div>
+            <div class="topbar-wrapper">
+        <header class="topbar container">
+          <a class="brand-wrap" href="../index.html" aria-label="Prospect Dominion home">
+            <img src="../logo-new.png" alt="Aethonex" class="brand-logo-img" />
+            <div class="brand-divider"></div>
+            <div>
+              <div class="brand-name">Prospect Dominion</div>
+              <div class="brand-subtitle">by Aethonex · Owned, governed signal-to-action infrastructure</div>
+            </div>
+          </a>
 
-        <nav class="nav" aria-label="Main navigation">
-          <a href="../index.html">Overview</a>
-          <a href="../demo/">Simulation</a>
-          <a href="../pricing/">Pricing</a>
-          <a href="../pilot/">Pilot</a>
-          <a href="../partners/">Partners</a>
-          <a href="./" class="active">FAQ</a>
-          <a href="../tester.html">Technical path</a>
-        </nav>
-      </header>
+          <nav class="nav" aria-label="Main navigation">
+            <a href="../index.html">Overview</a>
+            <a href="../demo/">Product Simulation</a>
+            <a href="../pricing/">Pilot Pricing</a>
+            <a href="../pilot/">Pilot Scope</a>
+            <a href="../partners/">Partners</a>
+            <a href="../faq/" class="active">FAQ</a>
+            <a href="../tester.html">Technical Evaluation</a>
+            <a href="https://github.com/OU22QUI/Prospect-dominion" target="_blank" rel="noopener noreferrer">Core Repository</a>
+            <a href="../demo/" class="nav-cta-btn">Launch Simulation →</a>
+          </nav>
+
+          <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation menu" aria-expanded="false" type="button">
+            <div class="hamburger-box">
+              <span class="hamburger-bar"></span>
+              <span class="hamburger-bar"></span>
+              <span class="hamburger-bar"></span>
+            </div>
+          </button>
+        </header>
+      </div>
+
+      <!-- Mobile Navigation Drawer -->
+      <div class="mobile-nav-drawer" id="mobileNavDrawer" aria-hidden="true">
+        <a href="../index.html" class="mobile-nav-link">Overview</a>
+        <a href="../demo/" class="mobile-nav-link">Product Simulation</a>
+        <a href="../pricing/" class="mobile-nav-link">Pilot Pricing</a>
+        <a href="../pilot/" class="mobile-nav-link">Pilot Scope</a>
+        <a href="../partners/" class="mobile-nav-link">Partners</a>
+        <a href="../faq/" class="mobile-nav-link">FAQ</a>
+        <a href="../tester.html" class="mobile-nav-link">Technical Evaluation</a>
+        <a href="https://github.com/OU22QUI/Prospect-dominion" class="mobile-nav-link" target="_blank" rel="noopener noreferrer">Core Repository</a>
+        <a href="../demo/" class="primary-btn drawer-cta">Launch Simulation →</a>
+      </div>
 
       <main class="container commercial-page">
         <a class="back-link" href="../index.html">← Back to Prospect Dominion</a>
@@ -43,10 +68,10 @@
         <h1>Clear answers before you book a walkthrough.</h1>
         <div class="faq-list">
           <details open><summary>What is Prospect Dominion?</summary><p>It is an owned, governed signal-to-action layer deployed in your environment. It connects selected signals to prioritised accounts, context, a recommended next action, and a human approval step.</p></details>
-          <details><summary>Who is Aethonex?</summary><p>Aethonex is the UK-based company developing Prospect Dominion and related automation software.</p></details>
+          <details><summary>Who is Aethonex?</summary><p>Aethonex is the UK-based parent infrastructure firm behind Prospect Dominion. We specialize in private, self-hosted automation infrastructure for digital and outbound agencies.</p></details>
           <details><summary>Is the public demo live?</summary><p>No. The public demo is a simulation using fictional sample accounts, seeded activity, and illustrative values. It sends no external actions and does not use customer data.</p></details>
-          <details><summary>What does the proposed pilot include?</summary><p>One CSV signal input, prioritisation, a human approval step, outcome logging, and handover. The illustrative duration is up to 30 days; deployment readiness, acceptance criteria, exclusions, costs, and final terms must be agreed in writing before work begins.</p></details>
-          <details><summary>How is the proposed pilot priced?</summary><p>No fixed pilot price has been validated or published. Price and payment terms are provided in a written proposal only after technical fit and scope are reviewed. Hosting, external services, and additional connector work must be explicitly scoped. No standard post-pilot tier is currently offered.</p></details>
+          <details><summary>What does the proposed pilot include?</summary><p>One CSV signal input, prioritisation, a human approval step, outcome logging, and handover. The target duration is 30 days; deployment readiness, acceptance criteria, exclusions, and final price must be agreed in writing before work begins.</p></details>
+          <details><summary>What does the proposed pilot cost?</summary><p>The current proposed pilot price is $4,500 for the defined scope. Hosting, external services, and additional connector work are separate unless the written agreement says otherwise. No standard post-pilot tier is currently offered.</p></details>
           <details><summary>Does Dominion replace our CRM or sequencer?</summary><p>No. Dominion sits between the tools you keep. It is designed to connect a workflow across your existing stack, not replace the systems that already own your records or sending.</p></details>
           <details><summary>Is it autonomous?</summary><p>No. The commercial model is governed: a human operator approves, edits, or rejects an external action before it is sent.</p></details>
           <details><summary>Where does it run?</summary><p>The intended deployment is customer-controlled and single-tenant. Hosting, external providers, data flows, and operational responsibilities are confirmed during technical scoping; do not provide customer data before those arrangements are approved.</p></details>
@@ -65,7 +90,7 @@
       <dialog class="demo-dialog" id="demoDialog" aria-labelledby="dialogTitle">
         <button class="dialog-close" id="closeDialog" type="button" aria-label="Close product walkthrough panel">&times;</button>
         <p class="feature-label">External scheduling</p>
-        <h2 id="dialogTitle">Discuss pilot fit</h2>
+        <h2 id="dialogTitle">Discuss proposed pilot fit</h2>
         <p>Scheduling opens Cal.com. Review <a href="https://cal.com/privacy" target="_blank" rel="noopener noreferrer">Cal.com's privacy information</a> before providing contact details; do not include customer or confidential data.</p>
         <a class="primary-btn" href="https://cal.com/aethonex/20-min" target="_blank" rel="noopener noreferrer">Continue to Cal.com</a>
       </dialog>

@@ -154,6 +154,7 @@
           </div>
           <div class="kpi-value">${kpi.value}</div>
           <div class="kpi-label">${kpi.label}</div>
+          <div class="kpi-sample-badge" style="font-size:9px;color:var(--text-muted,#71717a);margin-top:4px;font-family:monospace;letter-spacing:0.04em;">Sample data. Illustrative figures.</div>
         </div>`;
     }).join('');
   }

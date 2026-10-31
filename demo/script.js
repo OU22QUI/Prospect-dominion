@@ -14,6 +14,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const relationshipMapEl = document.getElementById('relationshipMap');
   const activityFeedEl = document.getElementById('activityFeed');
   const timelineStatusEl = document.getElementById('timelineStatus');
+  const toastContainer = document.getElementById('pdToastContainer');
+  const showToast = (title, desc) => {
+    if (!toastContainer) return;
+    const toast = document.createElement('div');
+    toast.className = 'pd-toast';
+    toast.innerHTML = `
+      <span class="pd-toast-icon">✦</span>
+      <div class="pd-toast-content">
+        <div class="pd-toast-title">${title}</div>
+        <div class="pd-toast-desc">${desc}</div>
+      </div>
+    `;
+    toastContainer.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.add('dismissing');
+      setTimeout(() => toast.remove(), 250);
+    }, 3500);
+  };
+
   const runActionBtn = document.getElementById('runAction');
   const undoActionBtn = document.getElementById('undoAction');
   const refreshQueueBtn = document.getElementById('refreshQueue');
@@ -404,13 +423,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (relationshipMapEl) {
+      const warmthClasses = ['strong', 'warm', 'ready'];
+      const warmthLabels = ['Strong', 'Warm', 'Ready'];
       relationshipMapEl.innerHTML = (account.relationships || [])
-        .map((person, idx) => `
-          <div class="relationship-node">
-            <span>${idx + 1}. ${person}</span>
-            <strong>${['Strong', 'Warm', 'Ready'][idx % 3]}</strong>
-          </div>
-        `)
+        .map((person, idx) => {
+          const warmthIdx = idx % 3;
+          const initials = person.split(' ').map((n) => n[0]).filter(Boolean).slice(0, 2).join('').toUpperCase() || 'P';
+          return `
+            <div class="relationship-node">
+              <div class="rel-person-info">
+                <span class="rel-avatar">${initials}</span>
+                <span>${idx + 1}. ${person}</span>
+              </div>
+              <span class="rel-warmth-badge ${warmthClasses[warmthIdx]}">${warmthLabels[warmthIdx]}</span>
+            </div>
+          `;
+        })
         .join('');
     }
 
@@ -471,6 +499,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (actionFeedbackEl) {
       actionFeedbackEl.textContent = `${action.label}. ${account.company} is now marked ${account.stage.toLowerCase()}.`;
     }
+    showToast(action.label, `${account.company} is now marked ${account.stage.toLowerCase()} (Score: ${account.score})`);
 
     saveState();
     track('workflow_action', { action: type, company: account.company, stage: account.stage });
@@ -581,6 +610,26 @@ document.addEventListener('DOMContentLoaded', () => {
       dialog.close();
     }
   });
+
+  // Mobile navigation drawer toggle
+  const mobileNavToggle = document.getElementById('mobileNavToggle');
+  const mobileNavDrawer = document.getElementById('mobileNavDrawer');
+  if (mobileNavToggle && mobileNavDrawer) {
+    mobileNavToggle.addEventListener('click', () => {
+      const isOpen = mobileNavToggle.classList.toggle('open');
+      mobileNavDrawer.classList.toggle('open', isOpen);
+      mobileNavToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      mobileNavDrawer.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+    });
+    mobileNavDrawer.querySelectorAll('a, button').forEach((link) => {
+      link.addEventListener('click', () => {
+        mobileNavToggle.classList.remove('open');
+        mobileNavDrawer.classList.remove('open');
+        mobileNavToggle.setAttribute('aria-expanded', 'false');
+        mobileNavDrawer.setAttribute('aria-hidden', 'true');
+      });
+    });
+  }
 
   loadDemoState();
 });

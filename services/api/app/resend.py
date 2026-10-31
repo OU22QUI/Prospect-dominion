@@ -8,6 +8,7 @@ import hmac
 import os
 import time
 from typing import Any
+from uuid import uuid4
 
 import httpx
 
@@ -31,6 +32,18 @@ class ResendSender:
         if not isinstance(message_id, str) or not message_id:
             raise ValueError("Resend response did not contain an email id")
         return message_id
+
+
+class LocalSimulationSender:
+    """Validate an action and return a local receipt without making a network request."""
+
+    provider = "simulation"
+
+    def send(self, payload: dict[str, Any]) -> str:
+        required = ("from", "to", "subject", "html")
+        if not all(isinstance(payload.get(key), str) and payload[key].strip() for key in required):
+            raise ValueError("send payload requires from, to, subject, and html")
+        return f"simulation-{uuid4().hex}"
 
 
 def verify_webhook(raw_body: bytes, headers: dict[str, str], secret: str | None = None, now: int | None = None) -> None:

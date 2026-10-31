@@ -14,12 +14,18 @@ from datetime import datetime
 from typing import Any, Iterator
 from uuid import UUID
 
-import psycopg
-from psycopg.rows import dict_row
+try:
+    import psycopg
+    from psycopg.rows import dict_row
+except ModuleNotFoundError:  # pragma: no cover - optional in lightweight environments
+    psycopg = None
+    dict_row = None
 
 
 class PilotStore:
     def __init__(self, dsn: str | None = None) -> None:
+        if psycopg is None:
+            raise RuntimeError("psycopg is required for the Postgres pilot store")
         self.dsn = dsn or os.getenv("PG_DSN")
         if not self.dsn:
             raise RuntimeError("PG_DSN is required for the Postgres pilot store")
@@ -370,7 +376,7 @@ class PilotStore:
             failure = cursor.fetchone()
             self._audit(cursor, tenant_id, actor_id, "source.csv_failed", "ingest_failure", str(failure["id"]), {"attempts": failure["attempts"], "error": error[:250]})
 
-    def claim_approved_send(self, tenant_id: str, actor_id: str, approval_id: str, idempotency_key: str) -> dict[str, Any]:
+    def claim_approved_send(self, tenant_id: str, actor_id: str, approval_id: str, idempotency_key: str, provider: str = "resend") -> dict[str, Any]:
         """Atomically check approval/suppression and reserve exactly one send attempt."""
         with self.transaction() as cursor:
             cursor.execute(
@@ -392,8 +398,8 @@ class PilotStore:
             if cursor.fetchone():
                 cursor.execute(
                     """INSERT INTO send_attempts (tenant_id, approval_id, thread_id, recipient_email, provider, idempotency_key, status)
-                       VALUES (%s, %s, %s, %s, 'resend', %s, 'suppressed') ON CONFLICT (tenant_id, idempotency_key) DO NOTHING RETURNING *""",
-                    (tenant_id, approval_id, approval["thread_id"], email, idempotency_key),
+                       VALUES (%s, %s, %s, %s, %s, %s, 'suppressed') ON CONFLICT (tenant_id, idempotency_key) DO NOTHING RETURNING *""",
+                    (tenant_id, approval_id, approval["thread_id"], email, provider, idempotency_key),
                 )
                 attempt = cursor.fetchone()
                 self._audit(cursor, tenant_id, actor_id, "send.suppressed", "approval", approval_id, {"email": email})
@@ -402,8 +408,8 @@ class PilotStore:
                 return {"attempt": attempt, "payload": payload, "should_send": False}
             cursor.execute(
                 """INSERT INTO send_attempts (tenant_id, approval_id, thread_id, recipient_email, provider, idempotency_key, status)
-                   VALUES (%s, %s, %s, %s, 'resend', %s, 'queued') ON CONFLICT (tenant_id, idempotency_key) DO NOTHING RETURNING *""",
-                (tenant_id, approval_id, approval["thread_id"], email, idempotency_key),
+                   VALUES (%s, %s, %s, %s, %s, %s, 'queued') ON CONFLICT (tenant_id, idempotency_key) DO NOTHING RETURNING *""",
+                (tenant_id, approval_id, approval["thread_id"], email, provider, idempotency_key),
             )
             attempt = cursor.fetchone()
             if attempt is None:
@@ -413,18 +419,27 @@ class PilotStore:
             self._audit(cursor, tenant_id, actor_id, "send.queued", "send_attempt", str(attempt["id"]), {"approval_id": approval_id})
             return {"attempt": attempt, "payload": payload, "should_send": True}
 
-    def record_send_result(self, tenant_id: str, actor_id: str, attempt_id: str, *, message_id: str | None = None, error: str | None = None) -> dict[str, Any]:
+    def record_send_result(self, tenant_id: str, actor_id: str, attempt_id: str, *, message_id: str | None = None, error: str | None = None, simulated: bool = False) -> dict[str, Any]:
         with self.transaction() as cursor:
-            if message_id:
+            if simulated:
+                cursor.execute("UPDATE send_attempts SET status = 'simulated', sent_at = now(), updated_at = now() WHERE id = %s AND tenant_id = %s RETURNING *", (attempt_id, tenant_id))
+                event_type = "send.simulated"
+                feedback_type = "simulated"
+                details = {"simulated": True}
+            elif message_id:
                 cursor.execute("UPDATE send_attempts SET status = 'sent', provider_message_id = %s, sent_at = now(), updated_at = now() WHERE id = %s AND tenant_id = %s RETURNING *", (message_id, attempt_id, tenant_id))
                 event_type = "send.sent"
+                feedback_type = "sent"
+                details = {"provider_message_id": message_id}
             else:
                 cursor.execute("UPDATE send_attempts SET status = 'failed', error_detail = %s, updated_at = now() WHERE id = %s AND tenant_id = %s RETURNING *", (error, attempt_id, tenant_id))
                 event_type = "send.failed"
+                feedback_type = "failed"
+                details = {"error": error}
             attempt = cursor.fetchone()
             if attempt:
-                self._audit(cursor, tenant_id, actor_id, event_type, "send_attempt", attempt_id, {"provider_message_id": message_id, "error": error})
-                self._feedback(cursor, tenant_id, attempt["thread_id"], "sent" if message_id else "failed", approval_id=str(attempt["approval_id"]), send_attempt_id=attempt_id, details={"provider_message_id": message_id, "error": error})
+                self._audit(cursor, tenant_id, actor_id, event_type, "send_attempt", attempt_id, details)
+                self._feedback(cursor, tenant_id, attempt["thread_id"], feedback_type, approval_id=str(attempt["approval_id"]), send_attempt_id=attempt_id, details=details)
             return attempt
 
     def receive_resend_webhook(self, tenant_id: str, event: dict[str, Any]) -> bool:

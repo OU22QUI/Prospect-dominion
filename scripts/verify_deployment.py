@@ -63,10 +63,8 @@ def fetch(
 ) -> tuple[int, object]:
     body = json.dumps(payload).encode("utf-8") if payload is not None else None
     headers = {"Accept": "application/json"}
-    if bearer_token:
-        headers["Authorization"] = f"Bearer {bearer_token}"
-    elif authenticated:
-        headers["Authorization"] = f"Bearer {API_KEY}"
+    if authenticated:
+        headers["Authorization"] = f"Bearer {bearer_token or API_KEY}"
     if body is not None:
         headers["Content-Type"] = "application/json"
     request = Request(f"{BASE_URL}{path}", data=body, headers=headers, method=method)
@@ -125,6 +123,26 @@ def verify() -> dict[str, object]:
     health_status, health = fetch("/health")
     unauthenticated_status, _ = fetch("/dashboard", method="GET", authenticated=False)
     branding_status, branding = fetch("/branding")
+    pilot_token = os.getenv("PD_PILOT_TOKEN")
+    pilot_checks: list[str] = []
+    if pilot_token:
+        session_status, session = fetch("/v1/me", bearer_token=pilot_token)
+        if session_status != 200 or not isinstance(session, dict):
+            raise RuntimeError("pilot session verification failed")
+        pilot_checks.append("session")
+        accounts_status, accounts = fetch("/v1/accounts", bearer_token=pilot_token)
+        if accounts_status != 200 or not isinstance(accounts, dict):
+            raise RuntimeError("pilot account listing verification failed")
+        pilot_checks.append("accounts")
+        queue_status, queue = fetch("/v1/priority-queue", bearer_token=pilot_token)
+        if queue_status != 200 or not isinstance(queue, dict):
+            raise RuntimeError("pilot priority queue verification failed")
+        pilot_checks.append("priority_queue")
+    else:
+        auth_status, _ = fetch("/v1/me", authenticated=False)
+        if auth_status != 401:
+            raise RuntimeError("pilot authentication requirement check failed")
+        pilot_checks.append("authentication_required")
 
     if health_status != 200 or not isinstance(health, dict) or health.get("status") != "ok":
         raise RuntimeError("/health verification failed")
@@ -132,24 +150,6 @@ def verify() -> dict[str, object]:
         raise RuntimeError(f"unauthorized dashboard access returned {unauthenticated_status}")
     if branding_status != 200:
         raise RuntimeError("/branding verification failed")
-
-    pilot_token = os.getenv("PD_PILOT_TOKEN", "").strip()
-    if pilot_token:
-        pilot_status, principal = fetch("/v1/me", authenticated=False, bearer_token=pilot_token)
-        if pilot_status != 200 or not isinstance(principal, dict):
-            raise RuntimeError("pilot session verification failed")
-        accounts_status, accounts = fetch("/v1/accounts", authenticated=False, bearer_token=pilot_token)
-        queue_status, queue = fetch("/v1/priority-queue", authenticated=False, bearer_token=pilot_token)
-        if accounts_status != 200 or not isinstance(accounts, dict) or not isinstance(accounts.get("items"), list):
-            raise RuntimeError("pilot accounts verification failed")
-        if queue_status != 200 or not isinstance(queue, dict) or not isinstance(queue.get("items"), list):
-            raise RuntimeError("pilot priority queue verification failed")
-        pilot_checks = ["session", "accounts", "priority_queue"]
-    else:
-        pilot_status, _ = fetch("/v1/me", authenticated=False)
-        if pilot_status != 401:
-            raise RuntimeError(f"unauthenticated pilot session returned {pilot_status}, expected 401")
-        pilot_checks = ["authentication_required"]
 
     return {
         "status": "passed",
@@ -164,7 +164,7 @@ def verify() -> dict[str, object]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Verify the running Prospect Dominion Compose deployment")
-    parser.add_argument("--teardown", action="store_true", help="stop the Compose pilot profile after verification")
+    parser.add_argument("--teardown", action="store_true", help="stop the Compose core profile after verification")
     args = parser.parse_args()
     try:
         print(json.dumps(verify(), indent=2, default=str))

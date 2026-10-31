@@ -34,6 +34,36 @@ window.PD_DEMO_CONFIG = {
 
 Leave the endpoint empty for a credential-free public demo. Demo interaction events are kept in `sessionStorage` for the current tab. The site does not collect or submit contact details; scheduling links open Cal.com in a separate tab.
 
+## Local pilot demo kit
+
+For a reproducible pilot workflow, use the synthetic data generator in `demo/data/generate_synthetic_signals.py`.
+
+```bash
+python demo/data/generate_synthetic_signals.py
+```
+
+This creates `demo/data/synthetic_signals.csv`, a safe CSV that matches the repo's strict importer schema:
+
+- `external_id`
+- `domain`
+- `email`
+- `full_name`
+- `signal_type`
+- `observed_at`
+- `consent_basis`
+
+You can reset the demo data with either:
+
+```bash
+bash demo/reset.sh
+```
+
+or:
+
+```powershell
+pwsh ./demo/reset.ps1
+```
+
 ## Purpose
 The public experience presents the product concept and commercial path:
 - signal flow,

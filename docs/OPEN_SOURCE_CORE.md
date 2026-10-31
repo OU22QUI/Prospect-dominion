@@ -32,13 +32,3 @@ The Core is not a universal SaaS platform, a multi-tenant cloud control plane, o
 ## Why this is legitimate open source
 
 It is useful, runnable, and testable without requiring a paid deployment. It acts as a deployable developer core and creates a path to Aethonex deployment and custom implementation services.
-
-## Portfolio boundary
-
-Prospect Dominion is an independent MIT-licensed workflow project. Its current pilot ingests CSV signals and does not consume the `dossier_v1` contract from Prospect Intelligence OS. Treat those as separate products until a versioned adapter and end-to-end integration test exist.
-
-## Commercial boundary
-
-The Core remains available under the MIT License, including for commercial use and redistribution. The current paid path is implementation work around the Core: scoped environment deployment, workflow configuration, agreed integrations, validation, documentation, and handover. There is no separate paid Dominion edition or proprietary Dominion module shipped today.
-
-Any paid engagement must define its delivery scope, acceptance checks, customer rights, support, and price in a written agreement. See [Commercial Offer](COMMERCIAL_OFFER.md) and [Commercial Boundary](COMMERCIAL_BOUNDARY.md).

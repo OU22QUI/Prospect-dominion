@@ -19,11 +19,13 @@ It is designed for real operator control and a human approval gate, not for unch
 
 ## Open-source core, paid deployment path
 
-The Core is MIT-licensed and remains useful, self-hostable, and redistributable without buying anything from Aethonex. The current paid path is a scoped implementation engagement around that Core—not a proprietary edition or a license fee for access to the same code.
+The honest model is:
 
-Customers pay for agreed delivery work such as customer-environment setup, a bounded workflow implementation, agreed integrations and governance configuration, validation, documentation, and handover. Scope, price, support, and customer rights must be stated in a written agreement.
+- open-source core: usable, self-hostable, and inspectable
+- Aethonex deployment service: real environment setup, workflow implementation, integrations, support, and handover
+- future premium modules: only where real customer demand justifies them
 
-No paid Dominion software edition or proprietary module is currently shipped, and no standard price is published. See [the commercial offer definition](docs/COMMERCIAL_OFFER.md) for scope boundaries and acceptance expectations.
+This repository is the public Core. The commercial value is in the implementation around it. We sell deployment, customization, and operational execution—not software access alone.
 
 ## Why use Dominion?
 
@@ -45,9 +47,15 @@ No paid Dominion software edition or proprietary module is currently shipped, an
 
 This repository is not a generic multi-tenant cloud product. It is a self-hosted core plus a bounded pilot/deployment path designed to be extended by real operators and deployment partners.
 
-## Commercial path
+## Open-source core and commercial path
 
-The paid path is a scoped implementation engagement around the MIT Core, not a separate paid edition. The initial scope and acceptance expectations are documented in [docs/COMMERCIAL_OFFER.md](docs/COMMERCIAL_OFFER.md). Any delivery remains subject to customer-specific security, deployment, and written commercial terms.
+Prospect Dominion intentionally separates:
+
+- open-source core: usable and self-hostable
+- Aethonex deployment services: production setup, DNS/TLS, secret management, workflow implementation, support, and customer-specific configuration
+- paid implementation path: one real workflow deployed in a real customer environment
+
+See [docs/OPEN_SOURCE_CORE.md](docs/OPEN_SOURCE_CORE.md) and [docs/COMMERCIAL_BOUNDARY.md](docs/COMMERCIAL_BOUNDARY.md).
 
 ## Quickstart
 
@@ -57,7 +65,7 @@ cd Prospect-dominion
 cp deploy/customer.env.example .env
 python scripts/validate_customer_config.py --env-file .env --check-public-demo
 python -m pytest -q
-docker compose -f docker-compose.yml -f docker-compose.override.yml --profile pilot up -d --build --wait
+docker compose -f docker-compose.yml -f docker-compose.override.yml --profile core up -d --build --wait
 python scripts/verify_deployment.py
 ```
 
@@ -83,7 +91,6 @@ The same simulation is included in `demo/` for local use.
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - [docs/OPEN_SOURCE_CORE.md](docs/OPEN_SOURCE_CORE.md)
 - [docs/COMMERCIAL_BOUNDARY.md](docs/COMMERCIAL_BOUNDARY.md)
-- [docs/COMMERCIAL_OFFER.md](docs/COMMERCIAL_OFFER.md)
 - [docs/PRODUCT_STATUS.md](docs/PRODUCT_STATUS.md)
 - [docs/ROADMAP_GAPS.md](docs/ROADMAP_GAPS.md)
 - [docs/AETHONEX_PILOT.md](docs/AETHONEX_PILOT.md)
@@ -104,17 +111,10 @@ The same simulation is included in `demo/` for local use.
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE).
 
-## Relationship to other Aethonex projects
-
-Prospect Dominion is an independent open-source project. Its current pilot imports customer-provided CSV data and supports a Resend-backed send path; it does not currently ingest Prospect Intelligence OS `dossier_v1` files. Other Aethonex products are not bundled with or integrated into this repository.
-
 ## Project status
 
 See [docs/PRODUCT_STATUS.md](docs/PRODUCT_STATUS.md) for the verified scope and [docs/ROADMAP_GAPS.md](docs/ROADMAP_GAPS.md) for known limitations. This is a self-hosted core with a bounded pilot path, not a general-purpose multi-tenant SaaS service.
 
-## Repository boundaries
+## Commercial model
 
-- [Prospect Intelligence OS](https://github.com/OU22QUI/prospect-intelligence-os): Apache-2.0 public-data company research; emits the versioned `dossier_v1` JSON contract.
-- Prospect Dominion: independent MIT-licensed governed signal-to-action API and pilot console. It does not currently consume `dossier_v1` or interoperate with other products as an integrated suite.
-
-These are separate projects, not an integrated product suite. No broader product-suite integration or commercial production readiness is implied.
+Aethonex can provide deployment, configuration, workflow customization, operation, and support services around the open-source core. The pilot remains a bounded paid implementation for real customer environments, not a claim that every deployment problem is solved by the OSS layer alone.
