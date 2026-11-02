@@ -1,0 +1,219 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Prospect Dominion Logo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap">
+<style>
+/* Layout: one reading column that opens into grids. Dark ground, steel and one gold arrow. Tokens are BRAND.md values only. */
+:root{--bg:#131313;--stage:#0e0e0e;--card:#1c1b1b;--panel:#2a2a2a;--head:#353534;--fg:#e5e2e1;--fg2:#d0c5b5;--outline:#998f81;--line:#4d463a;--gold:#e3c384;--gold-text:#e3c384;--glow:#ffdf9f;--on-gold:#402d00;--ok:#e3c384;--bad:#ffb4ab;
+ --display:"Syne","Helvetica Neue",Arial,sans-serif;--body:"Inter","Helvetica Neue",Arial,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;color-scheme:dark}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#e5e2e1;--stage:#131313;--card:#e5e2e1;--panel:#d0c5b5;--head:#d0c5b5;--fg:#313030;--fg2:#474746;--outline:#998f81;--line:#998f81;--gold:#c6a86b;--gold-text:#594310;--glow:#735b26;--on-gold:#402d00;--ok:#594310;--bad:#93000a;color-scheme:light}}
+:root[data-theme="light"]{--bg:#e5e2e1;--stage:#131313;--card:#e5e2e1;--panel:#d0c5b5;--head:#d0c5b5;--fg:#313030;--fg2:#474746;--outline:#998f81;--line:#998f81;--gold:#c6a86b;--gold-text:#594310;--glow:#735b26;--on-gold:#402d00;--ok:#594310;--bad:#93000a;color-scheme:light}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 16px/1.6 var(--body);padding-block:0 96px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1040px;margin-inline:auto}
+img,svg{max-width:100%}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.08}
+h1{font-size:clamp(2.2rem,6vw,3.8rem);font-weight:800;letter-spacing:-.01em}
+h2{font-size:clamp(1.6rem,3.6vw,2.2rem);font-weight:700;letter-spacing:-.005em}
+h3{font-size:1.1rem;font-weight:700}
+p{margin:0;max-width:66ch}
+.kicker{font:500 .74rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--gold-text);margin-bottom:14px}
+.label{font:500 .74rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--fg2);margin:36px 0 12px}
+.lede{font-size:1.1rem;color:var(--fg2);margin-top:14px}
+.cap{font-size:.86rem;color:var(--fg2)}
+.mono{font-family:var(--mono);font-size:.84em}
+section{padding-top:72px}
+header.top{padding-top:56px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center}
+@media(max-width:780px){header.top{grid-template-columns:minmax(0,1fr)}}
+.stage{background:var(--stage);border-radius:28px;display:grid;place-items:center;padding:48px 32px}
+.stage img{display:block;width:100%;max-width:340px;height:auto}
+.stage.wide img{max-width:560px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;min-width:0}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.vers{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.vers figure{margin:0;border-radius:16px;border:1px solid var(--line);padding:24px 20px 14px;display:grid;gap:12px;justify-items:center;align-content:space-between;min-height:200px}
+.vers figure.w2{grid-column:span 2}.vers figure img{height:110px;width:auto;max-width:100%}
+.vers figure.w2 img{height:120px}
+.vers figcaption{font-size:.82rem}
+@media(max-width:520px){.vers figure.w2{grid-column:auto}}
+.pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center}
+@media(max-width:780px){.pair{grid-template-columns:minmax(0,1fr);gap:24px}}
+.fam{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.fam .stage{padding:32px 24px}.fam img{max-width:200px}
+.scroll-x{overflow-x:auto;border:1px solid var(--line);border-radius:16px}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.9rem}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font:500 .72rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--fg2);background:var(--head)}
+.sw{display:inline-block;width:14px;height:14px;border-radius:4px;border:1px solid var(--outline);vertical-align:-2px;margin-right:8px}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;font:500 .68rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border-radius:999px;border:1px solid var(--ok);color:var(--ok)}
+.tag.no{border-color:var(--bad);color:var(--bad)}
+.rules{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin:0;padding:0;list-style:none}
+.rules li{border:1px solid var(--line);border-radius:16px;padding:16px;background:var(--card);font-size:.93rem}
+.rules li b{display:block;font-family:var(--display);font-size:1rem;margin-bottom:4px}
+.rules.no li b{color:var(--bad)}
+.dia{background:var(--stage);border-radius:16px;padding:16px;overflow-x:auto}
+.dia svg{display:block;min-width:520px;width:100%;height:auto}
+.copy{font:600 .85rem var(--body);min-height:40px;padding:0 14px;border-radius:10px;border:1px solid var(--outline);background:transparent;color:var(--fg);cursor:pointer}
+:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
+footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);color:var(--fg2);font-size:.88rem}
+.sws{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.sws button{all:unset;box-sizing:border-box;cursor:pointer;border:1px solid var(--line);border-radius:16px;overflow:hidden;display:block;background:var(--card)}
+.sws button:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
+.sws .c{height:64px;border-bottom:1px solid var(--line)}
+.sws .m{padding:10px 12px 12px;display:grid;gap:2px;font-size:.85rem}.sws .m b{font-size:.92rem}.sws .m span{font:400 .74rem var(--mono);color:var(--fg2)}
+.sws button.copied .h::after{content:" copied";color:var(--gold-text)}
+</style>
+<main class="wrap">
+<header class="top">
+  <div>
+    <p class="kicker">Aethonex product mark</p>
+    <h1>Prospect Dominion</h1>
+    <p class="lede">A steel D in two pieces, with one gold arrowhead pointing out of it. The frame is the structure an agency runs on. The gold arrow is the outbound it owns.</p>
+  </div>
+  <div class="stage"><img src="assets/pd/prospect-dominion-mark-dark.svg" width="705" height="740" alt="Prospect Dominion mark: a steel letter D split into a stem and a bowl, with a gold arrowhead pointing right inside the bowl"></div>
+</header>
+
+<section id="idea">
+  <p class="kicker">The idea</p>
+  <h2>Same grammar as Aethonex, a different direction</h2>
+  <p class="lede">Both marks are cut steel with a single gold triangle in a triangular opening. Gold is owned and grey is rented, as in the brand brief. In the Aethonex mark the triangle points up, at the centre of what you own. In Prospect Dominion it points out, at the people you contact.</p>
+  <div class="fam" style="margin-top:28px">
+    <div class="stage"><img src="assets/pd/aethonex-mark-dark.svg" width="400" height="307" alt="The Aethonex mark"></div>
+    <div class="stage"><img src="assets/pd/prospect-dominion-mark-dark.svg" width="705" height="740" alt="The Prospect Dominion mark"></div>
+  </div>
+  <div class="grid" style="margin-top:16px">
+    <div class="card"><h3>D for Dominion</h3><p class="cap" style="margin-top:6px">The letter reads at once and fills a square, so it works as an app icon and an avatar.</p></div>
+    <div class="card"><h3>Two pieces, one gap</h3><p class="cap" style="margin-top:6px">The stem is cut away from the bowl, like the separate steel pieces in the Aethonex mark. It shows a product built from parts the agency controls.</p></div>
+    <div class="card"><h3>An arrowhead, not a play button</h3><p class="cap" style="margin-top:6px">The base of the gold shape is notched, so it reads as a pointer sent outward. A plain triangle is used only in the favicon.</p></div>
+  </div>
+</section>
+
+<section id="versions">
+  <p class="kicker">Versions</p>
+  <h2>Every version, ready to use</h2>
+  <div class="vers" style="margin-top:28px">
+    <figure style="background:#131313"><img src="assets/pd/prospect-dominion-mark-dark.svg" width="300" height="315" alt="Mark on dark" loading="lazy"><figcaption style="color:#d0c5b5">Mark, on dark</figcaption></figure>
+    <figure style="background:#e5e2e1"><img src="assets/pd/prospect-dominion-mark-light.svg" width="300" height="315" alt="Mark on light" loading="lazy"><figcaption style="color:#474746">Mark, on light (print)</figcaption></figure>
+    <figure style="background:#131313"><img src="assets/pd/prospect-dominion-mark-gold.svg" width="300" height="315" alt="Mark in one gold colour" loading="lazy"><figcaption style="color:#d0c5b5">One colour, gold</figcaption></figure>
+    <figure style="background:#131313"><img src="assets/pd/prospect-dominion-icon-512.svg" width="300" height="300" alt="App icon" loading="lazy"><figcaption style="color:#d0c5b5">App icon, avatar</figcaption></figure>
+    <figure style="background:#131313"><img src="assets/pd/prospect-dominion-favicon.svg" width="300" height="300" alt="Favicon version with a plain triangle" loading="lazy"><figcaption style="color:#d0c5b5">Favicon, 16 to 24 px</figcaption></figure>
+    <figure style="background:#131313" class="w2"><img src="assets/pd/prospect-dominion-lockup-dark.svg" width="800" height="270" alt="Horizontal lockup on dark" loading="lazy"><figcaption style="color:#d0c5b5">Horizontal lockup, on dark</figcaption></figure>
+    <figure style="background:#e5e2e1" class="w2"><img src="assets/pd/prospect-dominion-lockup-light.svg" width="800" height="270" alt="Horizontal lockup on light" loading="lazy"><figcaption style="color:#474746">Horizontal lockup, on light</figcaption></figure>
+    <figure style="background:#131313" class="w2"><img src="assets/pd/prospect-dominion-lockup-endorsed-dark.svg" width="800" height="270" alt="Horizontal lockup with by Aethonex" loading="lazy"><figcaption style="color:#d0c5b5">Endorsed lockup, with "by Aethonex"</figcaption></figure>
+    <figure style="background:#131313"><img src="assets/pd/prospect-dominion-stacked-dark.svg" width="400" height="400" alt="Stacked lockup on dark" loading="lazy"><figcaption style="color:#d0c5b5">Stacked, endorsed</figcaption></figure>
+    <figure style="background:#e5e2e1"><img src="assets/pd/prospect-dominion-stacked-light.svg" width="400" height="400" alt="Stacked lockup on light" loading="lazy"><figcaption style="color:#474746">Stacked, on light</figcaption></figure>
+  </div>
+  <p class="cap" style="margin-top:12px">The wordmark is Syne Bold, outlined, set in capitals. Both words have eight letters and are spaced to the same width, so they stack as a block. The endorsement line is Inter Medium. Use the endorsed lockup where Aethonex needs to be named, such as the app footer and sales material. Use the plain lockup inside the product.</p>
+</section>
+
+<section id="colour">
+  <p class="kicker">Colour</p>
+  <h2>Five colours, all from BRAND.md</h2>
+  <div class="sws" style="margin-top:24px">
+    <button data-copy="#C8C6C5"><div class="c" style="background:#c8c6c5"></div><div class="m"><b>Stem</b><span>secondary</span><span class="h">#C8C6C5</span></div></button>
+    <button data-copy="#ADABAB"><div class="c" style="background:#adabab"></div><div class="m"><b>Bowl</b><span>tertiary-container</span><span class="h">#ADABAB</span></div></button>
+    <button data-copy="#E3C384"><div class="c" style="background:#e3c384"></div><div class="m"><b>Arrow</b><span>primary</span><span class="h">#E3C384</span></div></button>
+    <button data-copy="#131313"><div class="c" style="background:#131313"></div><div class="m"><b>Ground, gap</b><span>surface</span><span class="h">#131313</span></div></button>
+    <button data-copy="#E5E2E1"><div class="c" style="background:#e5e2e1"></div><div class="m"><b>Wordmark</b><span>on-surface</span><span class="h">#E5E2E1</span></div></button>
+  </div>
+  <div class="scroll-x" style="margin-top:16px"><table><thead><tr><th>Part</th><th>On dark</th><th>On light (print)</th><th>One colour</th></tr></thead><tbody>
+    <tr><td>Stem</td><td><span class="sw" style="background:#c8c6c5"></span>#C8C6C5</td><td><span class="sw" style="background:#474746"></span>#474746</td><td>One palette colour</td></tr>
+    <tr><td>Bowl</td><td><span class="sw" style="background:#adabab"></span>#ADABAB</td><td><span class="sw" style="background:#313030"></span>#313030</td><td>Same colour as the stem</td></tr>
+    <tr><td>Arrow</td><td><span class="sw" style="background:#e3c384"></span>#E3C384</td><td><span class="sw" style="background:#735b26"></span>#735B26</td><td>Same colour as the stem</td></tr>
+    <tr><td>Wordmark</td><td><span class="sw" style="background:#e5e2e1"></span>#E5E2E1</td><td><span class="sw" style="background:#313030"></span>#313030</td><td>Same colour</td></tr>
+    <tr><td>Endorsement line</td><td><span class="sw" style="background:#d0c5b5"></span>#D0C5B5</td><td><span class="sw" style="background:#474746"></span>#474746</td><td>Same colour</td></tr>
+  </tbody></table></div>
+  <p class="label">Contrast, measured</p>
+  <div class="scroll-x"><table><thead><tr><th>Pair</th><th class="num">Ratio</th><th>Result</th></tr></thead><tbody>
+    <tr><td>Stem on ground</td><td class="num">10.9</td><td>Pass AAA for graphics</td></tr>
+    <tr><td>Bowl on ground</td><td class="num">8.1</td><td>Pass AAA for graphics</td></tr>
+    <tr><td>Arrow on ground</td><td class="num">11.0</td><td>Pass AAA for graphics</td></tr>
+    <tr><td>Bowl on Panel high #2A2A2A</td><td class="num">6.3</td><td>Lowest allowed ground</td></tr>
+    <tr><td>Stem on paper (stem, light)</td><td class="num">7.2</td><td>Pass AAA for graphics</td></tr>
+    <tr><td>Bowl on paper (light)</td><td class="num">10.2</td><td>Pass AAA for graphics</td></tr>
+    <tr><td>Arrow on paper (light)</td><td class="num">5.0</td><td>Pass AA for graphics</td></tr>
+    <tr><td>Stem against bowl</td><td class="num">1.3</td><td>Decorative. The gap does the separating, not the colour</td></tr>
+  </tbody></table></div>
+</section>
+
+<section id="construction">
+  <p class="kicker">Construction</p>
+  <h2>Built on a 1,000-unit grid</h2>
+  <div class="pair" style="margin-top:28px">
+    <div class="dia"><svg viewBox="0 -30 1010 1060" role="img" aria-label="Construction drawing of the mark on a grid, with a dashed clear-space margin equal to the stem width of 160 units">
+      <g stroke="#2a2a2a" stroke-width="1"><line x1="50" y1="-30" x2="50" y2="1030"/><line x1="100" y1="-30" x2="100" y2="1030"/><line x1="150" y1="-30" x2="150" y2="1030"/><line x1="200" y1="-30" x2="200" y2="1030"/><line x1="250" y1="-30" x2="250" y2="1030"/><line x1="300" y1="-30" x2="300" y2="1030"/><line x1="350" y1="-30" x2="350" y2="1030"/><line x1="400" y1="-30" x2="400" y2="1030"/><line x1="450" y1="-30" x2="450" y2="1030"/><line x1="500" y1="-30" x2="500" y2="1030"/><line x1="550" y1="-30" x2="550" y2="1030"/><line x1="600" y1="-30" x2="600" y2="1030"/><line x1="650" y1="-30" x2="650" y2="1030"/><line x1="700" y1="-30" x2="700" y2="1030"/><line x1="750" y1="-30" x2="750" y2="1030"/><line x1="800" y1="-30" x2="800" y2="1030"/><line x1="850" y1="-30" x2="850" y2="1030"/><line x1="900" y1="-30" x2="900" y2="1030"/><line x1="950" y1="-30" x2="950" y2="1030"/><line x1="0" y1="0" x2="1010" y2="0"/><line x1="0" y1="50" x2="1010" y2="50"/><line x1="0" y1="100" x2="1010" y2="100"/><line x1="0" y1="150" x2="1010" y2="150"/><line x1="0" y1="200" x2="1010" y2="200"/><line x1="0" y1="250" x2="1010" y2="250"/><line x1="0" y1="300" x2="1010" y2="300"/><line x1="0" y1="350" x2="1010" y2="350"/><line x1="0" y1="400" x2="1010" y2="400"/><line x1="0" y1="450" x2="1010" y2="450"/><line x1="0" y1="500" x2="1010" y2="500"/><line x1="0" y1="550" x2="1010" y2="550"/><line x1="0" y1="600" x2="1010" y2="600"/><line x1="0" y1="650" x2="1010" y2="650"/><line x1="0" y1="700" x2="1010" y2="700"/><line x1="0" y1="750" x2="1010" y2="750"/><line x1="0" y1="800" x2="1010" y2="800"/><line x1="0" y1="850" x2="1010" y2="850"/><line x1="0" y1="900" x2="1010" y2="900"/><line x1="0" y1="950" x2="1010" y2="950"/><line x1="0" y1="1000" x2="1010" y2="1000"/></g>
+      <rect x="10" y="-10" width="985" height="1020" fill="none" stroke="#ffdf9f" stroke-width="2" stroke-dasharray="14 10"/>
+      <g ><path fill="#c8c6c5" d="M170.0,150.0 L342.0,150.0 L342.0,850.0 L170.0,850.0Z"/><path fill="#adabab" d="M372.0,150.0 L575.0,150.0 L835.0,415.0 L835.0,585.0 L575.0,850.0 L372.0,850.0 L372.0,700.0 L700.0,500.0 L372.0,300.0Z"/><path fill="#e3c384" d="M408.0,364.1 L630.9,500.0 L408.0,635.9 L492.7,500.0Z"/></g>
+      <g stroke="#ffdf9f" stroke-width="2" fill="none"><path d="M170 118h160M170 106v24M330 106v24"/><path d="M330 880h30M330 868v24M360 868v24"/></g>
+      <g font-family="Inter,Arial,sans-serif" font-size="26" fill="#ffdf9f"><text x="250" y="96" text-anchor="middle">160</text><text x="345" y="926" text-anchor="middle">30</text><text x="26" y="52" font-size="22">clear space 160</text></g>
+    </svg></div>
+    <div>
+      <ul style="margin:0;padding-left:18px;display:grid;gap:10px">
+        <li><b>Clear space</b> equals the width of the stem, 160 units, on every side. Nothing enters it.</li>
+        <li><b>The gap</b> between stem and bowl is 30 units. Keep it open in every version, including one colour.</li>
+        <li><b>The arrow</b> sits 36 units inside the opening on every side. It never touches the steel.</li>
+        <li><b>Proportion</b> is 665 wide by 700 high. The mark is nearly square, so it centres in a square icon with equal margins.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="size">
+  <p class="kicker">Size</p>
+  <h2>Where it holds and where it changes</h2>
+  <div class="scroll-x" style="margin-top:24px"><table><thead><tr><th>Use</th><th>Minimum</th><th>Version</th></tr></thead><tbody>
+    <tr><td>Mark on screen</td><td class="mono">24 px high</td><td>Full mark</td></tr>
+    <tr><td>Favicon, tab, tiny avatars</td><td class="mono">16 to 24 px</td><td>Favicon, with a plain triangle and a heavier gap</td></tr>
+    <tr><td>Horizontal lockup</td><td class="mono">120 px wide</td><td>Plain, no endorsement line</td></tr>
+    <tr><td>Endorsed lockup</td><td class="mono">180 px wide</td><td>The "by Aethonex" line stays legible</td></tr>
+    <tr><td>Print</td><td class="mono">8 mm high</td><td>Light or one colour</td></tr>
+  </tbody></table></div>
+</section>
+
+<section id="rules">
+  <p class="kicker">Rules</p>
+  <h2>Keep it recognisable</h2>
+  <ul class="rules" style="margin-top:24px">
+    <li><b>Do keep the arrow gold</b>It is the one owned thing, as in every Aethonex asset.</li>
+    <li><b>Do use dark grounds first</b>The mark lives on Ground, Card or Panel. Light is for print.</li>
+    <li><b>Do name it in full</b>Write Prospect Dominion. The endorsement line reads "by Aethonex".</li>
+  </ul>
+  <ul class="rules no" style="margin-top:12px">
+    <li><b>Don't recolour</b>No blue, no gold stem, no silver arrow.</li>
+    <li><b>Don't add effects</b>No bevel, glow, gradient or shadow on the mark. Only transparency from palette colours is allowed.</li>
+    <li><b>Don't close the gap</b>The stem and the bowl stay separate.</li>
+    <li><b>Don't merge with Nex or the Aethonex mark</b>Each stands alone. Nex never appears inside the product mark.</li>
+    <li><b>Don't shorten or extend the name</b>Never Dominion Suite, Dominion Cloud or PD.</li>
+    <li><b>Don't place it on gold or on photos</b>The arrow disappears.</li>
+  </ul>
+</section>
+
+<section id="bible">
+  <p class="kicker">Brand check</p>
+  <h2>How it follows the brand brief</h2>
+  <div class="scroll-x" style="margin-top:24px"><table><thead><tr><th>Rule in BRAND.md</th><th>In this logo</th><th></th></tr></thead><tbody>
+    <tr><td>Exact palette values, no other colours</td><td>Seven values, each from the token list: #C8C6C5, #ADABAB, #E3C384, #131313, #E5E2E1, #D0C5B5, and #474746, #313030, #735B26 for print</td><td><span class="tag">Pass</span></td></tr>
+    <tr><td>Gold means owned, grey means rented or neutral</td><td>One gold arrow, everything else steel grey</td><td><span class="tag">Pass</span></td></tr>
+    <tr><td>Transparency only as rgba() of a palette colour</td><td>No transparency used in the mark. Files have transparent backgrounds only</td><td><span class="tag">Pass</span></td></tr>
+    <tr><td>Use the fonts already defined on the website, add none</td><td>Syne for the wordmark and Inter for the endorsement line. Both are outlined in the files</td><td><span class="tag">Pass</span></td></tr>
+    <tr><td>Dark surfaces by default, light only for print</td><td>Dark is the primary version. Light is labelled print</td><td><span class="tag">Pass</span></td></tr>
+    <tr><td>Never invent clients, numbers or claims</td><td>The logo makes no claim</td><td><span class="tag">Pass</span></td></tr>
+    <tr><td>Names: Prospect Dominion is the software, Aethonex the company</td><td>Endorsed lockup says "by Aethonex"</td><td><span class="tag">Pass</span></td></tr>
+  </tbody></table></div>
+  <p class="cap" style="margin-top:10px">BRAND.md says nothing yet about product marks, so the sub-brand rules on this page are new. Add them to BRAND.md so every agent follows them.</p>
+</section>
+
+<footer><p>Prospect Dominion logo, version 1. Drawn from first principles on a 1,000-unit grid, not traced from an existing file. Files are in the Prospect Dominion logo kit sent with this page.</p></footer>
+</main>
+<script>
+(function(){
+  function fb(t){var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove()}
+  document.querySelectorAll('[data-copy]').forEach(function(b){b.addEventListener('click',function(){var t=b.getAttribute('data-copy');var done=function(){b.classList.add('copied');setTimeout(function(){b.classList.remove('copied')},1400)};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){fb(t);done()})}else{fb(t);done()}})});
+})();
+</script>
+
+</body></html>

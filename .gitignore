@@ -76,3 +76,6 @@ RELEASE_MANIFEST_v*.txt
 *.rej
 *.swp
 *.tmp
+
+# Local logo backups
+demo/_backup_logos/
